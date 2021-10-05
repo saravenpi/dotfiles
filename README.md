@@ -1,2 +1,2 @@
 # dotfiles
-The config files I use for my personnal desktop 
+The config files I use for my personal desktop 
