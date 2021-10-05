@@ -1,6 +1,9 @@
 set number
 set encoding=UTF-8
 filetype plugin on
+:set tabstop=4
+:set shiftwidth=4
+:set expandtab
 
 call plug#begin("~/.config/nvim/plugged")
 Plug 'scrooloose/nerdtree'
@@ -19,6 +22,8 @@ Plug 'romgrk/barbar.nvim'
 Plug 'itchyny/lightline.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'hrsh7th/nvim-compe'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 call plug#end()
 
 if (has("termguicolor"))
@@ -28,7 +33,6 @@ endif
 lua << EOF
 local catppuccino = require("catppuccino")
 
--- configure it
 catppuccino.setup(
     {
 		colorscheme = "soft_manilo",
@@ -88,15 +92,11 @@ catppuccino.setup(
 EOF
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  ignore_install = { "javascript" }, -- List of parsers to ignore installing
+  ensure_installed = "maintained", 
+  ignore_install = { "javascript" },
   highlight = {
-    enable = true,              -- false will disable the whole extension
-    disable = { "c", "rust" },  -- list of language that will be disabled
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
+    enable = true,              
+    disable = { "c", "rust" }, 
     additional_vim_regex_highlighting = false,
   },
 }
@@ -129,6 +129,9 @@ let g:compe.source.ultisnips = v:true
 let g:compe.source.luasnip = v:true
 let g:compe.source.emoji = v:true
 
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 syntax enable
 colorscheme catppuccino
