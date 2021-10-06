@@ -6,24 +6,24 @@ filetype plugin on
 :set expandtab
 
 call plug#begin("~/.config/nvim/plugged")
-Plug 'scrooloose/nerdtree'
 Plug 'Pocco81/Catppuccino.nvim'
-Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' } 
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'ryanoasis/vim-devicons'
-Plug 'christoomey/vim-tmux-navigator' 
-Plug 'ap/vim-css-color'
 Plug 'jiangmiao/auto-pairs'
 Plug 'machakann/vim-sandwich'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'romgrk/barbar.nvim'
 Plug 'itchyny/lightline.vim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'hrsh7th/nvim-compe'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'christoomey/vim-tmux-navigator' 
+Plug 'tpope/vim-commentary'
 call plug#end()
 
 if (has("termguicolor"))
