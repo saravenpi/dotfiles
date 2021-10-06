@@ -8,7 +8,7 @@ filetype plugin on
 call plug#begin("~/.config/nvim/plugged")
 Plug 'scrooloose/nerdtree'
 Plug 'Pocco81/Catppuccino.nvim'
-Plug 'tpope/vim-commentary'
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
@@ -102,6 +102,14 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
+syntax enable
+colorscheme catppuccino
+let g:lightline = {'colorscheme': 'catppuccino'}
+
+
+let g:Hexokinase_highlighters = [ 'virtual' ]
+
+
 set completeopt=menuone,noselect
 let g:compe = {}
 let g:compe.enabled = v:true
@@ -132,10 +140,6 @@ let g:compe.source.emoji = v:true
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
-syntax enable
-colorscheme catppuccino
-let g:lightline = {'colorscheme': 'catppuccino'}
 
 
 let g:NERDTreeIgnore = ['^node_modules$']
