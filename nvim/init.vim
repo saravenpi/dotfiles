@@ -5,12 +5,16 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
-let &t_SI = "\<esc>[5 q"  " blinking I-beam in insert mode
-let &t_SR = "\<esc>[3 q"  " blinking underline in replace mode
-let &t_EI = "\<esc>[ q"  " default cursor (usually blinking block) otherwise
+" Insert Mode 
+let &t_SI .=  "\<esc>[4 q"
+" Normal Mode
+let &t_EI .=  "\<esc>[2 q"
+
+let &t_ti .= "\e[2 q"
+let &t_te .= "\e[4 q"
 
 call plug#begin("~/.config/nvim/plugged")
-Plug 'Pocco81/Catppuccino.nvim'
+Plug 'dracula/vim', {'as':'dracula'}
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -27,8 +31,8 @@ Plug 'itchyny/lightline.vim'
 Plug 'hrsh7th/nvim-compe'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'christoomey/vim-tmux-navigator' 
 Plug 'tpope/vim-commentary'
+" Plug 'vimsence/vimsence'
 call plug#end()
 
 source ~/.config/nvim/theme.vim

@@ -1,0 +1,23 @@
+font:
+  normal:
+    family: "NotoSansMono Nerd Font"
+    style: Regular
+
+  bold:
+    family: "NotoSansMono Nerd Font"
+    style: Medium
+
+shell:
+  program: /bin/fish
+  args:
+    - --login
+
+cursor:
+  # Values for `style`:
+  #   - ▇ Block
+  #   - _ Underline
+  #   - | Beam
+  style: Beam
+
+import:
+  - /home/saravenpi/.config/alacritty/dracula.yml

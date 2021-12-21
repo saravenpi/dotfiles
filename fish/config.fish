@@ -1,17 +1,34 @@
-alias g git
-alias nv nvim
-alias c clear
+set -Ux EDITOR nvim
+set -Ux VISUAL nvim
+set HOME "/home/saravenpi"
+set CODE "/home/saravenpi/Documents/code"
+set SCHOOL "/home/saravenpi/Documents/code/epita"
+
+alias ls "exa --icons"
+alias ll "ls -l"
+alias la "ls -a"
+alias lal "ls -al"
 alias l ls
+alias tree "ls --tree"
+
+alias rm "rm -i"
+
 alias q exit
 alias hc "history clear"
-alias gos "cd ~/code/.epita"
-alias goo "cd ~/code/dreamit"
-alias clp "gpaste-client"
-alias clpc "gpaste-client delete-history"
-function md
-    pandoc $argv | w3m -T text/html
-end
+alias c clear
 
-# opam configuration
-source ~/.opam/opam-init/init.fish > /dev/null 2> /dev/null; or true
+alias nv nvim
+
+alias h "cd $HOME"
+alias goc "cd $CODE"
+alias gos "cd $SCHOOL"
+alias god "cd $CODE/dreamit"
+alias goh "cd $CODE/honive"
+alias goi "cd $SCHOOL/IP"
+
+alias pdf evince
+alias flex neofetch
+alias todo "nv $HOME/Documents/TODO.md"
+
 set fish_greeting "Hey, Sara, what are we doing today ?"
+starship init fish | source
