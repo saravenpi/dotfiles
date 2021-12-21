@@ -1,10 +1,14 @@
 # dotfiles
-The config files I use for my personal desktop 
+
+## The config files I use for my personal desktop 
 
 I use the [dracula](https://draculatheme.com/) theme as my main coloscheme.
+
 I use [fish](https://fishshell.com/) as my main shell.
+
 I use [starship](https://starship.rs/) as my shell prompt.
-My main editor is neovim.
+
+My main editor is [neovim](https://neovim.io/).
 
 I use [alacritty](https://alacritty.org/) as my main terminal application.
 
