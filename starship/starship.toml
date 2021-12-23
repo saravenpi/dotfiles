@@ -13,7 +13,7 @@ disabled = false
 home_symbol = "🏠"
 
 [line_break]
-disabled = true
+disabled = false
 
 [git_status]
 disabled = false

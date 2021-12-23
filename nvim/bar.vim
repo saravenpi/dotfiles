@@ -13,5 +13,3 @@ nnoremap <silent>    <A-8> :BufferGoto 8<CR>
 nnoremap <silent>    <A-9> :BufferLast<CR>
 nnoremap <silent>    <A-p> :BufferPin<CR>
 nnoremap <silent>    <A-c> :BufferClose<CR>
-
-
