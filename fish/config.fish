@@ -1,24 +1,32 @@
 set -Ux EDITOR nvim
 set -Ux VISUAL nvim
-set HOME "/home/saravenpi"
-set CODE "/home/saravenpi/Documents/code"
-set SCHOOL "/home/saravenpi/Documents/code/epita"
+set -Ux HOME "/home/saravenpi"
+set -Ux CODE "/home/saravenpi/Documents/code"
+set -Ux SCHOOL "/home/saravenpi/Documents/code/epita"
 
 alias ls "exa --icons"
-alias ll "ls -l"
-alias la "ls -a"
-alias lal "ls -al"
+alias ll "ls -lh"
+alias la "ls -ah"
+alias lal "ls -alh"
+alias lla "ls -alh"
 alias l ls
-alias tree "ls --tree"
-alias treen "ls --tree --ignore-glob='node_modules'"
+alias t "ls -T"
+alias tl "ll -T"
+alias tn "ls --tree --ignore-glob='node_modules'"
+alias tnl "ll --ignore-glob='node_modules' -T"
+alias tln "ll --ignore-glob='node_modules' -T"
 
 alias rm "rm -i"
+
+alias f fg
+alias j jobs
 
 alias q exit
 alias hc "history clear"
 alias c clear
 
 alias nv nvim
+alias office org.libreoffice.LibreOffice
 
 # function to open my vim wiki with the current directory set to the vim wiki folder
 function wk 

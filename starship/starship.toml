@@ -2,9 +2,12 @@
 add_newline = false
 
 [character]
-success_symbol = "[🌵 ❯](bold green)"
+success_symbol = "[❯](bold green)"
 error_symbol = "[✗ ❯](bold red)"
-vicmd_symbol = "[V](bold green) "
+
+[jobs]
+number_threshold = 1
+symbol = "💼"
 
 [package]
 disabled = false
@@ -13,7 +16,13 @@ disabled = false
 home_symbol = "🏠"
 
 [line_break]
-disabled = false
+disabled = true
 
 [git_status]
 disabled = false
+
+[time]
+disabled = false
+use_12hr = true
+format = " [$time]($style) "
+time_format = "%H:%M"
