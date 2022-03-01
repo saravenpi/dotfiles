@@ -1,1 +1,0 @@
-/home/saravenpi/.config/fish/
