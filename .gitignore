@@ -1,3 +1,5 @@
 /nvim/plugged
 init.sh
 /ranger/plugins
+/ranger/colorschemes/__pycache__
+/ranger/colorschemes/__init__.py

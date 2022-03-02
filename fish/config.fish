@@ -28,6 +28,7 @@ alias c clear
 
 alias nv nvim
 alias office org.libreoffice.LibreOffice
+alias spotify "/usr/bin/spotify --force-device-scale-factor=2.0"
 
 # function to open my vim wiki with the current directory set to the vim wiki folder
 function wk 
@@ -41,7 +42,7 @@ end
 function nvc
     set cur (pwd)
     cd "$HOME/.config/nvim/"
-    nv init.vim
+    nv init.lua
     cd "$cur"
 end
 
@@ -61,6 +62,7 @@ alias goh "cd $CODE/honive"
 alias gok "cd $CODE/kata"
 alias goi "cd $SCHOOL/IP"
 alias gop "cd $SCHOOL/projets2"
+alias goz "cd $CODE/zeus"
 
 alias gs "git status"
 alias gp "git push"
