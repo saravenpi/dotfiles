@@ -39,16 +39,16 @@ class Dracula(ColorScheme):
         if context.document:
             attr |= normal
             fg = 13
-        if context.media:
-            if context.image:
-                attr |= normal
-                fg = 3
-            elif context.video:
-                fg = 1
-            elif context.audio:
-                fg = 6
-            else:
-                fg = 10
+        # if context.media:
+        #     if context.image:
+        #         attr |= normal
+        #         fg = 3
+        #     elif context.video:
+        #         fg = 1
+        #     elif context.audio:
+        #         fg = 6
+        #     else:
+        #         fg = 10
         if context.container:
             attr |= bold
             fg = 9

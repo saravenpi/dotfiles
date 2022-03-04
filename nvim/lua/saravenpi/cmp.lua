@@ -11,7 +11,11 @@ local cmp = require("cmp")
 require("luasnip.loaders.from_vscode").load()
 
 cmp.setup({
-
+  snippet = {
+      expand = function(args)
+        luasnip.lsp_expand(args.body)
+      end
+  },
   mapping = {
     ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
@@ -47,7 +51,7 @@ cmp.setup({
   },
   sources = {
       { name = 'nvim_lsp' },
-      { name = 'nvim_lua' },
+      -- { name = 'nvim_lua' },
       { name = 'luasnip' },    
       { name = 'buffer' },
       { name = 'emoji' },

@@ -1,0 +1,506 @@
+[colors]
+background = #282a36
+foreground = #f8f8f2
+black = #3B4252
+red = #ff5555
+green = #50fa7b
+yellow = #f1fa8c
+blue = #bd93f9
+magenta = #ff79c6
+cyan = #8be9fd
+white = #E5E9F0
+
+
+;; _-_-_-_-_-_-_-_ Colors (Catppuccin theme colors) -_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+cat-black = #161320
+cat-white = #D9E0EE
+cat-red = #F28FAD
+cat-green = #ABE9B3
+cat-peach = #F8BD96
+cat-blue = #96CDFB
+cat-pink = #F5C2E7
+cat-mauve = #DDB6F2
+
+;; _-_-_-_-_-_-_-_- Colors which arent from dracula theme _-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+altblack = #4C566A
+altred = #BF616A
+altgreen = #A3BE8C
+altyellow = #EBCB8B
+altblue = #81A1C1
+altmagenta = #B48EAD
+altcyan = #8FBCBB
+altwhite = #ECEFF4
+
+shade-1 = #32344a
+shade-2 = #444b6a
+shade-3 = #787c99
+shade-4 = #CACACE
+shade-5 = #acb0d0
+
+
+;; _-_-_-_-_-_-_-_- Main Bar _-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[bar/main]
+monitor = ${env:MONITOR}
+height = 40
+width = 100%
+offset-y = 0
+top = true
+fixed-center = true
+;wm-restack = i3
+
+override-redirect = false
+
+scroll-up = next
+scroll-down = prev
+
+enable-ipc = true
+
+background = ${colors.cat-black}
+foreground = ${colors.cat-white}
+
+
+;; _-_-_-_-_-_-_-_- Fonts -_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+font-0 = "JetBrains Mono Nerd Font:style=Medium:size=11;2"
+font-1 = "JetBrains Mono Nerd Font:style=Bold:size=11;2"
+font-2 = "JetBrainsMono Nerd Font:size=19;5"
+font-3 = "Material Icons Outlined:9;4"
+font-4 = "Material Icons Round:9;4"
+font-5 = "Source Han Sans CN:size=9;2"
+font-6 = "Iosevka Nerd Font:size=18;4"
+
+;; _-_-_-_-_-_-_-_-_-_ Modules / Tray positions _-_-_-_-_-_-_-_-_-_-_-_
+
+tray-position = left
+tray-background = #725AC1
+modules-left = BPL i3 BGPL title 
+modules-center = date
+modules-right = pulseaudio spacing spacing backlight spacing spacing battery spacing spacing wlan spacing spacing 
+
+cursor-click = pointer
+
+
+;; _-_-_-_-_-_-_-_-_ Settings -_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[settings]
+screenchange-reload = true
+
+
+;; _-_-_-_-_-_-_-_ Battery -_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = ACAD
+full-at = 98
+format-charging =  <label-charging>
+label-charging = %percentage:2%%
+format-foreground = ${colors.cat-peach}
+format-charging-padding = 0
+format-charging-foreground = ${colors.cat-peach}
+
+format-discharging = <ramp-capacity> <label-discharging>
+label-discharging = %percentage%%
+format-discharging-foreground = ${colors.cat-peach}
+format-full-prefix = "  "
+format-full-foreground = ${colors.cat-peach}
+format-full-padding = 0
+ramp-capacity-0 = " "
+ramp-capacity-1 = " "
+ramp-capacity-2 = " "
+ramp-capacity-3 = " "
+ramp-capacity-4 = " "
+ramp-capacity-0-foreground = ${colors.cat-red}
+animation-charging-framerate = 910
+format-discharging-padding = 0
+
+
+;; _-_-_-_-_-_-_-_ Date/Time -_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/date]
+type = internal/date
+interval = 1
+
+time = "%a, %b %d %H:%M"
+
+format = <label>
+format-foreground = ${colors.cat-green}
+
+format-padding = 0
+format-prefix = %{T5}%{T-}
+label = %{T1}%time%%{T-}
+label-padding = 1
+
+[module/margin]
+type = custom/text
+
+content = %{T2}%{T-}
+content-foreground = ${colors.cat-green}
+
+
+;;_-_-_-_-_-_-_-_- Volume -_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/pulseaudio]
+type = internal/pulseaudio
+use-ui-max = false
+
+format-volume = <label-volume>
+format-volume-padding = 0
+format-volume-prefix = %{T4}%{T-}
+format-volume-prefix-foreground = ${colors.cat-red}
+label-volume = %{T1}%percentage%%%{T-}
+label-volume-foreground = ${colors.cat-red}
+label-volume-padding = 0
+
+format-muted = <label-muted>
+format-muted-padding = 0
+format-muted-prefix = 
+format-muted-prefix-foreground = ${colors.cat-red}
+label-muted = %{T1}%percentage%%%{T-}
+label-muted-foreground = ${colors.cat-red}
+
+label-muted-padding = 0
+
+click-right = pavucontrol&
+
+
+;;_-_-_-_-_-_-_-_-_  Wifi -_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/wlan]
+type = internal/network
+interface = wlp1s0
+interval = 1.0
+
+
+format-connected = <label-connected>
+format-connected-padding = 0
+label-connected = %{A1:wifimenu:} %essid%%{A}
+label-connected-foreground = ${colors.cat-pink}
+label-connected-padding = 0
+
+format-disconnected = <label-disconnected>
+format-disconnected-padding = 0
+label-disconnected = %{A1:wifimenu:}%{A}
+label-disconnected-foreground = ${colors.cat-pink}
+label-disconnected-padding = 0
+
+
+;;_-_-_-_-_-_-_-_-_ Workspaces -_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/i3]
+type = internal/i3
+format = <label-state> <label-mode>
+index-sort = true
+wrapping-scroll = false
+
+ws-icon-default = 
+
+fuzzy-match = true
+
+strip-wsnumbers = true
+; Only show workspaces on the same output as the bar
+pin-workspaces = true
+
+label-mode-padding = 1
+label-mode-foreground = ${colors.cat-black}
+label-mode-background = ${colors.cat-peach}
+
+; focused = Active workspace on focused monitor
+label-focused = %icon% %name%
+label-focused-background = ${colors.cat-mauve}
+label-focused-foreground= ${colors.cat-black}
+label-focused-padding = 1
+
+; unfocused = Inactive workspace on any monitor
+label-unfocused = %icon% %name%
+label-unfocused-padding = 1
+label-unfocused-background = ${colors.cat-peach}
+label-unfocused-foreground = ${colors.altblack}
+
+; visible = Active workspace on unfocused monitor
+label-visible = %index%
+label-visible-background = ${colors.cat-peach} 
+label-visible-foreground = ${self.label-focused-foreground}
+label-visible-underline = ${colors.cat-blue}
+label-visible-padding = ${self.label-focused-padding}
+
+; urgent = Workspace with urgency hint set
+label-urgent = !%index%
+label-urgent-background = ${colors.cat-red}
+label-urgent-foreground = ${colors.cat-black}
+label-urgent-padding = 1
+
+; Separator in between workspaces
+ label-separator = 
+ label-separator-background = ${colors.cat-peach}
+ label-separator-foreground = ${colors.cat-black}
+
+
+;; _-_-_-_-_-_-_-_-_- Brightness _-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/backlight]
+type = internal/backlight
+
+; Use the following command to list available cards:
+; $ ls -1 /sys/class/backlight/
+card = amdgpu_bl0
+
+use-actual-brightness = true
+
+enable-scroll = true
+
+format = <ramp> <label>
+
+label = %percentage%%
+
+; Only applies if <ramp> is used
+ramp-0 =  
+ramp-1 =  
+ramp-2 =  
+ramp-3 =  
+ramp-4 =  
+ramp-5 =  
+ramp-6 =  
+ramp-7 =  
+ramp-8 =  
+ramp-9 = 
+
+format-foreground = ${colors.cat-blue}
+
+
+;; _-_-_-_-_-_-_-_-_ Active window title -_-_-_-_-_-_-_-_-_-_-_-_-_
+
+[module/title]
+type = internal/xwindow
+
+format = <label>
+format-padding = 1
+format-foreground = ${colors.foreground}
+
+label = " %title%"
+label-maxlen = 30
+
+; Used instead of label when there is no window title
+label-empty = Desktop
+
+
+;;_-_-_-_-_-_-_-_- Decorations _-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+[module/spacing]
+type = custom/text
+content = " "
+content-background = ${colors.cat-black}
+
+[module/sep]
+type = custom/text
+content = -
+
+content-background = ${colors.background}
+content-foreground = ${colors.background}
+
+[module/dot]
+type = custom/text
+;content = 
+content = ""
+
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.altblack}
+content-padding = 1
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+[module/LD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-background = ${color.background}
+content-foreground = ${color.altblack}
+
+[module/RD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-background = ${colors.background}
+content-foreground = ${colors.altblack}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+[module/RLD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.red}
+
+[module/RRD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.red}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+[module/WLD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.white}
+
+[module/WRD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.white}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/CLD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.cyan}
+
+[module/CRD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.cyan}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/MLD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.magenta}
+
+[module/MRD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.magenta}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/YLD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.yellow}
+
+[module/YRD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.yellow}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+[module/GLD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.green}
+
+[module/GRD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.green}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+[module/BLD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.blue}
+
+[module/BRD]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.background}
+content-foreground = ${colors.blue}
+
+;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+[module/YPL]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.cat-blue}
+content-foreground = ${colors.cat-peach}
+
+[module/GPL]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.cat-peach}
+content-foreground = ${colors.cat-pink}
+
+[module/RPL]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.cat-black}
+content-foreground = ${colors.cat-red}
+
+[module/MPL]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.cat-pink}
+content-foreground = ${colors.cat-green}
+
+[module/BPL]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.cat-green}
+content-foreground = #725AC1
+
+[module/BGPL]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.cat-black}
+content-foreground = ${colors.cat-green}
+
+[module/CYPL]
+type = custom/text
+content = "%{T3}%{T-}"
+content-font = 6
+content-background = ${colors.cat-red}
+content-foreground = ${colors.cat-blue}
+
+

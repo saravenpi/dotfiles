@@ -1,8 +1,11 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
+SETUVAR --export ALPHAVANTAGE_API_KEY:N6BIWN33NBS4FU26
 SETUVAR --export ANDROID_HOME:/home/saravenpi/Android/Sdk
 SETUVAR --export CODE:/home/saravenpi/Documents/code
 SETUVAR --export EDITOR:nvim
+SETUVAR --export --path GOPATH:/home/saravenpi/go/
+SETUVAR --export GOROO:/usr/bin/go
 SETUVAR --export HOME:/home/saravenpi
 SETUVAR --export SCHOOL:/home/saravenpi/Documents/code/epita
 SETUVAR --export VISUAL:nvim

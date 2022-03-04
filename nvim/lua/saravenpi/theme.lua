@@ -7,7 +7,7 @@ vim.opt.termguicolors = true
 local catppuccin = require("catppuccin")
 
 catppuccin.setup({
-  transparent_background = false,
+  transparent_background = true,
   term_colors = true,
   styles = {
     comments = "italic",
@@ -35,7 +35,7 @@ catppuccin.setup({
       },
     lsp_trouble = true,
     cmp = true,
-    lsp_saga = false,
+    lsp_saga = true,
     gitgutter = false,
     gitsigns = true,
     telescope = true,
@@ -49,7 +49,7 @@ catppuccin.setup({
       show_root = false,
       transparent_panel = false,
       },
-    which_key = false,
+    which_key = true,
     indent_blankline = {
       enabled = true,
       colored_indent_levels = false,
@@ -110,6 +110,8 @@ require('nvim-treesitter.configs').setup {
 
 vim.opt.timeoutlen = 500
 
+vim.api.nvim_set_keymap('t', '<Esc>','<C-\\><C-n>', { noremap = true })
+
 vim.cmd[[
   let &t_SI .=  "\<esc>[4 q"
   let &t_EI .=  "\<esc>[2 q"
@@ -118,6 +120,6 @@ vim.cmd[[
 
   let g:mapleader = "\<Space>"
   let g:maplocalleader = ','
-  nnoremap <silent> <leader>      :<c-u>WhichKey '<Space>'<CR>
-  nnoremap <silent> <localleader> :<c-u>WhichKey  ','<CR>
+  " nnoremap <silent> <leader>      :<c-u>WhichKey '<Space>'<CR>
+  " nnoremap <silent> <localleader> :<c-u>WhichKey  ','<CR>
 ]]
