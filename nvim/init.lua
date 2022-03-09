@@ -1,7 +1,7 @@
 local Plug = vim.fn['plug#']
 vim.call('plug#begin', '~/.config/nvim/plugged')
 
-  Plug 'catppuccin/nvim'
+  Plug('catppuccin/nvim', {['as'] =  'catppuccin'})
   Plug 'romgrk/barbar.nvim'
   Plug 'nvim-lualine/lualine.nvim'
 
@@ -29,6 +29,8 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
   Plug 'tpope/vim-commentary'
   Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
+  -- Plug 'liuchengxu/vim-clap'
+  Plug 'junegunn/fzf.vim'
   Plug 'folke/which-key.nvim'
 
 
@@ -37,7 +39,9 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
 
   Plug 'jiangmiao/auto-pairs'
   Plug 'machakann/vim-sandwich'
-  Plug('prettier/vim-prettier', { ['do'] = 'yarn install' })
+  Plug 'neovim/nvim-lspconfig'
+  Plug 'jose-elias-alvarez/null-ls.nvim'
+  Plug 'MunifTanjim/prettier.nvim'
 
   Plug 'vimwiki/vimwiki'
 
@@ -45,7 +49,13 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
 
   Plug 'fatih/vim-go'
 
+  Plug 'chrisbra/Colorizer'
+
   Plug 'rcarriga/nvim-notify'
+
+  Plug('neoclide/npm.nvim', {['do'] = 'npm install'})
+
+  Plug 'glepnir/dashboard-nvim'
 
 vim.call('plug#end')
 
@@ -59,3 +69,5 @@ require('saravenpi.notify')
 require('saravenpi.lspsaga')
 require('saravenpi.trouble')
 require('saravenpi.which-key')
+require('saravenpi.dashboard')
+require('saravenpi.prettier')

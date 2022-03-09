@@ -1,5 +1,4 @@
-local nvim_lsp = require('lspconfig')
-vim.notify = require("notify")
+local nvim_lsp = require('lspconfig') vim.notify = require("notify")
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -47,7 +46,7 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 
 
 
-local servers = {'tsserver', 'pyright', 'gopls', 'rust_analyzer', 'solargraph', 'omnisharp', 'vls'}
+local servers = {'tsserver', 'pyright', 'gopls', 'rust_analyzer', 'solargraph', 'omnisharp', 'vls', 'svelte'}
 for _, lsp in pairs(servers) do
   if lsp == 'omnisharp' then
     -- omnisharp lsp config
@@ -57,7 +56,7 @@ for _, lsp in pairs(servers) do
         on_attach(client, bufnr)
         vim.notify(lsp .. " lsp loaded successfully" , "info", { timeout = 2000 })
       end,
-      cmd = { "/home/saravenpi/omnisharp/OmniSharp", "--languageserver" , "--hostPID", tostring(pid) }
+      cmd = { "omnisharp", "--languageserver" , "--hostPID", tostring(pid) }
     }
   else 
     nvim_lsp[lsp].setup {
