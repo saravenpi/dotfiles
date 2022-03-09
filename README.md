@@ -10,6 +10,8 @@ I use [starship](https://starship.rs/) as my shell prompt.
 
 My main editor is [neovim](https://neovim.io/).
 
+My WM is [i3-gaps](https://github.com/Airblader/i3)
+
 I use [kitty](https://sw.kovidgoyal.net/kitty/) as my main terminal application.
 
 The font that I use is the "NotoSansMono Nerd Font" and it is a [nerd font](https://www.nerdfonts.com/)
