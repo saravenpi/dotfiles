@@ -2,6 +2,14 @@ local Plug = vim.fn['plug#']
 vim.call('plug#begin', '~/.config/nvim/plugged')
 
   Plug('catppuccin/nvim', {['as'] =  'catppuccin'})
+
+  Plug 'ellisonleao/gruvbox.nvim'
+
+  Plug('dracula/vim', {['as'] = 'dracula' })
+
+  Plug('folke/tokyonight.nvim', { ['branch'] = 'main' })
+
+  Plug 'https://gitlab.com/yorickpeterse/vim-paper.git'
   Plug 'romgrk/barbar.nvim'
   Plug 'nvim-lualine/lualine.nvim'
 
@@ -25,6 +33,7 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
   Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
   Plug 'folke/trouble.nvim'
   Plug 'OmniSharp/omnisharp-roslyn'
+  Plug 'OmniSharp/omnisharp-vim'
 
   Plug 'tpope/vim-commentary'
   Plug 'nvim-lua/plenary.nvim'
@@ -56,6 +65,8 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
   Plug('neoclide/npm.nvim', {['do'] = 'npm install'})
 
   Plug 'glepnir/dashboard-nvim'
+  
+  Plug 'puremourning/vimspector'
 
 vim.call('plug#end')
 
@@ -71,3 +82,4 @@ require('saravenpi.trouble')
 require('saravenpi.which-key')
 require('saravenpi.dashboard')
 require('saravenpi.prettier')
+require('saravenpi.bindings')
