@@ -34,7 +34,7 @@ end
 
 
 
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.resolveSupport = {
   properties = {
@@ -46,25 +46,13 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 
 
 
-local servers = {'tsserver', 'pyright', 'gopls', 'rust_analyzer', 'solargraph', 'omnisharp', 'vls', 'svelte'}
+local servers = {'tsserver', 'pyright', 'gopls', 'rust_analyzer', 'solargraph', 'vls', 'svelte', 'clangd'}
 for _, lsp in pairs(servers) do
-  if lsp == 'omnisharp' then
-    -- omnisharp lsp config
-    nvim_lsp[lsp].setup {
-      capabilities =  capabilities,
-      on_attach = function(client, bufnr)
-        on_attach(client, bufnr)
-        vim.notify(lsp .. " lsp loaded successfully" , "info", { timeout = 2000 })
-      end,
-      cmd = { "omnisharp", "--languageserver" , "--hostPID", tostring(pid) }
-    }
-  else 
     nvim_lsp[lsp].setup {
       capabilities = capabilities,
       on_attach = function(client, bufnr)
         on_attach(client, bufnr)
-        vim.notify(lsp .. " lsp loaded successfully" , "info", { timeout = 2000 })
+        -- vim.notify(lsp .. " lsp loaded successfully" , "info", { timeout = 2000 })
       end
     }
-  end
 end

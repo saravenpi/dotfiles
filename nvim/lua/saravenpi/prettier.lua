@@ -1,7 +1,6 @@
 local null_ls = require("null-ls")
 local prettier = require("prettier")
 
-
 null_ls.setup({
   on_attach = function(client, bufnr)
     if client.resolved_capabilities.document_formatting then
@@ -15,7 +14,6 @@ null_ls.setup({
     end
   end,
 })
-
 prettier.setup({
   bin = 'prettier', 
   filetypes = {
@@ -49,5 +47,4 @@ prettier.setup({
   use_tabs = false,
   vue_indent_script_and_style = false,
 })
-
 vim.api.nvim_set_keymap('n', '<leader>p', "<cmd>:Prettier<cr>", {noremap = true })

@@ -113,7 +113,8 @@ cmp.setup.cmdline('/', {
 cmp.setup.cmdline(':', {
   sources = {
     { name = 'path' },
-    { name = 'cmdline' }
+    { name = 'cmdline' },
+    { name = 'orgmode' }
   }
 })
 
