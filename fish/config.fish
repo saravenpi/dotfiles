@@ -97,7 +97,7 @@ alias m make
 alias mc "make clean"
 alias mr "make re"
 alias mre mr
-alias csc "sh /home/saravenpi/coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
+alias csc "sh /home/saravenpi/.coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
 
 alias :q exit
 set fish_greeting ""
