@@ -1,41 +1,57 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
-SETUVAR --export ALPHAVANTAGE_API_KEY:N6BIWN33NBS4FU26
-SETUVAR --export ANDROID_HOME:/home/saravenpi/Android/Sdk
-SETUVAR --export CODE:/home/saravenpi/Documents/code
+SETUVAR --export CODE:/home/saravenpi/code
 SETUVAR --export EDITOR:nvim
-SETUVAR --export --path GOPATH:/home/saravenpi/go/
-SETUVAR --export GOROO:/usr/bin/go
 SETUVAR --export HOME:/home/saravenpi
-SETUVAR --export SCHOOL:/home/saravenpi/Documents/code/epita
+SETUVAR --export SCHOOL:/home/saravenpi/school/
 SETUVAR --export VISUAL:nvim
-SETUVAR __fish_initialized:3100
-SETUVAR fish_color_autosuggestion:555\x1ebrblack
-SETUVAR fish_color_cancel:\x2dr
-SETUVAR fish_color_command:005fd7
-SETUVAR fish_color_comment:990000
-SETUVAR fish_color_cwd:green
+SETUVAR ZO_CMD:zo
+SETUVAR Z_CMD:z
+SETUVAR Z_DATA:/home/saravenpi/\x2elocal/share/z/data
+SETUVAR Z_DATA_DIR:/home/saravenpi/\x2elocal/share/z
+SETUVAR Z_EXCLUDE:\x5e/home/saravenpi\x24
+SETUVAR __fish_initialized:3400
+SETUVAR _fisher_catppuccin_2F_fish_files:\x7e/\x2econfig/fish/themes/Catppuccin\x20Frappe\x2etheme\x1e\x7e/\x2econfig/fish/themes/Catppuccin\x20Latte\x2etheme\x1e\x7e/\x2econfig/fish/themes/Catppuccin\x20Macchiato\x2etheme\x1e\x7e/\x2econfig/fish/themes/Catppuccin\x20Mocha\x2etheme
+SETUVAR _fisher_plugins:catppuccin/fish
+SETUVAR _fisher_upgraded_to_4_4:\x1d
+SETUVAR fish_color_autosuggestion:6e738d
+SETUVAR fish_color_cancel:ed8796
+SETUVAR fish_color_command:8aadf4
+SETUVAR fish_color_comment:\x1d
+SETUVAR fish_color_cwd:eed49f
 SETUVAR fish_color_cwd_root:red
-SETUVAR fish_color_end:009900
-SETUVAR fish_color_error:ff0000
-SETUVAR fish_color_escape:00a6b2
+SETUVAR fish_color_end:f5a97f
+SETUVAR fish_color_error:ed8796
+SETUVAR fish_color_escape:f0c6c6
+SETUVAR fish_color_gray:6e738d
 SETUVAR fish_color_history_current:\x2d\x2dbold
-SETUVAR fish_color_host:normal
-SETUVAR fish_color_host_remote:yellow
+SETUVAR fish_color_host:8aadf4
+SETUVAR fish_color_host_remote:\x1d
+SETUVAR fish_color_keyword:ed8796
 SETUVAR fish_color_match:\x2d\x2dbackground\x3dbrblue
-SETUVAR fish_color_normal:normal
-SETUVAR fish_color_operator:00a6b2
-SETUVAR fish_color_param:00afff
-SETUVAR fish_color_quote:999900
-SETUVAR fish_color_redirection:00afff
-SETUVAR fish_color_search_match:bryellow\x1e\x2d\x2dbackground\x3dbrblack
-SETUVAR fish_color_selection:white\x1e\x2d\x2dbold\x1e\x2d\x2dbackground\x3dbrblack
+SETUVAR fish_color_normal:cad3f5
+SETUVAR fish_color_operator:f5bde6
+SETUVAR fish_color_option:\x1d
+SETUVAR fish_color_param:f0c6c6
+SETUVAR fish_color_quote:a6da95
+SETUVAR fish_color_redirection:f5bde6
+SETUVAR fish_color_search_match:\x2d\x2dbackground\x3d363a4f
+SETUVAR fish_color_selection:\x2d\x2dbackground\x3d363a4f
 SETUVAR fish_color_status:red
-SETUVAR fish_color_user:brgreen
+SETUVAR fish_color_user:8bd5ca
 SETUVAR fish_color_valid_path:\x2d\x2dunderline
-SETUVAR fish_greeting:Hey\x2c\x20Sara\x2c\x20what\x20are\x20we\x20doing\x20today\x20\x3f
+SETUVAR fish_greeting:
 SETUVAR fish_key_bindings:fish_default_key_bindings
-SETUVAR fish_pager_color_completion:\x1d
-SETUVAR fish_pager_color_description:B3A06D\x1eyellow
-SETUVAR fish_pager_color_prefix:white\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
-SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
+SETUVAR fish_pager_color_background:\x1d
+SETUVAR fish_pager_color_completion:cad3f5
+SETUVAR fish_pager_color_description:6e738d
+SETUVAR fish_pager_color_prefix:f5bde6
+SETUVAR fish_pager_color_progress:6e738d
+SETUVAR fish_pager_color_secondary_background:\x1d
+SETUVAR fish_pager_color_secondary_completion:\x1d
+SETUVAR fish_pager_color_secondary_description:\x1d
+SETUVAR fish_pager_color_secondary_prefix:\x1d
+SETUVAR fish_pager_color_selected_background:\x1d
+SETUVAR fish_pager_color_selected_completion:\x1d
+SETUVAR fish_pager_color_selected_description:\x1d
+SETUVAR fish_pager_color_selected_prefix:\x1d

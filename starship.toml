@@ -1,124 +1,69 @@
-# Inserts a blank line between shell prompts
+format = """
+[░▒▓](#a3aed2)\
+[ 🐧](bg:#a3aed2 fg:#090c0c)\
+[](bg:#769ff0 fg:#a3aed2)\
+$directory\
+[](fg:#769ff0 bg:#394260)\
+$git_branch\
+$git_status\
+[](fg:#394260 bg:#212736)\
+$nodejs\
+$rust\
+$golang\
+$php\
+[](fg:#212736 bg:#1d2230)\
+$time\
+[ ](fg:#1d2230)\
+\n$character"""
+
 add_newline = false
-command_timeout = 5000
-scan_timeout = 5000
-
-
-[character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[✗ ❯](bold red)"
-
-[jobs]
-number_threshold = 1
-symbol = "💼"
-
-[time]
-disabled = false
-use_12hr = true
-format = " [$time]($style) "
-time_format = "%H:%M"
 
 [line_break]
 disabled = true
 
-
-[battery]
-full_symbol = ""
-charging_symbol = ""
-discharging_symbol = ""
-
 [directory]
-format = "[$path]($style)[$read_only]($read_only_style) "
-# style = "bold  #50fa7b"
-read_only = "🔒"
-read_only_style = "red"
-home_symbol = "🏠"
+style = "fg:#e3e5e5 bg:#769ff0"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "📁"
+
+[directory.substitutions]
+"Documents" = " "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
 
 [git_branch]
-format = "on [$symbol$branch ]($style)"
-symbol = " "
-style = "bold  #de3163"
-
-[git_commit]
-#format = "[\\($hash\\)]($style) [\\($tag\\)]($style)"
-style = "bold green"
+symbol = ""
+style = "bg:#394260"
+format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
 
 [git_status]
-format ='([\[ $all_status$ahead_behind\]]($style))'
-conflicted = "="
-ahead =	"⇡${count} "
-behind = "⇣${count} "
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-untracked = "?${count} "
-stashed = "$${count} "
-modified = "!${count} "
-staged = "+${count} "
-renamed = "»${count} "
-deleted = "✘${count} "
-# style =	"bold red"
-disabled = false
-
-[git_state]
-rebase = "REBASING"
-merge =	"MERGING"
-revert = "REVERTING"
-cherry_pick = "CHERRY-PICKING"
-bisect = "BISECTING"
-am = "AM"
-am_or_rebase = "AM/REBASE"
-style =	"bold yellow"
-format = '\([$state( $progress_current/$progress_total)]($style)\) '
-disabled = false
-
-[hg_branch]
-symbol = " "
-style =	"bold purple"
-format = "on [$symbol$branch]($style) "
+style = "bg:#394260"
+format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
 
 [nodejs]
-format = "via [$symbol$version]($style) "
-symbol = "⬢ "
-style = "bold green"
-#disabled = false
-#not_capable_style = "bold red"
-
-[status]
-format = "[$symbol$status]($style)"
-symbol = "✖"
-style = "bold red"
-disabled = true
-
-[aws]
-symbol = "  "
-
-[docker_context]
-symbol = " "
-
-[conda]
-symbol = " "
-
-[dart]
-symbol = " "
-
-[package]
-format = " [$symbol$version]($style) "
-# style = "bold #ca32f7"
-symbol = " "
-
-[perl]
-symbol = " "
-
-[php]
-symbol = " "
-
-[python]
-symbol = " "
-
-[ruby]
-symbol = " "
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [rust]
-symbol = " "
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
-[swift]
-symbol = "ﯣ "
+[golang]
+symbol = "ﳑ"
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[php]
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+style = "bg:#1d2230"
+format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'

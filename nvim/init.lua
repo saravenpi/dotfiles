@@ -2,6 +2,8 @@ local Plug = vim.fn['plug#']
 vim.call('plug#begin', '~/.config/nvim/plugged')
 
   Plug('catppuccin/nvim', {['as'] =  'catppuccin'})
+  Plug 'KabbAmine/yowish.vim'
+  Plug 'gummesson/stereokai.vim'
   Plug 'tckmn/hotdog.vim'
   Plug ('pineapplegiant/spaceduck', { ['branch'] = 'main' })
   Plug 'thedenisnikulin/vim-cyberpunk'
@@ -34,7 +36,6 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
   Plug 'folke/trouble.nvim'
 
   Plug 'tpope/vim-commentary'
-  Plug 'nvim-lua/plenary.nvim'
   Plug 'nvim-telescope/telescope.nvim'
   Plug 'junegunn/fzf.vim'
   Plug 'folke/which-key.nvim'
@@ -76,6 +77,8 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
   Plug ('akinsho/toggleterm.nvim', {['tag'] = '*'})
   Plug 'folke/zen-mode.nvim'
 
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'vappolinario/cmp-clippy'
 vim.call('plug#end')
 
 require('saravenpi.theme')

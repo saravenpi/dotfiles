@@ -1,17 +1,10 @@
 # dotfiles
 
-## The config files I use for my personal desktop 
+## The config files I use for my personal machine 
 
-I use the [catppuccin](https://github.com/catppuccin/) theme as my main coloscheme.
-
-I use [fish](https://fishshell.com/) as my main shell.
-
-I use [starship](https://starship.rs/) as my shell prompt.
-
-My main editor is [neovim](https://neovim.io/).
-
-My WM is [i3-gaps](https://github.com/Airblader/i3)
-
-I use [kitty](https://sw.kovidgoyal.net/kitty/) as my main terminal application.
-
-The font that I use is the "NotoSansMono Nerd Font" and it is a [nerd font](https://www.nerdfonts.com/)
+- Colorscheme: [catppuccin](https://github.com/catppuccin/)
+- Shell: [fish](https://fishshell.com/)
+- Shell prompt: [starship](https://starship.rs/)
+- Text editor: [neovim](https://neovim.io/)
+- Terminal: [kitty](https://sw.kovidgoyal.net/kitty/)
+- Font: `SpaceMono NF` from [nerd fonts](https://www.nerdfonts.com/)
