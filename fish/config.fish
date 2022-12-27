@@ -62,6 +62,13 @@ function fishc
     cd "$cur"
 end
 
+function kittyc
+    set cur (pwd)
+    cd "$HOME/.config/kitty/"
+    nvim kitty.conf
+    cd "$cur"
+end
+
 function setp
     echo (pwd) > ~/.project
 end
@@ -95,6 +102,8 @@ alias gituf "git add . && git commit -m \"$currentdate \"&& git push"
 alias bb abricot
 alias m make
 alias mc "make clean"
+alias mf "make fclean"
+alias mfc "make fclean"
 alias mr "make re"
 alias mre mr
 alias csc "sh /home/saravenpi/.coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
