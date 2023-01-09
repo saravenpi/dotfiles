@@ -14,3 +14,6 @@ cp ~/.config/kitty/theme.conf ./kitty/theme.conf
 
 # STARSHIP
 cp ~/.config/starship.toml ./starship.toml
+
+# TMUX
+cp ~/.tmux.conf ./.tmux.conf

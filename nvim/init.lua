@@ -3,6 +3,7 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
 
   Plug 'thedenisnikulin/vim-cyberpunk'
   Plug 'bignimbus/pop-punk.vim'
+  Plug('catppuccin/nvim', { ['as']= 'catppuccin' })
 
   Plug 'romgrk/barbar.nvim'
   Plug 'nvim-lualine/lualine.nvim'

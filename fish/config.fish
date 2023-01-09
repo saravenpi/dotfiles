@@ -46,6 +46,8 @@ function wk
     cd "$cur"
 end
 
+alias wkh "firefox $HOME/sarawiki/html/index.html"
+
 # function to open my neovim config with the current directory set to the neovim config folder
 function nvc
     set cur (pwd)
