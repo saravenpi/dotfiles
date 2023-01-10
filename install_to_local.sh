@@ -5,7 +5,7 @@ cp -r ./nvim/ ~/.config/
 cp -r ./fish/ ~/.config/
 
 # KITTY
-cp ./kitty/ ~/.config/kitty/kitty.conf 
+cp -r ./kitty/ ~/.config/kitty/kitty.conf 
 
 # STARSHIP
 cp ./starship.toml ~/.config/starship.toml 
