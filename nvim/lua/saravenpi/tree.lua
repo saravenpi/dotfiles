@@ -32,7 +32,7 @@ require('nvim-tree').setup {
   },
   filters = {
     dotfiles = false,
-    custom = {}
+    custom = { "*.o" }
   },
   git = {
     enable = true,
@@ -42,7 +42,7 @@ require('nvim-tree').setup {
   view = {
     width = 30,
     hide_root_folder = false,
-    side = 'left',
+    side = 'right',
     -- auto_resize = true,
     preserve_window_proportions = false,
     mappings = {

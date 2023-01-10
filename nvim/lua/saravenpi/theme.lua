@@ -4,24 +4,17 @@ vim.opt.tabstop = 4
 vim.opt.expandtab = true
 vim.opt.termguicolors = true
 vim.opt.timeoutlen = 500
-
-vim.api.nvim_set_keymap('t', '<Esc>','<C-\\><C-n>', { noremap = true })
+vim.opt.colorcolumn = "80"
+vim.g.mapleader = " "
 vim.cmd[[
     let &t_SI .=  "\<esc>[4 q"
     let &t_EI .=  "\<esc>[2 q"
     let &t_ti .= "\e[2 q"
     let &t_te .= "\e[4 q"
-    let g:mapleader = "\<Space>"
-    let g:maplocalleader = ','
-    " nnoremap <silent> <leader>      :<c-u>WhichKey '<Space>'<CR>
-    " nnoremap <silent> <localleader> :<c-u>WhichKey  ','<CR>
-    :set colorcolumn=80
-    colorscheme catppuccin
-    let g:catppuccin_flavour = "macchiato"
 ]]
 
 require("catppuccin").setup({
-        flavour = "mocha",
+        flavour = "latte",
         background = { 
             light = "latte",
             dark  = "mocha",
@@ -63,5 +56,4 @@ require("catppuccin").setup({
             leap = true,
         }
 })
-
-require("zen-mode").setup()
+vim.cmd.colorscheme "catppuccin"

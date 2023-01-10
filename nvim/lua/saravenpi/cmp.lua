@@ -31,8 +31,7 @@ cmp.setup({
       if cmp.visible() then
         cmp.select_next_item()
       elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif has_words_before() then
+        luasnip.expand_or_jump() elseif has_words_before() then
         cmp.complete()
       else
         fallback()
@@ -51,7 +50,13 @@ cmp.setup({
   },
   sources = {
       { name = 'nvim_lsp' },
-      -- { name = 'nvim_lua' },
+      { 
+          name = 'cmp-clippy',
+          option = {
+              model = "EleutherAI/gpt-neo-2.7B", -- check code clippy vscode repo for options
+              key = "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", -- huggingface.co api key
+          }
+      },
       { name = 'luasnip' },    
       { name = 'buffer' },
       { name = 'emoji' },
