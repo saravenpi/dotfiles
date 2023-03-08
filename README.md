@@ -14,7 +14,7 @@
 
 ## Requirements for the config
 - [stow](https://www.gnu.org/software/stow/)
-- (and the programs you want to be configured)
+- (the programs you want to be configured)
 
 ## How to install the config
 Paste this code in your terminal:
@@ -24,4 +24,4 @@ cd ~/.dotfiles/
 chmod +x install.sh
 ./install.sh
 ```
-And the config should be up and running !
+dnd the config should be up and running !
