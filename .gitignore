@@ -1,5 +1,9 @@
-/nvim/plugged
-init.sh
-/ranger/plugins
-/ranger/colorschemes/__pycache__
-/ranger/colorschemes/__init__.py
+/nvim/.config/nvim/plugged/
+/fish/.config/fish/completions/
+/fish/.config/fish/conf.d/
+/fish/.config/fish/functions/
+/fish/.config/fish/fish_variables
+/qutebrowser/.config/qutebrowser/bookmarks/
+/qutebrowser/.config/qutebrowser/greasemonkey/
+/qutebrowser/.config/qutebrowser/quickmarks
+/qutebrowser/.config/qutebrowser/dracula

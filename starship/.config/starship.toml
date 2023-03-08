@@ -1,0 +1,20 @@
+[line_break]
+disabled = true
+
+add_newline = false
+
+[directory]
+truncation_length = 3
+truncation_symbol = "📁"
+
+[directory.substitutions]
+"Documents" = " "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
+[time]
+disabled = false
+time_format = "%R"
+style = "bg:#b57614"
+format = ' $time '
