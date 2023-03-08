@@ -33,7 +33,7 @@ bindsym $mod+Return exec kitty
 bindsym $mod+b exec qutebrowser
 
 #lock screen
-bindsym $mod+Shift+x exec i3lock --color=272727
+bindsym $mod+Shift+x exec i3lock --color=282a36
 
 # kill focused window
 bindsym $mod+q kill
