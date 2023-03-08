@@ -10,3 +10,4 @@ stow --delete polybar
 stow --delete rofi
 stow --delete starship
 stow --delete picom
+stow --delete tmux

@@ -12,6 +12,7 @@ cp -r ~/.config/polybar/ ~/.old.config/
 cp -r ~/.config/rofi/ ~/.old.config/
 cp -r ~/.config/picom/ ~/.old.config/
 cp ~/.config/starship.toml ~/.old.config/
+cp ~/.tmux.conf ~/.old.config/
 
 # UNLINK THE OLD CONFIG (IN CASE IT IS ALREADY USING THE CONFIG)
 stow --delete nvim
@@ -24,6 +25,7 @@ stow --delete polybar
 stow --delete rofi
 stow --delete picom
 stow --delete starship
+stow --delete tmux
 
 echo "The old config files for the following packages:"
 echo "neovim, dunst, fish,i3, kitty, polybar, rofi, starship (if installed)"
@@ -40,3 +42,4 @@ stow polybar
 stow rofi
 stow starship
 stow picom
+stow tmux
