@@ -2,8 +2,11 @@ set $mod Mod4
 
 font pango:monospace 8
 
-exec --no-startup-id dex --autostart --environment i3
+# exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit
+exec --no-startup-id ulauncher
+
+exec_always "setxkbmap -layout us -variant intl"
 
 exec_always --no-startup-id dunst
 exec_always --no-startup-id feh --bg-fill ~/.config/i3/assets/wallpaper.jpg
@@ -31,6 +34,7 @@ bindsym $mod+Return exec kitty
 
 # start the browser
 bindsym $mod+b exec qutebrowser
+bindsym $mod+o exec obsidian
 
 #lock screen
 bindsym $mod+Shift+x exec i3lock --color=282a36
@@ -39,7 +43,9 @@ bindsym $mod+Shift+x exec i3lock --color=282a36
 bindsym $mod+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id rofi -show run
+# bindsym $mod+d exec --no-startup-id rofi -show run
+bindsym $mod+d exec --no-startup-id ulauncher-toggle
+bindsym $mod+Shift+s exec --no-startup-id flameshot gui
 
 # change focus
 bindsym $mod+j focus left
@@ -128,11 +134,11 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Do you want to exit i3?' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-                bindsym j resize shrink width 10 px or 10 ppt
+        bindsym j resize shrink width 10 px or 10 ppt
         bindsym k resize grow height 10 px or 10 ppt
         bindsym l resize shrink height 10 px or 10 ppt
         bindsym semicolon resize grow width 10 px or 10 ppt

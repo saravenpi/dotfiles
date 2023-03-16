@@ -49,4 +49,6 @@ alias csc "sh $HOME/.coding-style.sh . . &> /dev/null; cat coding-style-reports.
 
 alias :q exit
 
+alias i3bye "i3-msg exit"
+
 alias list-fonts "kitty +list-fonts --psnames"

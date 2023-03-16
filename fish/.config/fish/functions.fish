@@ -26,6 +26,13 @@ function kittyc
     cd "$cur"
 end
 
+function i3c
+    set cur (pwd)
+    cd "$HOME/.config/i3/"
+    nvim config
+    cd "$cur"
+end
+
 function setp
     echo (pwd) > ~/.project
 end
@@ -48,3 +55,14 @@ function wk
     cd "$cur"
 end
 
+function ob
+    set cur (pwd)
+    cd "$HOME/brain/"
+    nvim __brain.md
+    cd "$cur"
+end
+
+function a
+    set file (fzf)
+    nvim $file
+end

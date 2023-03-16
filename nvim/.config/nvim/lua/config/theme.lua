@@ -12,4 +12,4 @@ vim.cmd[[
     let &t_ti .= "\e[2 q"
     let &t_te .= "\e[4 q"
 ]]
-vim.cmd.colorscheme "dracula"
+vim.cmd.colorscheme "monokai"

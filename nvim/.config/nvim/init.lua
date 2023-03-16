@@ -3,6 +3,11 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
 
 -- COLORSCHEMES
 Plug 'bignimbus/pop-punk.vim'
+Plug 'junegunn/seoul256.vim'
+Plug 'KabbAmine/yowish.vim'
+Plug 'rakr/vim-one'
+Plug 'tanvirtin/monokai.nvim'
+
 Plug('dracula/vim', { ['as'] =  'dracula'})
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
@@ -25,6 +30,7 @@ Plug 'hrsh7th/cmp-emoji'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lua'
 Plug 'tami5/lspsaga.nvim'
+Plug 'folke/trouble.nvim'
 
 -- SNIPPETS
 Plug 'Heliferepo/VimTek'
@@ -33,7 +39,6 @@ Plug 'rafamadriz/friendly-snippets'
 Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'RishabhRD/popfix'
 
-Plug 'folke/trouble.nvim'
 
 -- GOTTA GO FAST
 Plug 'tpope/vim-commentary'
@@ -71,6 +76,11 @@ Plug 'wakatime/vim-wakatime'
 -- DEV TOOLS
 Plug('sakhnik/nvim-gdb', { ['do'] = ':!./install.sh' })
 
+-- OBSIDIAN
+Plug 'epwalsh/obsidian.nvim'
+Plug 'preservim/vim-markdown'
+Plug 'godlygeek/tabular'
+
 vim.call('plug#end')
 
 require('config.theme')
@@ -83,7 +93,8 @@ require('config.notify')
 require('config.lspsaga')
 require('config.trouble')
 require('config.which-key')
-require('config.bindings')
 require('config.vimwiki')
 require('config.indent')
 require('config.lualine')
+require('config.obsidian')
+require('config.bindings')
