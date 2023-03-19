@@ -2,13 +2,7 @@ local Plug = vim.fn['plug#']
 vim.call('plug#begin', '~/.config/nvim/plugged')
 
 -- COLORSCHEMES
-Plug 'bignimbus/pop-punk.vim'
-Plug 'junegunn/seoul256.vim'
-Plug 'KabbAmine/yowish.vim'
-Plug 'rakr/vim-one'
 Plug 'tanvirtin/monokai.nvim'
-
-Plug('dracula/vim', { ['as'] =  'dracula'})
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
 -- BARS
@@ -78,8 +72,6 @@ Plug('sakhnik/nvim-gdb', { ['do'] = ':!./install.sh' })
 
 -- OBSIDIAN
 Plug 'epwalsh/obsidian.nvim'
-Plug 'preservim/vim-markdown'
-Plug 'godlygeek/tabular'
 
 vim.call('plug#end')
 

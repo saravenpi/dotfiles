@@ -18,3 +18,11 @@ disabled = false
 time_format = "%R"
 style = "bg:#b57614"
 format = ' $time '
+
+[battery]
+charging_symbol = '🔌 '
+discharging_symbol = '⚡️ '
+full_symbol = '🔋 '
+
+[[battery.display]]
+threshold = 100
