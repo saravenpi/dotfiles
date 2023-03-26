@@ -1,3 +1,6 @@
+vim.cmd[[
+let mapleader = "\<Space>"
+]]
 local opts = { noremap=true, silent=true }
 vim.api.nvim_set_keymap('t', '<Esc>','<C-\\><C-n>', { noremap = true })
 vim.api.nvim_set_keymap( 'n', '<leader>cdr', '<cmd>!dotnet run<CR>', opts)
@@ -53,3 +56,10 @@ end, {remap=true})
 
 require'hop'.setup()
 require('leap').add_default_mappings()
+
+vim.api.nvim_set_keymap('n', '<leader>ff', "<cmd>lua require('telescope.builtin').find_files()<cr>", {noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>fg', "<cmd>lua require('telescope.builtin').live_grep()<cr>", {noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>fb', "<cmd>lua require('telescope.builtin').buffers()<cr>", {noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>fh', "<cmd>lua require('telescope.builtin').help_tags()<cr>", {noremap = true })
+
+

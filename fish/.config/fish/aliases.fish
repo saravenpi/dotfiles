@@ -1,54 +1,55 @@
 alias ls "exa --icons"
-alias ll "ls -lh"
-alias la "ls -ah"
-alias lal "ls -alh"
-alias lla "ls -alh"
-alias l ls
-alias t "ls -T"
-alias tl "ll -T"
-alias tn "ls --tree --ignore-glob='node_modules'"
-alias tnl "ll --ignore-glob='node_modules' -T"
-alias tln "ll --ignore-glob='node_modules' -T"
+abbr ll "ls -lh"
+abbr la "ls -ah"
+abbr lal "ls -alh"
+abbr lla "ls -alh"
+abbr l ls
+abbr t "ls -T"
+abbr tl "ls -lT"
+abbr tn "ls --tree --ignore-glob='node_modules'"
+abbr tnl "ls --ignore-glob='node_modules' -lT"
+abbr tln "ls --ignore-glob='node_modules' -lT"
 
-alias rm "rm -i"
+abbr rm "rm -i"
 
-alias f fg
-alias j jobs
+abbr f fg
+abbr j jobs
 
-alias z zoxide
-alias q exit
-alias hc "history clear"
-alias c clear
+abbr z zoxide
+abbr q exit
+abbr hc "history clear"
+abbr c clear
 
-alias ] "nvim"
-alias n nvim
-alias nv nvim
+abbr ] "nvim"
+abbr n nvim
+abbr nv nvim
+abbr lg lazygit
 
-alias h "cd $HOME"
-alias goc "cd $CODE"
-alias gos "cd $SCHOOL"
+abbr h "cd $HOME"
+abbr goc "cd $CODE"
+abbr gos "cd $SCHOOL"
 
-alias gs "git status"
-alias gp "git push"
-alias ga "git add"
-alias gc "git clone"
-alias gd "git diff"
-alias gr "git remove"
+abbr gs "git status"
+abbr gp "git push"
+abbr ga "git add"
+abbr gc "git clone"
+abbr gd "git diff"
+abbr gr "git remove"
 
-alias gitu "git add . && git commit && git push"
-alias gituf "git add . && git commit -m \"$currentdate \"&& git push"
+abbr gitu "git add . && git commit && git push"
+abbr gituf "git add . && git commit -m \"$currentdate \"&& git push"
 
-alias bb abricot
-alias m make
-alias mc "make clean"
-alias mf "make fclean"
-alias mfc "make fclean"
-alias mr "make re"
-alias mre mr
-alias csc "sh $HOME/.coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
+abbr bb abricot
+abbr m make
+abbr mc "make clean"
+abbr mf "make fclean"
+abbr mfc "make fclean"
+abbr mr "make re"
+abbr mre mr
+abbr csc "sh $HOME/.coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
 
-alias :q exit
+abbr :q exit
 
-alias i3bye "i3-msg exit"
+abbr i3bye "i3-msg exit"
 
-alias list-fonts "kitty +list-fonts --psnames"
+abbr list-fonts "kitty +list-fonts --psnames"

@@ -58,7 +58,7 @@ end
 function ob
     set cur (pwd)
     cd "$HOME/brain/"
-    nvim __brain.md
+    nvim .
     cd "$cur"
 end
 

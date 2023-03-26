@@ -16,7 +16,6 @@ truncation_symbol = "📁"
 [time]
 disabled = false
 time_format = "%R"
-style = "bg:#b57614"
 format = ' $time '
 
 [battery]
