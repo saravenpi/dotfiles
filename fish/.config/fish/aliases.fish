@@ -47,6 +47,8 @@ abbr mfc "make fclean"
 abbr mr "make re"
 abbr mre mr
 abbr csc "sh $HOME/.coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
+abbr v valgrind
+abbr vf "valgrind --leak-check=full"
 
 abbr :q exit
 
