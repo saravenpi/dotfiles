@@ -4,7 +4,7 @@ font pango:monospace 8
 
 # exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit
-exec --no-startup-id ulauncher
+exec_always --no-startup-id ulauncher
 
 exec_always "setxkbmap -layout us -variant intl"
 

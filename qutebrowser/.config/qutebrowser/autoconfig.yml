@@ -9,4 +9,4 @@ settings:
   content.javascript.can_access_clipboard:
     global: true
   zoom.default:
-    global: 140%
+    global: 100%
