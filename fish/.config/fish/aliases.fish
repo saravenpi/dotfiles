@@ -47,11 +47,13 @@ abbr mfc "make fclean"
 abbr mr "make re"
 abbr mre mr
 abbr csc "sh $HOME/.coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
-abbr v valgrind
-abbr vf "valgrind --leak-check=full"
+abbr vg valgrind
+abbr vgf "valgrind --leak-check=full"
 
 abbr :q exit
 
 abbr i3bye "i3-msg exit"
+
+alias oc "set dos '~/code/(/bin/ls ~/code/ | fzf)' ; cd $dos"
 
 abbr list-fonts "kitty +list-fonts --psnames"
