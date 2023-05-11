@@ -6,7 +6,7 @@ Plug 'tanvirtin/monokai.nvim'
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
 -- BARS
-Plug 'romgrk/barbar.nvim'
+-- Plug 'romgrk/barbar.nvim'
 Plug 'nvim-lualine/lualine.nvim'
 
 -- TREE
@@ -51,7 +51,7 @@ Plug 'jose-elias-alvarez/null-ls.nvim'
 -- ESTHETICS
 Plug 'rcarriga/nvim-notify'
 Plug 'lukas-reineke/indent-blankline.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
+-- Plug 'kyazdani42/nvim-web-devicons'
 
 Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-fugitive'
@@ -69,6 +69,7 @@ Plug 'wakatime/vim-wakatime'
 
 -- DEV TOOLS
 Plug('sakhnik/nvim-gdb', { ['do'] = ':!./install.sh' })
+Plug 'lewis6991/gitsigns.nvim'
 
 -- OBSIDIAN
 Plug 'epwalsh/obsidian.nvim'
@@ -89,3 +90,7 @@ require('config.tree')
 require('config.trouble')
 require('config.vimwiki')
 require('config.which-key')
+require('config.gitsigns')
+
+vim.g.neovide_scale_factor = 0.7
+vim.o.guifont = "SpaceMono NF:h12"

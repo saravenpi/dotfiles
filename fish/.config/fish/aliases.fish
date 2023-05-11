@@ -34,25 +34,27 @@ abbr gp "git push"
 abbr ga "git add"
 abbr gc "git clone"
 abbr gd "git diff"
+abbr gb "git branch"
 abbr gr "git remove"
 
 abbr gitu "git add . && git commit && git push"
-abbr gituf "git add . && git commit -m \"$currentdate \"&& git push"
+# abbr gituf "git add . && git commit -m \"$currentdate \"&& git push"
 
-abbr bb abricot
+abbr bb abricot --ignore
 abbr m make
 abbr mc "make clean"
 abbr mf "make fclean"
 abbr mfc "make fclean"
 abbr mr "make re"
 abbr mre mr
-abbr csc "sh $HOME/.coding-style.sh . . &> /dev/null; cat coding-style-reports.log; rm -f coding-style-reports.log"
+abbr csc "sh $HOME/.coding-style.sh . . &> /dev/null; bat coding-style-reports.log; rm -f coding-style-reports.log"
 abbr vg valgrind
 abbr vgf "valgrind --leak-check=full"
 
 abbr :q exit
 
 abbr i3bye "i3-msg exit"
+abbr s sgpt
 
 alias oc "set dos '~/code/(/bin/ls ~/code/ | fzf)' ; cd $dos"
 
