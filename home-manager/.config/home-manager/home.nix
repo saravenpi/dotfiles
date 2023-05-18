@@ -16,7 +16,6 @@
     pkgs.tmux
     pkgs.neovim
     pkgs.gum
-    pkgs.irssi
     pkgs.yarn
     pkgs.git
 

@@ -53,15 +53,10 @@ abbr vgf "valgrind --leak-check=full"
 
 abbr :q exit
 
-abbr i3bye "i3-msg exit"
-abbr s sgpt
+abbr hms "home-manager switch"
 
 alias oc "set dos '~/code/(/bin/ls ~/code/ | fzf)' ; cd $dos"
 
 abbr list-fonts "kitty +list-fonts --psnames"
 
-abbr ni "sudo nix-env -iA nixpkgs."
-
 alias x "xclip -selection clipboard"
-abbr hms "home-manager switch"
-abbr hme "chome-manager"
