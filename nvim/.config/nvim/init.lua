@@ -35,9 +35,9 @@ Plug 'RishabhRD/popfix'
 
 
 -- GOTTA GO FAST
-Plug 'tpope/vim-commentary'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'MunifTanjim/nui.nvim'
 Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'junegunn/fzf.vim'
 Plug 'phaazon/hop.nvim'
 Plug 'ggandor/leap.nvim'
@@ -51,7 +51,7 @@ Plug 'jose-elias-alvarez/null-ls.nvim'
 -- ESTHETICS
 Plug 'rcarriga/nvim-notify'
 Plug 'lukas-reineke/indent-blankline.nvim'
--- Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-web-devicons'
 
 Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-fugitive'
@@ -70,9 +70,14 @@ Plug 'wakatime/vim-wakatime'
 -- DEV TOOLS
 Plug('sakhnik/nvim-gdb', { ['do'] = ':!./install.sh' })
 Plug 'lewis6991/gitsigns.nvim'
+Plug 'jackMort/ChatGPT.nvim'
 
 -- OBSIDIAN
 Plug 'epwalsh/obsidian.nvim'
+
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'neovim/nvim-lspconfig'
 
 vim.call('plug#end')
 
@@ -81,8 +86,6 @@ require('config.bar')
 require('config.bindings')
 require('config.cmp')
 require('config.indent')
-require('config.lsp')
-require('config.lspsaga')
 require('config.lualine')
 require('config.notify')
 require('config.obsidian')
@@ -91,6 +94,7 @@ require('config.trouble')
 require('config.vimwiki')
 require('config.which-key')
 require('config.gitsigns')
+require('config.lsp')
 
 vim.g.neovide_scale_factor = 0.7
 vim.o.guifont = "SpaceMono NF:h12"

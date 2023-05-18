@@ -24,3 +24,7 @@ function a
     set file (fzf)
     nvim $file
 end
+
+function batdiff
+    git diff --name-only --relative --diff-filter=d | xargs bat --diff
+end

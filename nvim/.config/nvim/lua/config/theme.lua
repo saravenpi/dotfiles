@@ -13,4 +13,4 @@ vim.cmd[[
     let &t_te .= "\e[4 q"
 ]]
 vim.opt.termguicolors = true
-vim.cmd.colorscheme "monokai"
+vim.cmd.colorscheme "monokai_soda"

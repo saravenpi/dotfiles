@@ -59,3 +59,7 @@ abbr s sgpt
 alias oc "set dos '~/code/(/bin/ls ~/code/ | fzf)' ; cd $dos"
 
 abbr list-fonts "kitty +list-fonts --psnames"
+
+abbr ni "sudo nix-env -iA nixpkgs."
+
+alias x "xclip -selection clipboard"
