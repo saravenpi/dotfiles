@@ -5,7 +5,6 @@
   home.homeDirectory = "/home/saravenpi";
 
   home.stateVersion = "22.11";
-
   home.packages = [
     pkgs.bat
     pkgs.exa
@@ -25,6 +24,7 @@
     pkgs.insomnia
     pkgs.spotify
     pkgs.discord
+    pkgs.alacritty
 
 
     pkgs.nodejs
@@ -32,6 +32,11 @@
     pkgs.rustc
     pkgs.go
     pkgs.python39
+    pkgs.ncurses
+    pkgs.mesa
+    pkgs.libGLU
+    pkgs.glew
+    pkgs.freeglut
 
     pkgs.pfetch
     pkgs.starship
@@ -43,7 +48,7 @@
      EDITOR = "nvim";
   };
 
-  programs.home-manager.enable = true;
+  programs.home-manager.enable = false;
 
   programs.git = {
       userName = "Saravenpi";
@@ -65,5 +70,16 @@
               defaultBranch = "main";
           };
       };
+  };
+
+  imports = [
+    ./programs/git.nix
+    ./programs/starship.nix
+    ./programs/tmux.nix
+  ];
+
+  home.keyboard = {
+      layout = "us";
+      variant = "intl";
   };
 }

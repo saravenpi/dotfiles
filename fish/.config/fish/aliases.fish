@@ -63,3 +63,5 @@ abbr list-fonts "kitty +list-fonts --psnames"
 abbr ni "sudo nix-env -iA nixpkgs."
 
 alias x "xclip -selection clipboard"
+abbr hms "home-manager switch"
+abbr hme "chome-manager"
