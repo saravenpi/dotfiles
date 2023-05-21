@@ -3,6 +3,7 @@ vim.call('plug#begin', '~/.config/nvim/plugged')
 
 -- COLORSCHEMES
 Plug 'tanvirtin/monokai.nvim'
+Plug ('catppuccin/nvim', { ['as'] = 'catppuccin' })
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
 
 -- BARS

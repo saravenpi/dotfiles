@@ -20,7 +20,7 @@ abbr q exit
 abbr hc "history clear"
 abbr c clear
 
-abbr ] "nvim"
+abbr ] "nvim ."
 abbr n nvim
 abbr nv nvim
 abbr lg lazygit
