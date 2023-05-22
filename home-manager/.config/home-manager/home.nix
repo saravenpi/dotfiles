@@ -4,49 +4,49 @@
   home.homeDirectory = "/home/saravenpi";
 
   home.stateVersion = "22.11";
-  home.packages = [
+  home.packages = with pkgs; [
     # Terminal Apps
-    pkgs.bat
-    pkgs.tree
-    pkgs.exa
-    pkgs.zoxide
-    pkgs.htop
-    pkgs.tokei
-    pkgs.ranger
-    pkgs.neofetch
-    pkgs.tmux
-    pkgs.gum
-    pkgs.git
-    pkgs.neovim
-    pkgs.lynx
-    pkgs.vhs
-    pkgs.pfetch
-    pkgs.starship
-    pkgs.fish
-    pkgs.xorg.xmodmap
+    bat
+    tree
+    exa
+    zoxide
+    htop
+    tokei
+    ranger
+    neofetch
+    tmux
+    gum
+    git
+    neovim
+    lynx
+    vhs
+    pfetch
+    starship
+    fish
+    xorg.xmodmap
 
     # Desktop Apps
-    pkgs.insomnia
-    pkgs.spotify
-    pkgs.discord
-    pkgs.dbeaver
-    pkgs.virtualbox
-    pkgs.renoise
-    pkgs.tdesktop
-    pkgs.brasero
+    insomnia
+    spotify
+    discord
+    dbeaver
+    virtualbox
+    renoise
+    tdesktop
+    brasero
 
     # Fun
-    pkgs.lolcat
-    pkgs.cowsay
-    pkgs.asciiquarium
+    lolcat
+    cowsay
+    asciiquarium
 
     # Programming
-    pkgs.nodejs
-    pkgs.yarn
-    pkgs.cargo
-    pkgs.rustc
-    pkgs.go
-    pkgs.python39
+    nodejs
+    yarn
+    cargo
+    rustc
+    go
+    python39
   ];
 
   home.sessionVariables = {

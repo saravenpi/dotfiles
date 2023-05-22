@@ -8,3 +8,4 @@ source ~/.config/fish/variables.fish
 set fish_greeting ""
 starship init fish | source
 zoxide init fish | source
+xmodmap ~/.Xmodmap
