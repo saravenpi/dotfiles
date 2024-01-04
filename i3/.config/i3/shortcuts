@@ -11,7 +11,7 @@ bindsym $mod+b exec firefox
 bindsym $mod+o exec flatpak run md.obsidian.Obsidian
 
 #lock screen
-bindsym $mod+Shift+x exec i3lock --color=282a36
+bindsym $mod+Shift+x exec i3lock --color=141414
 
 # kill focused window
 bindsym $mod+q kill
