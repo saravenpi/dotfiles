@@ -10,3 +10,4 @@ stow polybar
 stow rofi
 stow git
 stow starship
+stow lazygit

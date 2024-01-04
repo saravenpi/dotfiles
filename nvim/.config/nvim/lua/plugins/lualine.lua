@@ -10,11 +10,26 @@ return {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
     opts = function()
+      local function wordCount()
+        local word_count = vim.fn.wordcount().words
+        return "✍️  words: " .. word_count
+      end
+      local function wordGoal()
+        local word_count = vim.fn.wordcount().words
+        local goal = 6000
+        local percentage = word_count / goal
+        local rounded = math.floor(percentage * 100)
+        return "🎉 goal: " .. rounded .. "/100"
+      end
+      local function gato()
+        return "🐈"
+      end
+
       return {
         options = {
           icons_enabled = true,
           theme = "auto",
-          component_separators = { left = "|", right = "|" },
+          component_separators = { left = "", right = "|" },
           section_separators = { left = "", right = "" },
           disabled_filetypes = {
             statusline = {},
@@ -31,7 +46,7 @@ return {
         },
         sections = {
           lualine_a = { "mode" },
-          lualine_b = { "diagnostics" },
+          lualine_b = { "diagnostics", { gato } },
           lualine_c = { "filename" },
           lualine_x = { "filetype" },
           lualine_y = { "searchcount" },

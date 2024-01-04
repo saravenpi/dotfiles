@@ -10,16 +10,17 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
+vim.api.nvim_set_var("terminal_emulator", "fish")
+vim.opt.shell = "fish"
 
 require("lazy").setup({
   spec = {
     { "LazyVim/LazyVim", import = "lazyvim.plugins", opts = {
-      colorscheme = "tokyonight",
+      colorscheme = "catppuccin-mocha",
     } },
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.json" },
     { import = "lazyvim.plugins.extras.ui.mini-starter" },
-    { import = "lazyvim.plugins.extras.lang.json" },
     { import = "lazyvim.plugins.extras.coding.codeium" },
     { import = "plugins" },
   },
