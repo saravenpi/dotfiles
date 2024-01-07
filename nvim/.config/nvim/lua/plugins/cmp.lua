@@ -1,25 +1,14 @@
 return {
   {
     "hrsh7th/nvim-cmp",
-    dependencies = { "hrsh7th/cmp-emoji" },
-    ---@param opts cmp.ConfigSchema
-    opts = function(_, opts)
-      table.insert(opts.sources, { name = "emoji" })
-    end,
-  },
-  {
-    "L3MON4D3/LuaSnip",
-    keys = function()
-      return {}
-    end,
-  },
-  {
-    "hrsh7th/nvim-cmp",
     dependencies = {
       "hrsh7th/cmp-emoji",
+      "L3MON4D3/LuaSnip",
     },
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
+      table.insert(opts.sources, { name = "emoji", name = "copilot" })
+
       local has_words_before = function()
         unpack = unpack or table.unpack
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -28,6 +17,14 @@ return {
 
       local luasnip = require("luasnip")
       local cmp = require("cmp")
+      local lspkind = require("lspkind")
+      lspkind.init({
+        symbol_map = {
+          Copilot = "",
+        },
+      })
+
+      vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#82aaff" })
 
       opts.mapping = vim.tbl_extend("force", opts.mapping, {
         ["<Tab>"] = cmp.mapping(function(fallback)

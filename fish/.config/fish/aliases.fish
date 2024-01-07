@@ -1,4 +1,6 @@
 alias ls "exa --icons"
+alias apt nala
+alias bat batcat
 abbr ll "ls -lh"
 abbr la "ls -ah"
 abbr lal "ls -alh"
@@ -6,6 +8,8 @@ abbr lla "ls -alh" abbr l ls abbr t "ls -T" abbr tl "ls -lT"
 abbr tn "ls --tree --ignore-glob='node_modules'"
 abbr tnl "ls --ignore-glob='node_modules' -lT"
 abbr tln "ls --ignore-glob='node_modules' -lT"
+
+abbr insta "node ~/code/instagram-cli/dist/index.js"
 
 abbr rm "rm -i"
 
@@ -50,7 +54,7 @@ abbr mf "make fclean"
 abbr mfc "make fclean"
 abbr mr "make re"
 abbr mre mr
-abbr csc "sh $HOME/.coding-style.sh . . &> /dev/null; bat coding-style-reports.log; rm -f coding-style-reports.log"
+abbr csc "$HOME/.coding-style.sh . . &> /dev/null; bat coding-style-reports.log; rm -f coding-style-reports.log"
 abbr vg valgrind
 abbr vgf "valgrind --leak-check=full"
 

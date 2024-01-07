@@ -21,7 +21,7 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.lang.typescript" },
     { import = "lazyvim.plugins.extras.lang.json" },
     { import = "lazyvim.plugins.extras.ui.mini-starter" },
-    { import = "lazyvim.plugins.extras.coding.codeium" },
+    -- { import = "lazyvim.plugins.extras.coding.codeium" },
     { import = "plugins" },
   },
   defaults = {
@@ -41,6 +41,7 @@ require("lazy").setup({
         "tohtml",
         "tutor",
         "zipPlugin",
+        "notify",
       },
     },
   },

@@ -5,6 +5,7 @@ font pango:monospace 16
 exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id /usr/lib/xfce-polkit/xfce-polkit
 exec_always --no-startup-id ulauncher
+exec --no-startup-id /home/saravenpi/.desktop.sh
 
 exec_always xinput set-prop "ELAN1203:00 04F3:307A Touchpad" "libinput Tapping Enabled" 1
 exec_always xinput set-prop "ELAN1203:00 04F3:307A Touchpad" "libinput Natural Scrolling Enabled" 1
@@ -24,6 +25,8 @@ exec_always --no-startup-id picom
 floating_modifier $mod
 include shortcuts
 
-for_window [class="^.*"] border pixel 0
+for_window [class="^.*"] border pixel 5
 gaps inner 30
 focus_follows_mouse no
+
+client.focused #555555 #555555 #ffffff #4fd6be     #4fd6be

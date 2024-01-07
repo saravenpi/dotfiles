@@ -11,3 +11,6 @@ stow rofi
 stow git
 stow starship
 stow lazygit
+stow hyprland
+stow tmux
+stow scripts

@@ -6,7 +6,10 @@ bindsym $mod+Shift+s exec --no-startup-id flameshot gui
 bindsym $mod+Return exec kitty
 
 # start the browser
-bindsym $mod+b exec firefox
+bindsym $mod+b exec brave-browser
+
+# start menu
+bindsym $mod+m exec /home/saravenpi/.menu.sh
 
 bindsym $mod+o exec flatpak run md.obsidian.Obsidian
 

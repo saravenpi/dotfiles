@@ -1,8 +1,5 @@
 add_newline = false
 
-[username]
-show_always = true
-
 [directory]
 truncation_length = 8
 truncation_symbol = '📁 '
@@ -12,3 +9,8 @@ full_symbol = '🔋 '
 charging_symbol = '⚡️ '
 discharging_symbol = '💀 '
 
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+format = '[ 🌵 $time ]($style)'
