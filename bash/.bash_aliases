@@ -13,7 +13,7 @@ alias tn="ls --tree --ignore-glob='node_modules'"
 alias tnl="ls --ignore-glob='node_modules' -lT"
 alias tln="ls --ignore-glob='node_modules' -lT"
 
-alias rm="rm -i"
+alias rm="rip"
 
 alias f="fg"
 alias j="jobs"
@@ -32,8 +32,8 @@ alias lg="lazygit"
 alias glow="glow --pager"
 
 alias h="cd $HOME"
-alias goc="cd $CODE"
-alias gos="cd $SCHOOL"
+alias goc="cd $HOME/code/"
+alias gos="cd $HOME/school/"
 
 # git
 alias gs="git status"
