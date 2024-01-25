@@ -21,21 +21,14 @@ echo "                                                        "
 
 # Prompt user for install
 echo "This script will backup your current config and install the new one."
-while true; do
-	read -p "Do you want to proceed? (y/n) " yn
-
-	case $yn in
-	[yY])
-		echo "ok, we will proceed"
-		break
-		;;
-	[nN])
-		echo "exiting..."
-		exit
-		;;
-	*) echo "invalid choice" ;;
-	esac
+echo "Do you wish to proceed?"
+select yn in "Yes" "No"; do
+    case $yn in
+        Yes ) make install; break;;
+        No ) exit;;
+    esac
 done
+
 
 # Check if git is installed
 if ! command -v git &>/dev/null; then
