@@ -133,41 +133,27 @@ unset backup_folder
 echo "Cloning the dotfiles repo..."
 git clone git@github.com:saravenpi/dotfiles.git $HOME/.dotfiles
 
-
 echo "Installing config with stow"
-cd $HOME/dotfiles/
+cd $HOME/.dotfiles/
 stow fonts
 
 # config for X11
-stow i3
-stow dunst
-stow gtk-3.0
-stow scripts
-stow picom
-stow polybar
-stow rofi
+stow i3 dunst gtk-3.0 scripts picom polybar rofi
 
 # config for wayland
 stow hyprland
 
 # config for terminal
-stow kitty
-stow tmux
-stow fish
-stow bash
-stow starship
+stow kitty tmux fish bash starship
 
 # config for editors
-stow nvim
-stow clang-format
+stow nvim clang-format
 
 # config for my boilerplates
 stow kettle
 
 # config for git
-stow git
-stow lazygit
+stow git lazygit
 
 # config for nix
-stow home-manager
-stow nixpkgs
+stow home-manager nixpkgs
