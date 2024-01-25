@@ -21,12 +21,20 @@ echo "                                                        "
 
 # Prompt user for install
 echo "This script will backup your current config and install the new one."
-echo "Do you wish to proceed?"
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) break;;
-        No ) exit;;
-    esac
+while true; do
+	read -p "Do you want to proceed? (y/n) " yn </dev/tty
+
+	case $yn in
+	[yY])
+		echo "ok, we will proceed"
+		break
+		;;
+	[nN])
+		echo "exiting..."
+		exit
+		;;
+	*) echo "invalid choice" ;;
+	esac
 done
 
 
