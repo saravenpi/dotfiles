@@ -2,5 +2,7 @@
   email = saravenpi@tuta.io
   name = Saravenpi
 
-[core.editor]
-  nvim
+[pull]
+	rebase = false
+[core]
+	editor = nvim
