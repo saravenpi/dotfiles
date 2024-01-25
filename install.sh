@@ -24,7 +24,7 @@ echo "This script will backup your current config and install the new one."
 echo "Do you wish to proceed?"
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) make install; break;;
+        Yes ) break;;
         No ) exit;;
     esac
 done
