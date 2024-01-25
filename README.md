@@ -5,7 +5,7 @@
 - (the programs you want to be configured)
 
 ## How to install the config
-Paste this code in your terminal:
+Paste this one line in your terminal:
 ```sh
 curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh | bash
 ```
