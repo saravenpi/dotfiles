@@ -21,7 +21,9 @@ echo "dotfiles made by @saravenpi"
 echo "                          "
 
 # Prompt user for install
-echo "This script will backup your current config and install the new one."
+echo "⚠️ This script will backup your current config and install the new one. ⚠️"
+echo ""
+
 while true; do
 	read -p "Do you want to proceed? (y/n) " yn </dev/tty
 
@@ -34,18 +36,24 @@ while true; do
 		echo "exiting..."
 		exit
 		;;
-	*) echo "invalid choice" ;;
+	*)
+		if [[ $yn = "" ]]; then
+			echo "ok, we will proceed"
+			break
+		else
+			echo "invalid choice"
+		fi
+		;;
 	esac
 done
 
-
 # Check if git is installed
 if ! command -v git &>/dev/null; then
-    echo "The command git could not be found."
-    echo "The installation process requires git to continue."
-    echo "Please install git and try again."
-    echo "Exiting..."
-    exit 1
+	echo "The command git could not be found."
+	echo "The installation process requires git to continue."
+	echo "Please install git and try again."
+	echo "Exiting..."
+	exit 1
 fi
 
 # Check if stow is installed
@@ -59,6 +67,7 @@ fi
 
 # Prepare the backup folder
 backup_folder="$HOME/.config/config.old"
+rm -rf $backup_folder
 mkdir -p $backup_folder
 mkdir -p "$backup_folder/.config/"
 
