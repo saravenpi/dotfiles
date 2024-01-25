@@ -25,7 +25,7 @@ echo "⚠️ This script will backup your current config and install the new one
 echo ""
 
 while true; do
-	read -p "Do you want to proceed? (y/n) " yn </dev/tty
+	read -p "Do you want to proceed? (Y/n) " yn </dev/tty
 
 	case $yn in
 	[yY])
