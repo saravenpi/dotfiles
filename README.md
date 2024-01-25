@@ -7,9 +7,6 @@
 ## How to install the config
 Paste this code in your terminal:
 ```sh
-git clone https://github.com/saravenpi/dotfiles ~/.dotfiles
-cd ~/.dotfiles/
-chmod +x install.sh
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh | bash
 ```
 now the config should be up and running !
