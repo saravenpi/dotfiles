@@ -1,23 +1,24 @@
 #!/bin/bash
 
-# Display the menu
-echo "      ___           ___           ___           ___     "
-echo "     /  /\         /  /\         /  /\         /  /\    "
-echo "    /  /:/_       /  /::\       /  /::\       /  /::\   "
-echo "   /  /:/ /\     /  /:/\:\     /  /:/\:\     /  /:/\:\  "
-echo "  /  /:/ /::\   /  /:/~/::\   /  /:/~/:/    /  /:/~/::\ "
-echo " /__/:/ /:/\:\ /__/:/ /:/\:\ /__/:/ /:/___ /__/:/ /:/\:\\"
-echo " \  \:\/:/~/:/ \  \:\/:/__\/ \  \:\/:::::/ \  \:\/:/__\/"
-echo "  \  \::/ /:/   \  \::/       \  \::/~~~~   \  \::/     "
-echo "   \__\/ /:/     \  \:\        \  \:\        \  \:\     "
-echo "     /__/:/       \  \:\        \  \:\        \  \:\    "
-echo "     \__\/         \__\/         \__\/         \__\/    "
-echo "                                                        "
-echo "                                                        "
-echo "                                                        "
-echo "                             dotfiles made by @saravenpi"
-echo "                                                        "
-echo "                                                        "
+# Display the welcome message
+echo " _                        "
+echo " \`*-.                    "
+echo "  )  _\`-.                 "
+echo " .  : \`. .                "
+echo " : _   '  \               "
+echo " ; *\` _.   \`*-._          "
+echo " \`-.-\'          \`-.       "
+echo "   ;       \`       \`.     "
+echo "   :.       .        \    "
+echo "   . \  .   :   .-'   .   "
+echo "   '  \`+.;  ;  '      :   "
+echo "   :  '  |    ;       ;-. "
+echo "   ; '   : :\`-:     _.\`* ;"
+echo ".*' /  .*' ; .*\`- +'  \`*' "
+echo "\`*-*   \`*-*  \`*-*'"
+echo "                          "
+echo "dotfiles made by @saravenpi"
+echo "                          "
 
 # Prompt user for install
 echo "This script will backup your current config and install the new one."
@@ -133,27 +134,16 @@ unset backup_folder
 echo "Cloning the dotfiles repo..."
 git clone git@github.com:saravenpi/dotfiles.git $HOME/.dotfiles
 
+# Install the config
 echo "Installing config with stow"
 cd $HOME/.dotfiles/
 stow fonts
-
-# config for X11
 stow i3 dunst gtk-3.0 scripts picom polybar rofi
-
-# config for wayland
 stow hyprland
-
-# config for terminal
 stow kitty tmux fish bash starship
-
-# config for editors
 stow nvim clang-format
-
-# config for my boilerplates
 stow kettle
-
-# config for git
 stow git lazygit
-
-# config for nix
 stow home-manager nixpkgs
+
+echo "🎉 Dotfiles installed successfully! 🎉"

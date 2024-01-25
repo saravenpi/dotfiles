@@ -1,7 +1,7 @@
 alias ls="exa --icons"
 alias apt="nala"
 alias bat="batcat"
-alias dots="cd ~/dotfiles"
+alias dots="cd $HOME/.dotfiles"
 alias ll="ls -lh"
 alias la="ls -ah"
 alias lal="ls -alh"
