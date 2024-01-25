@@ -1,6 +1,9 @@
 # bindsym $mod+d exec --no-startup-id ulauncher-toggle
-bindsym $mod+d exec --no-startup-id rofi -show run
+bindsym $mod+m exec --no-startup-id rofi -show run
 bindsym $mod+Shift+s exec --no-startup-id flameshot gui
+
+# start menu
+bindsym $mod+d exec /home/saravenpi/.config/polybar/scripts/launcher.sh
 
 # start a terminal
 bindsym $mod+Return exec kitty
@@ -8,8 +11,6 @@ bindsym $mod+Return exec kitty
 # start the browser
 bindsym $mod+b exec brave-browser
 
-# start menu
-bindsym $mod+m exec /home/saravenpi/.menu.sh
 
 bindsym $mod+o exec flatpak run md.obsidian.Obsidian
 

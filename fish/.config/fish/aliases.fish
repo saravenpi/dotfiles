@@ -1,10 +1,14 @@
 alias ls "exa --icons"
 alias apt nala
 alias bat batcat
+alias dots "cd ~/dotfiles/"
 abbr ll "ls -lh"
 abbr la "ls -ah"
 abbr lal "ls -alh"
-abbr lla "ls -alh" abbr l ls abbr t "ls -T" abbr tl "ls -lT"
+abbr lla "ls -alh"
+abbr l ls
+abbr t "ls -T"
+abbr tl "ls -lT"
 abbr tn "ls --tree --ignore-glob='node_modules'"
 abbr tnl "ls --ignore-glob='node_modules' -lT"
 abbr tln "ls --ignore-glob='node_modules' -lT"
@@ -16,7 +20,6 @@ abbr rm "rm -i"
 abbr f fg
 abbr j jobs
 
-abbr z zoxide
 abbr q exit
 abbr hc "history clear"
 abbr c clear
@@ -43,8 +46,8 @@ abbr gd "git diff"
 abbr gb "git branch"
 abbr gr "git remove"
 
+
 abbr gitu "git add . && git commit && git push"
-# abbr gituf "git add . && git commit -m \"$currentdate \"&& git push"
 
 # clang
 abbr bb abricot --ignore

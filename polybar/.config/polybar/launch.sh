@@ -2,11 +2,12 @@
 
 dir="$HOME/.config/polybar"
 
-# Terminate already running bar instances
 killall -q polybar
-
-# Wait until the processes have been shut down
+killall -q polybar
+killall -q polybar
+killall -q polybar
+killall -q polybar
 while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-# Launch the bar
-polybar -q main -c "$dir/forest/config.ini"
+polybar --reload -c "$dir/forest/config.ini" main & sleep 1
+polybar --reload -c "$dir/bottom/config.ini" bottom & sleep 1

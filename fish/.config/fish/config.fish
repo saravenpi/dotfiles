@@ -10,4 +10,5 @@ source ~/.config/fish/ghcup.fish
 set fish_greeting ""
 starship init fish | source
 zoxide init fish | source
-pfetch
+# pokemon-colorscripts --no-title -r -n audino
+pokemon-colorscripts -r

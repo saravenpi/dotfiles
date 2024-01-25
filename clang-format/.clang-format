@@ -1,0 +1,20 @@
+Language: CPP
+BasedOnStyle: Microsoft
+IndentWidth: 4
+ColumnLimit: 79
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterEnum: true
+  AfterStruct: false
+  SplitEmptyFunction: true
+  AfterFunction: true
+  BeforeElse: false
+  AfterControlStatement: Never
+
+AlignAfterOpenBracket: DontAlign
+ContinuationIndentWidth: 4
+MaxEmptyLinesToKeep: 1
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+SpacesInContainerLiterals: true

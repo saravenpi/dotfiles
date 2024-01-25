@@ -13,9 +13,9 @@ exec_always xinput set-prop "ELAN1203:00 04F3:307A Touchpad" "libinput Natural S
 exec_always "setxkbmap -layout us -variant intl"
 
 exec_always --no-startup-id dunst
-exec_always --no-startup-id feh --bg-fill ~/.config/i3/assets/wallpaper.jpg
+exec_always --no-startup-id feh --bg-fill ~/.config/i3/assets/wallpaper.png
 
-exec_always --no-startup-id bash ~/.config/polybar/launch.sh --forest
+exec_always --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
 exec --no-startup-id nm-applet
@@ -25,8 +25,8 @@ exec_always --no-startup-id picom
 floating_modifier $mod
 include shortcuts
 
-for_window [class="^.*"] border pixel 5
-gaps inner 30
+for_window [class="^.*"] border pixel 0
+gaps inner 50
 focus_follows_mouse no
 
-client.focused #555555 #555555 #ffffff #4fd6be     #4fd6be
+client.focused #555555 #555555 #ffffff #82aaff #82aaff
