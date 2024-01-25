@@ -18,4 +18,6 @@ Doing so, the conflicting config files from your config will not be lost.
 
 The backup is saved under `~/.config/config.old/`
 
-Then it uses GNU stow to install the config files. It creates symlinks in your system in the correct locations from the repo.
+Then it uses [GNU stow](https://www.gnu.org/software/stow/) to install the config files.
+
+It creates symlinks in your system in the correct locations from the repo.
