@@ -156,10 +156,10 @@ stow git lazygit
 
 # Installing additional programs
 echo "ℹ️ Installing additional programs"
-if which node > /dev/null 
+if which node > /dev/null
 then
-    echo "Installing gitmoji-cli"
-    echo "ℹ️ sudo permissions needed to install gitmoji-cli globally"
+    echo "ℹ️ Installing gitmoji-cli"
+    echo "⚠️ sudo permissions needed to install gitmoji-cli globally"
     sudo npm i -g gitmoji-cli
     echo "✅ Installed gitmoji-cli successfully"
 else
@@ -170,7 +170,7 @@ fi
 echo "ℹ️ Installing neovim appimage"
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 chmod +x nvim.appimage
-echo "ℹ️ sudo permissions needed to move neovim.appimage to /usr/bin/"
+echo "⚠️ sudo permissions needed to move neovim.appimage to /usr/bin/"
 sudo mv nvim.appimage /usr/bin/
 echo "✅ Installed neovim successfully"
 
