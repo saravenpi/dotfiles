@@ -189,4 +189,11 @@ else
     echo "❌ failed to install rip"
 fi
 
+echo "ℹ️ Installing pokemon-colorscripts"
+git clone https://gitlab.com/phoneybadger/pokemon-colorscripts.git
+cd pokemon-colorscripts
+echo "⚠️ sudo permissions needed to install pokemon-colorscripts"
+sudo ./install.sh
+echo "✅ Installed pokemon-colorscripts successfully"
+
 echo "🎉 Dotfiles installed successfully! 🎉"
