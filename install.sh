@@ -161,8 +161,8 @@ if ! command -v npm &>/dev/null; then
     sudo npm i -g gitmoji-cli
     echo "✅ Installed gitmoji-cli successfully"
 else
+    echo "❌ cannot install gitmoji-cli"
     echo "npm command is not available"
-    echo "cannot install gitmoji-cli"
 fi
 
 echo "ℹ️ Installing neovim appimage"
