@@ -25,44 +25,44 @@ echo "⚠️ This script will backup your current config and install the new one
 echo ""
 
 while true; do
-	read -p "Do you want to proceed? (Y/n) " yn </dev/tty
+    read -p "Do you want to proceed? (Y/n) " yn </dev/tty
 
-	case $yn in
-	[yY])
-		echo "ok, we will proceed"
-		break
-		;;
-	[nN])
-		echo "exiting..."
-		exit
-		;;
-	*)
-		if [[ $yn = "" ]]; then
-			echo "ok, we will proceed"
-			break
-		else
-			echo "invalid choice"
-		fi
-		;;
-	esac
+    case $yn in
+        [yY])
+            echo "ok, we will proceed"
+            break
+            ;;
+        [nN])
+            echo "exiting..."
+            exit
+            ;;
+        *)
+            if [[ $yn = "" ]]; then
+                echo "ok, we will proceed"
+                break
+            else
+                echo "invalid choice"
+            fi
+            ;;
+    esac
 done
 
 # Check if git is installed
 if ! command -v git &>/dev/null; then
-	echo "The command git could not be found."
-	echo "The installation process requires git to continue."
-	echo "Please install git and try again."
-	echo "Exiting..."
-	exit 1
+    echo "The command git could not be found."
+    echo "The installation process requires git to continue."
+    echo "Please install git and try again."
+    echo "Exiting..."
+    exit 1
 fi
 
 # Check if stow is installed
 if ! command -v stow &>/dev/null; then
-	echo "The command stow could not be found."
-	echo "The installation process requires GNU stow to continue."
-	echo "Please install GNU stow and try again."
-	echo "Exiting..."
-	exit 1
+    echo "The command stow could not be found."
+    echo "The installation process requires GNU stow to continue."
+    echo "Please install GNU stow and try again."
+    echo "Exiting..."
+    exit 1
 fi
 
 # Prepare the backup folder
@@ -73,26 +73,26 @@ mkdir -p "$backup_folder/.config/"
 
 # Function to backup a file under the home folder
 backupFile() {
-	echo "📄 Backing up file: $1 to $backup_folder"
-	if [[ -f "$HOME/$1" ]]; then
-		mv $HOME/$1 $backup_folder
-	fi
+    echo "📄 Backing up file: $1 to $backup_folder"
+    if [[ -f "$HOME/$1" ]]; then
+        mv $HOME/$1 $backup_folder
+    fi
 }
 
 # Function to backup a folder under the home folder
 backupFolder() {
-	echo "📁 Backing up folder: $1 to $backup_folder"
-	if [[ -d "$HOME/$1" ]]; then
-		mv $HOME/$1 $backup_folder
-	fi
+    echo "📁 Backing up folder: $1 to $backup_folder"
+    if [[ -d "$HOME/$1" ]]; then
+        mv $HOME/$1 $backup_folder
+    fi
 }
 
 # Function to backup a program config folder under the home folder
 backupProgram() {
-	echo "💿 Backing up program: $1 to $backup_folder/.config/"
-	if [[ -d "$HOME/.config/$1" ]]; then
-		mv $HOME/.config/$1 "$backup_folder/.config/"
-	fi
+    echo "💿 Backing up program: $1 to $backup_folder/.config/"
+    if [[ -d "$HOME/.config/$1" ]]; then
+        mv $HOME/.config/$1 "$backup_folder/.config/"
+    fi
 }
 
 echo "ℹ️ Creating a backup of your config files..."
@@ -156,8 +156,10 @@ stow git lazygit
 
 # Installing additional programs
 echo "ℹ️ Installing additional programs"
-if ! command -v npm &>/dev/null; then
+if which node > /dev/null 
+then
     echo "Installing gitmoji-cli"
+    echo "ℹ️ sudo permissions needed to install gitmoji-cli globally"
     sudo npm i -g gitmoji-cli
     echo "✅ Installed gitmoji-cli successfully"
 else
