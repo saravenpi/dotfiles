@@ -29,3 +29,5 @@ __main() {
 }
 __main
 unset -f __main
+
+pokemon-colorscripts -r

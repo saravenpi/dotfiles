@@ -156,8 +156,7 @@ stow git lazygit
 
 # Installing additional programs
 echo "ℹ️ Installing additional programs"
-if which node > /dev/null
-then
+if which node >/dev/null; then
     echo "ℹ️ Installing gitmoji-cli"
     echo "⚠️ sudo permissions needed to install gitmoji-cli globally"
     sudo npm i -g gitmoji-cli
@@ -172,7 +171,7 @@ curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 chmod +x nvim.appimage
 echo "⚠️ sudo permissions needed to move neovim.appimage to /usr/bin/"
 sudo mv nvim.appimage /usr/bin/nvim
-if test -f /usr/bin/nvim ; then
+if test -f /usr/bin/nvim; then
     echo "✅ Installed neovim successfully"
 else
     echo "❌ failed to install neovim"
@@ -183,7 +182,7 @@ curl -LO https://github.com/nivekuil/rip/releases/download/0.12.0/rip
 chmod +x rip
 echo "⚠️ sudo permissions needed to move rip to /usr/bin/"
 sudo mv rip /usr/bin/rip
-if test -f /usr/bin/rip ; then
+if test -f /usr/bin/rip; then
     echo "✅ Installed rip successfully"
 else
     echo "❌ failed to install rip"
@@ -194,6 +193,10 @@ git clone https://gitlab.com/phoneybadger/pokemon-colorscripts.git
 cd pokemon-colorscripts
 echo "⚠️ sudo permissions needed to install pokemon-colorscripts"
 sudo ./install.sh
-echo "✅ Installed pokemon-colorscripts successfully"
+if which pokemon-colorscripts >/dev/null; then
+    echo "✅ Installed pokemon-colorscripts successfully"
+else
+    echo "❌ failed to install pokemon-colorscripts"
+fi
 
 echo "🎉 Dotfiles installed successfully! 🎉"
