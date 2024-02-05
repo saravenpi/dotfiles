@@ -44,7 +44,7 @@ alias gd="git diff"
 alias gb="git branch"
 alias gr="git remove"
 
-alias gitu="git add . && git commit && git push"
+alias gitu="git add . && gitmoji -c && git push"
 
 # clang
 alias m="make"
