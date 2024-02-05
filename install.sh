@@ -168,6 +168,7 @@ fi
 echo "ℹ️ Installing neovim appimage"
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 chmod +x nvim.appimage
+echo "ℹ️ sudo permissions needed to move neovim.appimage to /usr/bin/"
 sudo mv nvim.appimage /usr/bin/
 echo "✅ Installed neovim successfully"
 
