@@ -14,8 +14,7 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
-. "$HOME/.cargo/env"
-source "$HOME/.cargo/env"
+# . "$HOME/.cargo/env"
 
 # starship
 __main() {

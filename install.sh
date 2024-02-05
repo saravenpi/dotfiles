@@ -95,7 +95,7 @@ backupProgram() {
 	fi
 }
 
-echo "Creating a backup of your config files..."
+echo "ℹ️ Creating a backup of your config files..."
 
 # Backup files
 backupFile ".bashrc"
@@ -136,15 +136,15 @@ backupProgram "picom"
 backupProgram "polybar"
 backupProgram "rofi"
 
-echo "Created a backup of your config files at: $backup_folder/"
+echo "✅ Created a backup of your config files at: $backup_folder/"
 unset backup_folder
 
 # Clone the repo
-echo "Cloning the dotfiles repo..."
+echo "ℹ️ Cloning the dotfiles repo..."
 git clone git@github.com:saravenpi/dotfiles.git $HOME/.dotfiles
 
 # Install the config
-echo "Installing config with stow"
+echo "ℹ️ Installing config with stow"
 cd $HOME/.dotfiles/
 stow fonts
 stow i3 dunst gtk-3.0 scripts picom polybar rofi
@@ -153,6 +153,23 @@ stow kitty tmux fish bash starship
 stow nvim clang-format
 stow kettle
 stow git lazygit
-stow home-manager nixpkgs
+
+# Installing additional programs
+echo "ℹ️ Installing additional programs"
+if ! command -v npm &>/dev/null; then
+    echo "Installing gitmoji-cli"
+    sudo npm i -g gitmoji-cli
+    echo "✅ Installed gitmoji-cli successfully"
+else
+    echo "npm command is not available"
+    echo "cannot install gitmoji-cli"
+fi
+
+echo "ℹ️ Installing neovim appimage"
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod +x nvim.appimage
+sudo mv nvim.appimage /usr/bin/
+echo "✅ Installed neovim successfully"
+
 
 echo "🎉 Dotfiles installed successfully! 🎉"
