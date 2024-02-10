@@ -1,3 +1,6 @@
+# If not running interactively, don't do anything and return early
+[[ $- == *i* ]] || return
+
 . ~/.bash_aliases
 . ~/.bash_functions
 
@@ -30,4 +33,4 @@ __main() {
 __main
 unset -f __main
 
-pokemon-colorscripts -r
+pokemon-colorscripts -n audino

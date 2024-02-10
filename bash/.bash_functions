@@ -14,7 +14,7 @@ setp() {
 
 # quick cd with zoxide
 z() {
-	path=$(zoxide query $1)
+	path=$(zoxide query $2)
 	if [test -z $path]; then
 		echo "No such project"
 	else

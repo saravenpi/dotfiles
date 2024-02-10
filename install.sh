@@ -141,7 +141,7 @@ unset backup_folder
 
 # Clone the repo
 echo "ℹ️ Cloning the dotfiles repo..."
-git clone git@github.com:saravenpi/dotfiles.git $HOME/.dotfiles
+git clone https://github.com/saravenpi/dotfiles $HOME/.dotfiles
 
 # Install the config
 echo "ℹ️ Installing config with stow"
@@ -198,5 +198,9 @@ if which pokemon-colorscripts >/dev/null; then
 else
     echo "❌ failed to install pokemon-colorscripts"
 fi
+
+echo "ℹ️ Installing starship prompt"
+curl -sS https://starship.rs/install.sh | sh
+echo "✅ Installed starship successfully"
 
 echo "🎉 Dotfiles installed successfully! 🎉"
