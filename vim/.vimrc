@@ -3,7 +3,15 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
-# File explorer shortcut
+if v:version < 802
+    packadd! dracula
+endif
+syntax enable
+colorscheme dracula
+hi Normal guibg=NONE ctermbg=NONE
+hi NonText guibg=NONE ctermbg=NONE
+
+" File explorer shortcut
 function! ToggleFileExplorer()
     let l:winNr = 1
     let l:found = 0
@@ -28,7 +36,7 @@ command! Sex call ToggleFileExplorer()
 
 nnoremap <C-n> :call ToggleFileExplorer()<CR>
 
-# Comment shortcut
+" Comment shortcut
 function! CommentBlock()
     let l:filetype = &filetype
     let l:commentPrefix = ''
