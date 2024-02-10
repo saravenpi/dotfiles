@@ -150,7 +150,7 @@ stow fonts
 stow i3 dunst gtk-3.0 scripts picom polybar rofi
 stow hyprland
 stow kitty tmux fish bash starship
-stow nvim clang-format
+stow nvim clang-format vim
 stow kettle
 stow git lazygit
 
