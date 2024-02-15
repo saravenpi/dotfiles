@@ -154,6 +154,31 @@ stow nvim clang-format vim
 stow kettle
 stow git lazygit
 
+
+# Ask to install additional programs
+while true; do
+    read -p "Do you want to install additional programs? (Y/n) " yn </dev/tty
+
+    case $yn in
+        [yY])
+            echo "ok, we will proceed"
+            break
+            ;;
+        [nN])
+            echo "🎉 Dotfiles installed successfully! 🎉 (without additional programs)"
+            exit
+            ;;
+        *)
+            if [[ $yn = "" ]]; then
+                echo "ok, we will proceed"
+                break
+            else
+                echo "invalid choice"
+            fi
+            ;;
+    esac
+done
+
 # Installing additional programs
 echo "ℹ️ Installing additional programs"
 if which node >/dev/null; then
@@ -202,5 +227,9 @@ fi
 echo "ℹ️ Installing starship prompt"
 curl -sS https://starship.rs/install.sh | sh
 echo "✅ Installed starship successfully"
+
+echo "ℹ️ Installing tmp (tmux plugin manager)"
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+echo "✅ Installed tpm successfully"
 
 echo "🎉 Dotfiles installed successfully! 🎉"

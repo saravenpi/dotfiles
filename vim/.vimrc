@@ -32,7 +32,7 @@ function! ToggleFileExplorer()
     endif
 endfunction
 
-command! Sex call ToggleFileExplorer()
+" command! Sex call ToggleFileExplorer()
 
 nnoremap <C-n> :call ToggleFileExplorer()<CR>
 
