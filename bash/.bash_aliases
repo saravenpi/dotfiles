@@ -1,4 +1,4 @@
-alias ls="exa --icons"
+# alias ls="exa --icons"
 alias apt="nala"
 alias bat="batcat"
 alias dots="cd $HOME/.dotfiles"
@@ -13,7 +13,7 @@ alias tn="ls --tree --ignore-glob='node_modules'"
 alias tnl="ls --ignore-glob='node_modules' -lT"
 alias tln="ls --ignore-glob='node_modules' -lT"
 
-alias rm="rip"
+# alias rm="rip"
 
 alias f="fg"
 alias j="jobs"
