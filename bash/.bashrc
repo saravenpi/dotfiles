@@ -1,5 +1,4 @@
 # If not running interactively, don't do anything and return early
-export BASH_CONF="bashrc"
 [[ $- == *i* ]] || return
 
 . ~/.bash_aliases
