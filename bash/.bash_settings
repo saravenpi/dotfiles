@@ -18,5 +18,5 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
 
 # mybins path
-export MY_BINS="$HOME/.mybins/"
-export PATH=$MY_BINS:$PATH
+export MYBINS="$HOME/mybins"
+export PATH=$MYBINS:$PATH
