@@ -52,10 +52,3 @@ alias mr="make re"
 alias mre="mr"
 alias vg="valgrind"
 alias vgf="valgrind --leak-check=full"
-
-
-alias hms="home-manager switch"
-
-# alias oc="dos='~/code/$(/bin/ls ~/code/ | fzf)' ; cd $dos"
-
-alias list-fonts="kitty +list-fonts --psnames"
