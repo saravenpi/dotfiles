@@ -1,6 +1,6 @@
 # dotfiles
 
-## Requirements
+## ⚠️ Requirements
 - [stow](https://www.gnu.org/software/stow/)
 - (the programs you want to be configured)
 
