@@ -28,6 +28,7 @@ o() {
 	cur=$(pwd)
 	z $1
     ts $1
+    cd $cur
 	unset cur
 }
 
@@ -35,6 +36,7 @@ oe() {
 	cur=$(pwd)
 	z $1
     epi $1
+    cd $cur
 	unset cur
 }
 
