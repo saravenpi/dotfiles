@@ -31,6 +31,13 @@ o() {
 	unset cur
 }
 
+oe() {
+	cur=$(pwd)
+	z $1
+    epi $1
+	unset cur
+}
+
 # init a c project quickly with kettle
 cinit() {
 	kettle use c_project .

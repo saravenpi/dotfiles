@@ -26,6 +26,10 @@ RUN echo 'alias mr="make re"' >> /root/.bashrc
 RUN echo 'alias mt="make test"' >> /root/.bashrc
 RUN echo 'alias mc="make clean"' >> /root/.bashrc
 RUN echo 'alias mfc="make fclean"' >> /root/.bashrc
+RUN echo 'alias c="clear"' >> /root/.bashrc
+RUN echo 'alias q="exit"' >> /root/.bashrc
+RUN echo 'alias :q="exit"' >> /root/.bashrc
+RUN echo 'clear' >> /root/.bashrc
 
 # Create a working directory
 WORKDIR /workspace

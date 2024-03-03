@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SESSION="Epi $1"
+SESSION="$1"
 
 tmux has-session -t $SESSION 3>/dev/null
 
@@ -11,7 +11,6 @@ if [ $? != 0 ]; then
     tmux send-keys -t 'Code' 'nvim .' C-m
 
     tmux new-window -t $SESSION -n 'Shell'
-    tmux send-keys -t 'Shell' 'echo "🌵 Welcome"' C-m
 
     tmux new-window -t $SESSION -n 'Pingu'
     tmux send-keys -t 'Pingu' 'pingu' C-m
