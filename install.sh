@@ -147,12 +147,10 @@ git clone https://github.com/saravenpi/dotfiles $HOME/.dotfiles
 echo "ℹ️ Installing config with stow"
 cd $HOME/.dotfiles/
 stow fonts
-stow i3 dunst gtk-3.0 scripts picom polybar rofi
-stow hyprland
+stow i3 dunst scripts picom polybar rofi
 stow kitty tmux fish bash starship
-stow nvim clang-format vim
-stow kettle
-stow git lazygit
+stow nvim vim clang-format
+stow git lazygit kettle
 stow mybins containers
 
 # Ask to install additional programs
