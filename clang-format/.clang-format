@@ -1,4 +1,3 @@
-Language: CPP
 BasedOnStyle: Microsoft
 IndentWidth: 4
 ColumnLimit: 79

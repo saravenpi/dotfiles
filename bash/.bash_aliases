@@ -7,11 +7,6 @@ alias la="ls -ah"
 alias lal="ls -alh"
 alias lla="ls -alh"
 alias l=ls
-alias t="ls -T"
-alias tl="ls -lT"
-alias tn="ls --tree --ignore-glob='node_modules'"
-alias tnl="ls --ignore-glob='node_modules' -lT"
-alias tln="ls --ignore-glob='node_modules' -lT"
 
 alias rm="rip"
 
@@ -27,6 +22,7 @@ alias c="clear"
 alias nv="nvim"
 alias n="nvim"
 alias lg="lazygit"
+alias t="tmux"
 
 # markdown
 alias glow="glow --pager"
@@ -34,6 +30,7 @@ alias glow="glow --pager"
 alias h="cd $HOME"
 alias goc="cd $HOME/code/"
 alias gos="cd $HOME/school/"
+alias gob="cd $HOME/brain/"
 
 # git
 alias gs="git status"

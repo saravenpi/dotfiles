@@ -22,16 +22,6 @@ return {
             end,
         },
         opts = {
-            servers = {
-                tsserver = {},
-                pyright = {},
-            },
-            setup = {
-                tsserver = function(_, opts)
-                    require("typescript").setup({ server = opts })
-                    return true
-                end,
-            },
         },
     },
 }

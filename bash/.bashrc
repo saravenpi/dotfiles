@@ -4,6 +4,7 @@
 . ~/.bash_aliases
 . ~/.bash_functions
 . ~/.bash_variables
+. ~/.bash_zoxide
 
 # history
 HISTCONTROL=ignoreboth
@@ -20,6 +21,9 @@ export PATH=$PATH:$HOME/.local/bin
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH=$BUN_INSTALL/bin:$PATH
+
+export MY_BINS="$HOME/.mybins/"
+export PATH=$MY_BINS:$PATH
 # . "$HOME/.cargo/env"
 
 # starship
@@ -36,4 +40,4 @@ __main() {
 __main
 unset -f __main
 
-pokemon-colorscripts -n audino
+# pokemon-colorscripts -n audino

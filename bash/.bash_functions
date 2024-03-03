@@ -60,3 +60,9 @@ gss() {
 gcs() {
 	git clone "git@github.com:$argv.git"
 }
+
+# Docker containers
+asm-compile() {
+    where=$(pwd)
+    docker run --rm -it --name asm-container --volume $where:/workspace asm-compile:latest bash
+}
