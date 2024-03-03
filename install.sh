@@ -192,28 +192,6 @@ else
     echo "npm command is not available"
 fi
 
-# echo "ℹ️ Installing neovim appimage"
-# curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-# chmod +x nvim.appimage
-# echo "⚠️ sudo permissions needed to move neovim.appimage to /usr/bin/"
-# sudo mv nvim.appimage /usr/bin/nvim
-# if test -f /usr/bin/nvim; then
-#     echo "✅ Installed neovim successfully"
-# else
-#     echo "❌ failed to install neovim"
-# fi
-#
-# echo "ℹ️ Installing rip"
-# curl -LO https://github.com/nivekuil/rip/releases/download/0.12.0/rip
-# chmod +x rip
-# echo "⚠️ sudo permissions needed to move rip to /usr/bin/"
-# sudo mv rip /usr/bin/rip
-# if test -f /usr/bin/rip; then
-#     echo "✅ Installed rip successfully"
-# else
-#     echo "❌ failed to install rip"
-# fi
-
 echo "ℹ️ Installing pokemon-colorscripts"
 git clone https://gitlab.com/phoneybadger/pokemon-colorscripts.git
 cd pokemon-colorscripts

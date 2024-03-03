@@ -4,11 +4,11 @@ add_newline = false
 truncation_length = 8
 truncation_symbol = '📁 '
 
+
 [battery]
 full_symbol = '🔋 '
 charging_symbol = '⚡️ '
 discharging_symbol = '💀 '
-
 
 [time]
 disabled = false
