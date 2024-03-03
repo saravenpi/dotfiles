@@ -1,4 +1,4 @@
-FROM rofrano/vagrant-provider:debian
+FROM debian:latest
 
 # Set up environment variables for cross-compilation
 ENV CROSS_COMPILE=x86_64-linux-gnu-

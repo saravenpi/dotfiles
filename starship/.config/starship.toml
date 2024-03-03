@@ -12,5 +12,4 @@ discharging_symbol = '💀 '
 
 [time]
 disabled = false
-time_format = "%R" # Hour:Minute Format
-format = '[ 🌵 $time ]($style)'
+format = '[ 🌵 ]($style)'

@@ -1,33 +1,33 @@
+# ls aliases
 alias ls="ls -G"
-alias apt="nala"
-alias bat="batcat"
-alias dots="cd $HOME/.dotfiles"
 alias ll="ls -lh"
 alias la="ls -ah"
 alias lal="ls -alh"
 alias lla="ls -alh"
-alias l=ls
+alias l="ls"
 
+# cli tools
 alias rm="rip"
+alias bat="batcat"
 
+# jobs
 alias f="fg"
 alias j="jobs"
 
+# shell commands
 alias q="exit"
 alias :q="exit"
-alias hc="history clear"
 alias c="clear"
+alias hc="history clear"
 
 # code
 alias nv="nvim"
 alias n="nvim"
 alias lg="lazygit"
 
-# markdown
-alias glow="glow --pager"
-
 # Quick navigation
 alias h="cd $HOME"
+alias dots="cd $HOME/.dotfiles"
 alias goc="cd $HOME/code/"
 alias gos="cd $HOME/school/"
 alias gob="cd $HOME/brain/"
@@ -40,7 +40,6 @@ alias gc="git clone"
 alias gd="git diff"
 alias gb="git branch"
 alias gr="git remove"
-
 alias gitu="git add . && gitmoji -c && git push"
 
 # clang
@@ -53,9 +52,8 @@ alias mre="mr"
 alias vg="valgrind"
 alias vgf="valgrind --leak-check=full"
 
-# Tmux
+# tmux
 alias t="tmux"
 alias ta="tmux a -t"
 alias tl="tmux ls"
 alias trs="tmux rename-session -t"
-
