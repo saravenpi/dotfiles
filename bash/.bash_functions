@@ -27,8 +27,7 @@ z() {
 o() {
 	cur=$(pwd)
 	z $1
-	nvim .
-	cd $cur
+    ts $1
 	unset cur
 }
 
@@ -36,12 +35,6 @@ o() {
 cinit() {
 	kettle use c_project .
 	echo "Project Initialised ✅"
-}
-
-a() {
-	file=$(fzf)
-	nvim $file
-	unset file
 }
 
 batdiff() {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SESSION="Workspace"
+SESSION="$1"
 
 tmux has-session -t $SESSION 3>/dev/null
 

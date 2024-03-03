@@ -26,6 +26,7 @@ alias lg="lazygit"
 # markdown
 alias glow="glow --pager"
 
+# Quick navigation
 alias h="cd $HOME"
 alias goc="cd $HOME/code/"
 alias gos="cd $HOME/school/"
@@ -57,3 +58,4 @@ alias t="tmux"
 alias ta="tmux a -t"
 alias tl="tmux ls"
 alias trs="tmux rename-session -t"
+
