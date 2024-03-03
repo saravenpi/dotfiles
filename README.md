@@ -2,7 +2,7 @@
 
 ## ⚠️ Requirements
 - [stow](https://www.gnu.org/software/stow/)
-- (the programs you want to be configured)
+- the programs you want to be configured
 
 ## How to install the config
 Paste this one line in your terminal:

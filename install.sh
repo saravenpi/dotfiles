@@ -155,7 +155,6 @@ stow kettle
 stow git lazygit
 stow mybins containers
 
-
 # Ask to install additional programs
 while true; do
     read -p "Do you want to install additional programs? (Y/n) " yn </dev/tty
