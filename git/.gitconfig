@@ -2,3 +2,6 @@
 	rebase = false
 [core]
 	editor = nvim
+[user]
+	email = saravepi@tuta.io
+	name = Saravenpi Shigeturi
