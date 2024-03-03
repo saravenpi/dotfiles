@@ -153,7 +153,7 @@ stow kitty tmux fish bash starship
 stow nvim clang-format vim
 stow kettle
 stow git lazygit
-stow mybins
+stow mybins containers
 
 
 # Ask to install additional programs
