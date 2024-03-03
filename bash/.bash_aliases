@@ -22,7 +22,6 @@ alias c="clear"
 alias nv="nvim"
 alias n="nvim"
 alias lg="lazygit"
-alias t="tmux"
 
 # markdown
 alias glow="glow --pager"
@@ -52,3 +51,9 @@ alias mr="make re"
 alias mre="mr"
 alias vg="valgrind"
 alias vgf="valgrind --leak-check=full"
+
+# Tmux
+alias t="tmux"
+alias ta="tmux a -t"
+alias tl="tmux ls"
+alias trs="tmux rename-session -t"
