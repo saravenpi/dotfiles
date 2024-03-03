@@ -58,5 +58,5 @@ gss() {
 }
 
 gcs() {
-	git clone "git@github.com:$argv.git"
+	git clone "git@github.com:$1.git"
 }
