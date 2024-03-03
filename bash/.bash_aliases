@@ -54,6 +54,5 @@ alias vgf="valgrind --leak-check=full"
 
 # tmux
 alias t="tmux"
-alias ta="tmux a -t"
 alias tl="tmux ls"
 alias trs="tmux rename-session -t"

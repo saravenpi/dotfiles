@@ -27,16 +27,16 @@ z() {
 o() {
 	cur=$(pwd)
 	z $1
-    ts $1
-    cd $cur
+	ts $1
+	cd $cur
 	unset cur
 }
 
 oe() {
 	cur=$(pwd)
 	z $1
-    epi $1
-    cd $cur
+	epi $1
+	cd $cur
 	unset cur
 }
 
@@ -61,4 +61,14 @@ gss() {
 
 gcs() {
 	git clone "git@github.com:$1.git"
+}
+
+ta() {
+	if [ "$#" -eq 0 ]; then
+		sessions=$(tmux list-sessions -F "#{session_name}")
+		session=$(gum choose $sessions)
+		tmux a -t $session
+	else
+		tmux a -t $1
+	fi
 }
