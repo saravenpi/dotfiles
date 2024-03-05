@@ -47,6 +47,7 @@
   "nvim-lint": { "branch": "master", "commit": "889dc0ab3f458997eb9d831dbc3b6c4d6fbc2e12" },
   "nvim-lspconfig": { "branch": "master", "commit": "9099871a7c7e1c16122e00d70208a2cd02078d80" },
   "nvim-spectre": { "branch": "master", "commit": "6a0785ef64c839d935a2f92e20988e962fb6537e" },
+  "nvim-tmux-navigation": { "branch": "main", "commit": "4898c98702954439233fdaf764c39636681e2861" },
   "nvim-treesitter": { "branch": "master", "commit": "27f68c0b6a87cbad900b3d016425450af8268026" },
   "nvim-treesitter-context": { "branch": "master", "commit": "f33905bf5aec67e59a14d2cc0e67d80ac5aa5bd8" },
   "nvim-treesitter-textobjects": { "branch": "master", "commit": "dd0b2036c3a27cb6e6486f8bd24188c6ca43af0b" },
