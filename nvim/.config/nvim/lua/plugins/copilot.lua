@@ -6,16 +6,6 @@ return {
                 suggestion = { enabled = false },
                 panel = { enabled = false },
             })
-            require("cmp").setup({
-                sources = {
-                    {
-                        name = "buffer",
-                        get_bufnrs = function()
-                            return vim.api.nvim_list_bufs()
-                        end,
-                    },
-                },
-            })
         end,
     },
     {
