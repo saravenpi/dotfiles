@@ -10,8 +10,8 @@ if not vim.loop.fs_stat(lazypath) then
     })
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
-vim.api.nvim_set_var("terminal_emulator", "fish")
-vim.opt.shell = "fish"
+vim.api.nvim_set_var("terminal_emulator", "bash")
+vim.opt.shell = "bash"
 
 require("lazy").setup({
     spec = {

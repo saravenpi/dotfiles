@@ -6,6 +6,5 @@
         "./src/main.c",
         "./kettle.json",
         "./.github/workflows/ci.yml"
-    ],
-    "kettle_path": "/home/saravenpi/.config/kettle/c_project/kettle.json"
+    ]
 }

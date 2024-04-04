@@ -24,6 +24,7 @@ alias hc="history clear"
 alias nv="nvim"
 alias n="nvim"
 alias lg="lazygit"
+alias k="kettle"
 
 # Quick navigation
 alias h="cd $HOME"
@@ -57,3 +58,7 @@ alias t="tmux"
 alias tl="tmux ls -F '#{session_name}'"
 alias tll="tmux ls"
 alias trs="tmux rename-session -t"
+
+# nono
+alias nono="pokemon-colorscripts -n audino --no-title"
+alias fanfan="pokemon-colorscripts -n caterpie --no-title"

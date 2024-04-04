@@ -10,10 +10,10 @@ if [ $? != 0 ]; then
 	tmux rename-window -t 0 'Code'
 	tmux send-keys -t 'Code' 'nvim .' C-m
 
-	tmux new-window -t $SESSION -n 'Run'
-
 	tmux new-window -t $SESSION -n 'Shell'
 	tmux send-keys -t 'Shell' '' C-m
+
+	tmux new-window -t $SESSION -n 'Run'
 fi
 
 tmux attach -t $SESSION

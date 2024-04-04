@@ -13,3 +13,4 @@
 # other programs
 . ~/.bash_zoxide
 . ~/.bash_starship
+pokemon-colorscripts -n audino
