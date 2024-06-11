@@ -9,3 +9,4 @@ o.tabstop = 4
 o.shiftwidth = 4
 
 vim.g.autoformat = false
+vim.opt.colorcolumn = "80"

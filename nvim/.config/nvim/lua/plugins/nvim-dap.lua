@@ -1,4 +1,5 @@
 return {
+    { "nvim-neotest/nvim-nio" },
     {
         "rcarriga/nvim-dap-ui",
         event = "VeryLazy",
@@ -43,9 +44,14 @@ return {
             --     "<cmd> DapContinue <CR>",
             --     "Start or continue debugging"
             -- }
-            vim.keymap.set("n", "<leader>db", "<cmd> DapToggleBreakpoint <CR>", {
-                desc = "Add breakpoint",
-            })
+            vim.keymap.set(
+                "n",
+                "<leader>db",
+                "<cmd> DapToggleBreakpoint <CR>",
+                {
+                    desc = "Add breakpoint",
+                }
+            )
             vim.keymap.set("n", "<leader>dr", "<cmd> DapContinue <CR>", {
                 desc = "Start or continue debugging",
             })

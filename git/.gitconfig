@@ -5,3 +5,5 @@
 [user]
 	email = saravepi@tuta.io
 	name = Saravenpi Shigeturi
+[alias]
+	fame = !python -m gitfame
