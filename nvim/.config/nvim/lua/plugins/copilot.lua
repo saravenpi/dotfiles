@@ -1,23 +1,21 @@
 return {
     {
         "zbirenbaum/copilot.lua",
-        disable = true,
+        disable = false,
         config = function()
             require("copilot").setup({
-                suggestion = { enabled = false },
-                panel = { enabled = false },
+                suggestion = { enabled = true },
+                panel = { enabled = true },
             })
         end,
     },
     {
         "CopilotC-Nvim/CopilotChat.nvim",
         opts = {
-            show_help = "yes", -- Show help text for CopilotChatInPlace, default: yes
-            debug = false, -- Enable or disable debug mode, the log file will be in ~/.local/state/nvim/CopilotChat.nvim.log
-            disable_extra_info = "no", -- Disable extra information (e.g: system prompt) in the response.
-            language = "English", -- Copilot answer language settings when using default prompts. Default language is English.
-            -- proxy = "socks5://127.0.0.1:3000", -- Proxies requests via https or socks.
-            -- temperature = 0.1,
+            show_help = "yes",
+            debug = false,
+            disable_extra_info = "no",
+            language = "English",
         },
         build = function()
             vim.notify(
@@ -69,5 +67,12 @@ return {
                 desc = "CopilotChat - Reset chat history and clear buffer",
             },
         },
+    },
+    {
+        disable = true,
+        "zbirenbaum/copilot-cmp",
+        config = function()
+            require("copilot_cmp").setup()
+        end,
     },
 }

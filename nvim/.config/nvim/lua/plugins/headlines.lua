@@ -6,7 +6,8 @@ return {
         require("headlines").setup({
             markdown = {
                 headline_highlights = { "Headline" },
-                bullet_highlights = { "@text.title.1.marker.markdown",
+                bullet_highlights = {
+                    "@text.title.1.marker.markdown",
                     "@text.title.2.marker.markdown",
                     "@text.title.3.marker.markdown",
                     "@text.title.4.marker.markdown",
@@ -22,7 +23,7 @@ return {
                 fat_headlines = true,
                 fat_headline_upper_string = "▃",
                 -- fat_headline_lower_string = "🬂",
-                fat_headline_lower_string= "⣿",
+                fat_headline_lower_string = "⣿",
             },
             rmd = {
                 treesitter_language = "markdown",
@@ -43,7 +44,7 @@ return {
                 quote_string = "┃",
                 fat_headlines = true,
                 fat_headline_upper_string = "▃",
-                fat_headline_lower_string= "⣿",
+                fat_headline_lower_string = "⣿",
             },
             norg = {
                 headline_highlights = { "Headline" },
@@ -65,7 +66,7 @@ return {
                 quote_string = "┃",
                 fat_headlines = true,
                 fat_headline_upper_string = "▃",
-                fat_headline_lower_string= "⣿",
+                fat_headline_lower_string = "⣿",
             },
             org = {
                 headline_highlights = { "Headline" },
@@ -87,7 +88,7 @@ return {
                 quote_string = "┃",
                 fat_headlines = true,
                 fat_headline_upper_string = "▃",
-                fat_headline_lower_string= "⣿",
+                fat_headline_lower_string = "⣿",
             },
         })
     end,

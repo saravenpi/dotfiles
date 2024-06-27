@@ -4,7 +4,7 @@ ColumnLimit: 79
 
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterEnum: true
+  AfterEnum: false
   AfterStruct: false
   SplitEmptyFunction: true
   AfterFunction: true

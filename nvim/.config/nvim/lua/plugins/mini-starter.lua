@@ -5,14 +5,9 @@ return {
         event = "VimEnter",
         opts = function()
             local logo = table.concat({
-                "            ██╗      █████╗ ███████╗██╗   ██╗██╗   ██╗██╗███╗   ███╗          Z",
-                "            ██║     ██╔══██╗╚══███╔╝╚██╗ ██╔╝██║   ██║██║████╗ ████║      Z    ",
-                "            ██║     ███████║  ███╔╝  ╚████╔╝ ██║   ██║██║██╔████╔██║   z       ",
-                "            ██║     ██╔══██║ ███╔╝    ╚██╔╝  ╚██╗ ██╔╝██║██║╚██╔╝██║ z         ",
-                "            ███████╗██║  ██║███████╗   ██║    ╚████╔╝ ██║██║ ╚═╝ ██║           ",
-                "            ╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝     ╚═══╝  ╚═╝╚═╝     ╚═╝           ",
+                "Welcome to the endless void young traveller :)",
             }, "\n")
-            local pad = string.rep(" ", 22)
+            local pad = string.rep(" ", 2)
             local new_section = function(name, action, section)
                 return { name = name, action = action, section = pad .. section }
             end

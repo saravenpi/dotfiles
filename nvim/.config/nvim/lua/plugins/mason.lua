@@ -10,7 +10,7 @@ return {
             "clang-format",
             "typescript-language-server",
             "pyright",
-            "codelldb"
+            "codelldb",
         },
     },
 }

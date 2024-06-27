@@ -21,7 +21,6 @@ return {
                 end)
             end,
         },
-        opts = {
-        },
+        opts = {},
     },
 }
