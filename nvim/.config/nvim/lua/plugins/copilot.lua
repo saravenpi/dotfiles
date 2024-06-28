@@ -11,6 +11,7 @@ return {
     },
     {
         "CopilotC-Nvim/CopilotChat.nvim",
+        branch = "canary",
         opts = {
             show_help = "yes",
             debug = false,
@@ -25,44 +26,50 @@ return {
         event = "VeryLazy",
         keys = {
             {
-                "<leader>ccb",
+                "<leader>aa",
+                ":CopilotChat ",
+                desc = "CopilotChat - Chat",
+            },
+
+            {
+                "<leader>ab",
                 ":CopilotChatBuffer ",
                 desc = "CopilotChat - Chat with current buffer",
             },
             {
-                "<leader>cce",
+                "<leader>ae",
                 "<cmd>CopilotChatExplain<cr>",
                 desc = "CopilotChat - Explain code",
             },
             {
-                "<leader>cct",
+                "<leader>at",
                 "<cmd>CopilotChatTests<cr>",
                 desc = "CopilotChat - Generate tests",
             },
             {
-                "<leader>ccT",
+                "<leader>at",
                 "<cmd>CopilotChatVsplitToggle<cr>",
                 desc = "CopilotChat - Toggle Vsplit", -- Toggle vertical split
             },
             {
-                "<leader>ccv",
+                "<leader>av",
                 ":CopilotChatVisual ",
                 mode = "x",
                 desc = "CopilotChat - Open in vertical split",
             },
             {
-                "<leader>ccx",
+                "<leader>ax",
                 ":CopilotChatInPlace<cr>",
                 mode = "x",
                 desc = "CopilotChat - Run in-place code",
             },
             {
-                "<leader>ccf",
+                "<leader>af",
                 "<cmd>CopilotChatFixDiagnostic<cr>", -- Get a fix for the diagnostic message under the cursor.
                 desc = "CopilotChat - Fix diagnostic",
             },
             {
-                "<leader>ccr",
+                "<leader>ar",
                 "<cmd>CopilotChatReset<cr>", -- Reset chat history and clear buffer.
                 desc = "CopilotChat - Reset chat history and clear buffer",
             },
