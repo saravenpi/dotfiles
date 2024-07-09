@@ -31,7 +31,6 @@ require("lazy").setup({
         lazy = false,
         version = false,
     },
-    install = { colorscheme = { "tokyonight" } },
     checker = { enabled = false },
     performance = {
         rtp = {
@@ -41,7 +40,7 @@ require("lazy").setup({
                 "tohtml",
                 "tutor",
                 "zipPlugin",
-                "notify",
+                -- "notify",
             },
         },
     },
