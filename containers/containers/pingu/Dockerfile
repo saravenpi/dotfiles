@@ -13,7 +13,7 @@ RUN apt update
 RUN apt upgrade -y
 
 # Install the required packages
-RUN apt install -y gcc-x86-64-linux-gnu nasm gcc git nodejs npm
+RUN apt install -y gcc-x86-64-linux-gnu nasm gcc git nodejs npm valgrind gdb
 
 # Custom prompt
 RUN echo 'export PS1="🐧 > "' >> /root/.bashrc
