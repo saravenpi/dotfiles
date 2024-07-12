@@ -8,7 +8,7 @@ return {
     event = "VimEnter",
     opts = function()
         local logo = table.concat({
-            [[Welcome to the void        ]],
+            [[✨ Welcome to the void !   ]],
             [[         __                ]],
             [[ __  __ /\_\    ___ ___    ]],
             [[/\ \/\ \\/\ \ /' __` __`\  ]],
