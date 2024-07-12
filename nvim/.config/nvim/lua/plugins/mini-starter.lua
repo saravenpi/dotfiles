@@ -8,7 +8,13 @@ return {
     event = "VimEnter",
     opts = function()
         local logo = table.concat({
-            "Welcome to the void",
+            [[Welcome to the void        ]],
+            [[         __                ]],
+            [[ __  __ /\_\    ___ ___    ]],
+            [[/\ \/\ \\/\ \ /' __` __`\  ]],
+            [[\ \ \_/ |\ \ \/\ \/\ \/\ \ ]],
+            [[ \ \___/  \ \_\ \_\ \_\ \_\]],
+            [[  \/__/    \/_/\/_/\/_/\/_/]],
         }, "\n")
         local pad = string.rep(" ", 1)
         local new_section = function(name, action, section)

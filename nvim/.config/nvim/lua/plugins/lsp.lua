@@ -22,5 +22,12 @@ return {
             end,
         },
         opts = {},
+        keys = {
+            {
+                "<leader>gd",
+                ":lua vim.lsp.buf.definition()<CR>",
+                desc = "Go to definition",
+            },
+        },
     },
 }

@@ -13,10 +13,10 @@ RUN apt update
 RUN apt upgrade -y
 
 # Install the required packages
-RUN apt install -y gcc-x86-64-linux-gnu nasm gcc git nodejs npm valgrind gdb
+RUN apt install -y gcc-x86-64-linux-gnu nasm gcc git nodejs npm valgrind gdb libcsfml-dev make tmux xorg
 
 # Custom prompt
-RUN echo 'export PS1="🐧 > "' >> /root/.bashrc
+RUN echo 'export PS1="🐧 \[\e[1;36m\]\w\[\e[1;33m\]>\[\e[0m\]\n"' >> /root/.bashrc
 
 # Custom aliases
 RUN echo 'alias ll="ls -l"' >> /root/.bashrc
