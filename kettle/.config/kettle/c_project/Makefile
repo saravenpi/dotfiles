@@ -1,10 +1,11 @@
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -Werror
 
-SRCS = main.c
-NAME = my_program
-
+SRC_DIR = src
+SRCS := $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c)
 OBJS = $(SRCS:.c=.o)
+
+NAME = my_program
 
 all: $(NAME)
 
@@ -12,9 +13,10 @@ $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean:
-	rm -f $(OBJS) $(NAME)
+	rm -f $(OBJS)
 
 fclean: clean
+	rm -f $(NAME)
 
 re: clean all
 

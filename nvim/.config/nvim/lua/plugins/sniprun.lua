@@ -12,29 +12,29 @@ return {
                 },
             },
             display = {
-                "Classic",
+                "Terminal",
                 "VirtualTextOk",
             },
         })
     end,
     keys = {
         {
-            "<leader>osr",
+            "<leader>oir",
             ":'<,'>SnipRun<CR>",
             mode = { "v" },
-            desc = "sniprun",
+            desc = "sniprun run",
         },
         {
-            "<leader>osr",
+            "<leader>oir",
             ":SnipRun<CR>",
             mode = { "n" },
-            desc = "sniprun",
+            desc = "sniprun run",
         },
         {
-            "<leader>osc",
+            "<leader>oic",
             ":SnipClose<CR>",
             mode = { "n" },
-            desc = "sniprun",
+            desc = "sniprun close",
         },
     },
 }

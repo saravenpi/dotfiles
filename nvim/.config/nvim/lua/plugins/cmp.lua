@@ -8,10 +8,21 @@ return {
         },
         ---@param opts cmp.ConfigSchema
         opts = function(_, opts)
+            local luasnip = require("luasnip")
+            local cmp = require("cmp")
+            local lspkind = require("lspkind")
+
+            lspkind.init({
+                symbol_map = {
+                    Copilot = "",
+                },
+            })
             table.insert(opts.sources, {
                 name = "emoji",
                 name = "copilot",
             })
+            vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#82aaff" })
+
             local has_words_before = function()
                 unpack = unpack or table.unpack
                 local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -23,24 +34,9 @@ return {
                         == nil
             end
 
-            local luasnip = require("luasnip")
-            local cmp = require("cmp")
-
-            cmp.setup({
-                window = {
-                    completion = cmp.config.window.bordered(),
-                },
-            })
-
-            local lspkind = require("lspkind")
-            lspkind.init({
-                symbol_map = {
-                    Copilot = "",
-                },
-            })
-
-            vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#82aaff" })
-
+            opts.window = {
+                completion = cmp.config.window.bordered(),
+            }
             opts.mapping = vim.tbl_extend("force", opts.mapping, {
                 ["<Tab>"] = cmp.mapping(function(fallback)
                     if cmp.visible() then

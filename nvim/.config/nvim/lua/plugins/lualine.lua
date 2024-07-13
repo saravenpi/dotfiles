@@ -38,8 +38,8 @@ return {
                     lualine_a = {
                         {
                             "mode",
-                            separator = { left = "" },
-                            right_padding = 2,
+                            -- separator = { left = "" },
+                            -- right_padding = 2,
                         },
                     },
                     lualine_b = { "diagnostics", { gato } },
@@ -49,8 +49,8 @@ return {
                     lualine_z = {
                         "location",
                         "diff",
-                        separator = { right = "" },
-                        left_padding = 2,
+                        -- separator = { right = "" },
+                        -- left_padding = 2,
                     },
                 },
                 inactive_sections = {
