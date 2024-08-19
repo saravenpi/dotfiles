@@ -8,5 +8,6 @@
         "go mod init gin-webserver/m",
         "go get github.com/gin-gonic/gin",
         "go mod tidy"
-    ]
+    ],
+    "kettle_path": "~/.config/kettle/gin-webserver/"
 }

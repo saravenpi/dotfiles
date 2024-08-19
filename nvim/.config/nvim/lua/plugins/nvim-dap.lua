@@ -28,22 +28,11 @@ return {
         },
         opts = {
             handlers = {},
-            -- ensure_installed = {
-            --     "codelldb",
-            -- },
         },
     },
     {
         "mfussenegger/nvim-dap",
         config = function()
-            -- ["<leader>chb"] = {
-            --     "<cmd> DapToggleBreakpoint <CR>",
-            --     "Add breakpoint"
-            -- },
-            -- ["<leader>chr"] = {
-            --     "<cmd> DapContinue <CR>",
-            --     "Start or continue debugging"
-            -- }
             vim.keymap.set(
                 "n",
                 "<leader>db",
