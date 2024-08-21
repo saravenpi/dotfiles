@@ -1,11 +1,11 @@
 # ls aliases
 alias ls="eza --color=always --git --icons=always --no-user"
+alias tn="eza --tree --color=always --git --icons=always --no-user"
 alias ll="ls -lh"
 alias la="ls -ah"
 alias lal="ls -alh"
 alias lla="ls -alh"
 alias l="ls"
-alias tn="eza --tree --color=always --git --icons=always --no-user"
 
 # cli tools
 alias rm="rip"
