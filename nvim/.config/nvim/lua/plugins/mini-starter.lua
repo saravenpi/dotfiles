@@ -1,5 +1,6 @@
 return {
     "echasnovski/mini.starter",
+	enabled = false,
     dependencies = {
         "nvim-telescope/telescope.nvim",
         "rcarriga/nvim-notify",

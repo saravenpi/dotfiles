@@ -7,3 +7,15 @@
 	name = Saravenpi
 [alias]
 	fame = !python -m gitfame
+
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default

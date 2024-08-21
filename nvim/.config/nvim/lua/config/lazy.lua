@@ -39,7 +39,6 @@ require("lazy").setup({
                 "tohtml",
                 "tutor",
                 "zipPlugin",
-                -- "notify",
             },
         },
     },

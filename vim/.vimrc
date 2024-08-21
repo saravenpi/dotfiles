@@ -2,6 +2,8 @@ let mapleader = " "
 set tabstop=4
 set shiftwidth=4
 set expandtab
+set number relativenumber
+set smartindent
 
 if v:version < 802
     packadd! dracula

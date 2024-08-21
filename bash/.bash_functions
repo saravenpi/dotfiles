@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # goes to the saved project path
 gop() {
 	path=$(cat ~/.project)
