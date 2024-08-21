@@ -21,6 +21,12 @@ z() {
 	unset path
 }
 
+# zoxide to the path and opens it with nvimgp
+grp() {
+	z $1
+	nvim .
+}
+
 # quick open a project with zoxide
 o() {
 	cur=$(pwd)
