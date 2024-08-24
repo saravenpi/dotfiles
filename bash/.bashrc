@@ -13,4 +13,4 @@
 # other programs
 . ~/.bash_zoxide
 . ~/.bash_starship
-pokemon-colorscripts -n shaymin
+pokemon-colorscripts -n shaymin --no-title

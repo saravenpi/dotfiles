@@ -1,12 +1,13 @@
 {
-    "name": "c_project",
+    "name": "c",
     "imported_files": [
         "kettle.json",
         "./Makefile",
         "./src/main.c",
         "./kettle.json",
-        "./.github/workflows/ci.yml"
+        "./.github/workflows/c.yml",
+        "./.gitignore"
     ],
-    "kettle_path": "~/.config/kettle/c_project/",
+    "kettle_path": "~/.config/kettle/c/",
     "init": []
 }
