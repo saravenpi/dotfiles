@@ -1,8 +1,8 @@
 # goes to the saved project path
 gop() {
-	path=$(cat ~/.project)
-	cd $path
-	unset path
+	tmppath=$(cat ~/.project)
+	cd $tmppath
+	unset tmppath
 }
 
 # saves the current path for quick access
@@ -12,13 +12,14 @@ setp() {
 
 # quick cd with zoxide
 z() {
-	path=$(zoxide query $2)
-	if [test -z $path]; then
+	local args=("$@")
+	tmppath=$(zoxide query $args)
+	if [[ -z $tmppath ]]; then
 		echo "No such project"
 	else
-		cd $path
+		cd $tmppath
 	fi
-	unset path
+	unset tmppath
 }
 
 # zoxide to the path and opens it with nvimgp
@@ -44,16 +45,6 @@ oe() {
 	unset cur
 }
 
-# init a c project quickly with kettle
-cinit() {
-	kettle use c_project .
-	echo "Project Initialised ✅"
-}
-
-batdiff() {
-	git diff --name-only --relative --diff-filter=d | xargs bat --diff
-}
-
 gss() {
 	echo "Untracked files:"
 	git status --porcelain | grep '^??' | wc -l
@@ -75,4 +66,14 @@ ta() {
 	else
 		tmux a -t $1
 	fi
+}
+
+welcome() {
+	pokemon-colorscripts -n shaymin --no-title
+	# cal
+	echo "👋 Salut ! :D"
+	echo "🧠 Pense à checker ~/notes/ (wk)"
+	echo "📅 Aujourd'hui c'est: $(date)"
+	echo "🔥 Streaks: "
+	streaks
 }

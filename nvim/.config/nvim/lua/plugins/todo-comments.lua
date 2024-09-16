@@ -2,7 +2,6 @@ return {
     "folke/todo-comments.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
-        local wk = require("which-key")
         require("todo-comments").setup({
             signs = true, -- show icons in the signs column
             sign_priority = 8, -- sign priority
@@ -74,15 +73,6 @@ return {
                 },
                 pattern = [[\b(KEYWORDS):]], -- ripgrep regex
                 -- pattern = [[\b(KEYWORDS)\b]], -- match without the extra colon. You'll likely get false positives
-            },
-        })
-        wk.register({
-            x = {
-                name = "Todo",
-                f = {
-                    "<cmd>TodoTelescope<cr>",
-                    "Search TODOs",
-                },
             },
         })
     end,

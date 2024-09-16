@@ -31,3 +31,7 @@ export PATH=/usr/local/lib/ruby/gems/2.7.0/bin:$PATH
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
+export VIMWIKIGRAPH_CONFIG=$HOME/.vimwikigraph.cfg
+
+bind 'set show-all-if-ambiguous on'
+bind 'TAB:menu-complete'

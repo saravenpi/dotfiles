@@ -3,7 +3,7 @@
 [core]
 	editor = nvim
 [user]
-	email = saravepi@tuta.io
+	email = saravenpi@tuta.io
 	name = Saravenpi
 [alias]
 	fame = !python -m gitfame

@@ -1,11 +1,11 @@
 return {
     {
         "zbirenbaum/copilot.lua",
-        disable = true,
+        disable = false,
         config = function()
             require("copilot").setup({
-                suggestion = { enabled = false },
-                panel = { enabled = false },
+                suggestion = { enabled = true },
+                panel = { enabled = true },
             })
         end,
     },
@@ -76,7 +76,7 @@ return {
         },
     },
     {
-        disable = true,
+        disable = false,
         "zbirenbaum/copilot-cmp",
         config = function()
             require("copilot_cmp").setup()

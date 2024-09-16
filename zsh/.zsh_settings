@@ -1,0 +1,37 @@
+# history
+HISTCONTROL=ignoreboth
+# shopt -s histappend
+# HISTSIZE=1000
+# HISTFILESIZE=2000
+# shopt -s checkwinsize
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# PATH
+export PATH=$PATH:$HOME/.local/bin
+
+# bun path
+export BUN_INSTALL="$HOME/.bun"
+export PATH=$BUN_INSTALL/bin:$PATH
+
+# mybins path
+export MYBINS="$HOME/mybins"
+export PATH=$MYBINS:$PATH
+
+# ruby path
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
+# Add rubygems to the path
+export PATH=/opt/homebrew/lib/ruby/gems/2.7.0/bin:$PATH
+# # or
+export PATH=/usr/local/lib/ruby/gems/2.7.0/bin:$PATH
+
+# android path
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+export VIMWIKIGRAPH_CONFIG=$HOME/.vimwikigraph.cfg
+
+# Starship prompt
+eval "$(starship init zsh)"

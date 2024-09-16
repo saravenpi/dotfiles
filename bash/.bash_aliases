@@ -20,6 +20,10 @@ alias q="exit"
 alias :q="exit"
 alias c="clear"
 alias hc="history clear"
+alias breload="clear && source $HOME/.bashrc"
+alias brel="breload"
+alias zreload="clear && source $HOME/.zshrc"
+alias zrel="zreload"
 
 # code
 alias nv="nvim"
@@ -27,14 +31,24 @@ alias n="nvim"
 alias lg="lazygit"
 alias k="kettle"
 
-# Quick navigation
-alias h="cd $HOME"
+# quick navigation
+alias h="clear && cd $HOME && welcome"
 alias dots="cd $HOME/.dotfiles"
 alias goc="cd $HOME/code/"
 alias gos="cd $HOME/school/"
 alias gob="cd $HOME/brain/"
+alias gow="cd $HOME/notes/ && nvim index.norg"
+alias wk="cd $HOME/notes/ && nvim index.norg"
 
-# git
+alias streaks="streaks.ts"
+alias st="streaks"
+
+# quick config
+alias cnvim="cd $HOME/.config/nvim/ && nvim ."
+alias cbash="cd $HOME && nvim .bashrc"
+alias czsh="cd $HOME && nvim .zshrc"
+alias caliases="cd $HOME && nvim .bash_aliases"
+
 alias gs="git status"
 alias gp="git push"
 alias ga="git add"
@@ -53,6 +67,7 @@ alias mr="make re"
 alias mre="mr"
 alias vg="valgrind"
 alias vgf="valgrind --leak-check=full"
+alias cinit="kettle use c ."
 
 # tmux
 alias t="tmux"
