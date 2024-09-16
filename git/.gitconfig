@@ -1,10 +1,13 @@
 [pull]
 	rebase = false
+
 [core]
 	editor = nvim
+
 [user]
 	email = saravenpi@tuta.io
 	name = Saravenpi
+
 [alias]
 	fame = !python -m gitfame
 
