@@ -39,6 +39,7 @@ alias gos="cd $HOME/school/"
 alias gob="cd $HOME/brain/"
 alias gow="cd $HOME/notes/ && nvim index.norg"
 alias wk="cd $HOME/notes/ && nvim index.norg"
+alias wkt="cd $HOME/notes/ && nvim index.norg -c ':Neorg journal today'"
 
 alias streaks="streaks.ts"
 alias st="streaks"
