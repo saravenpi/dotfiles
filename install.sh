@@ -102,6 +102,8 @@ backupFile ".bashrc"
 backupFile ".bash_aliases"
 backupFile ".bash_functions"
 
+backupFile ".emacs"
+
 backupFile ".config/starship.toml"
 
 backupFile ".tmux.conf"
@@ -149,7 +151,7 @@ cd $HOME/.dotfiles/
 stow fonts
 stow i3 dunst scripts picom polybar rofi
 stow kitty tmux fish bash starship
-stow nvim vim clang-format
+stow nvim vim clang-format emacs
 stow git lazygit kettle
 stow mybins containers
 

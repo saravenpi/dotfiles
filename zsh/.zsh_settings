@@ -35,3 +35,6 @@ export VIMWIKIGRAPH_CONFIG=$HOME/.vimwikigraph.cfg
 
 # Starship prompt
 eval "$(starship init zsh)"
+
+# Nix path
+if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; fi

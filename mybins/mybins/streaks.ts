@@ -12,11 +12,28 @@ type HabitDay = {
 	clean: boolean,
 }
 
+type HabitType = {
+	name: string,
+	mark: string,
+}
+
+type HabitStreak = {
+	streak: number,
+	maxStreak: number,
+}
+
 const MEDITATE_MARK = '🧘'
 const STRETCH_MARK = '🤸'
 const DRINK_MARK = '💧'
 const EAT_MARK = '🍚'
 const CLEAN_MARK = '🧹'
+const habits: HabitType[] = [
+	{ name: 'meditate', mark: MEDITATE_MARK },
+	{ name: 'stretch', mark: STRETCH_MARK },
+	{ name: 'drink', mark: DRINK_MARK },
+	{ name: 'eat', mark: EAT_MARK },
+	{ name: 'clean', mark: CLEAN_MARK },
+]
 
 const HOME_DIR = os.homedir();
 const NOTES_DIR = `${HOME_DIR}/notes`
@@ -76,17 +93,23 @@ function parseFileContent(fileName: string): HabitDay {
 	return habitDay
 }
 
-function countStreaks(habitDays: HabitDay[], habit: string) {
-	let streak = 0
+function countStreak(habitDays: HabitDay[], habit: string): HabitStreak {
+	let habitStreak: HabitStreak = {
+		streak: 0,
+		maxStreak: 0
+	};
 
 	habitDays.forEach((habitDay) => {
 		if (habitDay[habit]) {
-			streak++
+			habitStreak.streak++
 		} else {
-			streak = 0
+			if (habitDay.day.toDateString() != new Date().toDateString()) {
+				habitStreak.maxStreak = Math.max(habitStreak.streak, habitStreak.maxStreak)
+				habitStreak.streak = 0
+			}
 		}
 	})
-	return streak
+	return habitStreak
 }
 
 function getHabitDays() {
@@ -112,11 +135,24 @@ function logStreaks(habitDays: HabitDay[]) {
 		console.log(`🚨 Tu n'as pas fait ton entrée aujourd'hui!`)
 		todayDone = false
 	}
-	console.log(`- 🍚 Eat streak: ${countStreaks(habitDays, 'eat')}\t(today: ${todayDone && lastHabitDay.eat ? '🎉' : '🕒'})`)
-	console.log(`- 💧 Drink streak: ${countStreaks(habitDays, 'drink')}\t(today: ${todayDone && lastHabitDay.drink ? '🎉' : '🕒'})`)
-	console.log(`- 🧹 Clean streak: ${countStreaks(habitDays, 'clean')}\t(today: ${todayDone && lastHabitDay.clean ? '🎉' : '🕒'})`)
-	console.log(`- 🧘 Meditate streak: ${countStreaks(habitDays, 'meditate')}\t(today: ${todayDone && lastHabitDay.meditate ? '🎉' : '🕒'})`)
-	console.log(`- 🤸 Stretch streak: ${countStreaks(habitDays, 'stretch')}\t(today: ${todayDone && lastHabitDay.stretch ? '🎉' : '🕒'})`)
+	let eatStreak = countStreak(habitDays, 'eat')
+	let drinkStreak = countStreak(habitDays, 'drink')
+	let cleanStreak = countStreak(habitDays, 'clean')
+	let meditateStreak = countStreak(habitDays, 'meditate')
+	let stretchStreak = countStreak(habitDays, 'stretch')
+
+	// console.log(`📅 Last entry: ${lastHabitDay.day.toDateString()}`)
+	console.log(`🍚 Eat streak:\t\t${eatStreak.streak} (max: ${eatStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.eat ? '🎉' : '🕒'})`)
+	console.log(`💧 Drink streak:\t${drinkStreak.streak} (max: ${drinkStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.drink ? '🎉' : '🕒'})`)
+	console.log(`🧹 Clean streak:\t${cleanStreak.streak} (max: ${cleanStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.clean ? '🎉' : '🕒'})`)
+	console.log(`🧘 Meditate streak:\t${meditateStreak.streak} (max: ${meditateStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.meditate ? '🎉' : '🕒'})`)
+	console.log(`🤸 Stretch streak:\t${stretchStreak.streak} (max: ${stretchStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.stretch ? '🎉' : '🕒'})`)
+
+	// console.log(`- 🍚 Eat streak: ${}\t(today: ${todayDone && lastHabitDay.eat ? '🎉' : '🕒'})`)
+	// console.log(`- 💧 Drink streak: ${countStreak(habitDays, 'drink')}\t(today: ${todayDone && lastHabitDay.drink ? '🎉' : '🕒'})`)
+	// console.log(`- 🧹 Clean streak: ${countStreak(habitDays, 'clean')}\t(today: ${todayDone && lastHabitDay.clean ? '🎉' : '🕒'})`)
+	// console.log(`- 🧘 Meditate streak: ${countStreak(habitDays, 'meditate')}\t(today: ${todayDone && lastHabitDay.meditate ? '🎉' : '🕒'})`)
+	// console.log(`- 🤸 Stretch streak: ${countStreak(habitDays, 'stretch')}\t(today: ${todayDone && lastHabitDay.stretch ? '🎉' : '🕒'})`)
 }
 
 function main() {

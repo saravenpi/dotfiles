@@ -13,7 +13,6 @@ alias bat="batcat"
 
 # jobs
 alias f="fg"
-alias j="jobs"
 
 # shell commands
 alias q="exit"
@@ -40,6 +39,9 @@ alias gob="cd $HOME/brain/"
 alias gow="cd $HOME/notes/ && nvim index.norg"
 alias wk="cd $HOME/notes/ && nvim index.norg"
 alias wkt="cd $HOME/notes/ && nvim index.norg -c ':Neorg journal today'"
+alias j="wk"
+alias jt="cd $HOME/notes/ && nvim index.norg -c ':Neorg journal today'"
+alias jtt="cd $HOME/notes/ && nvim todo.norg"
 
 alias streaks="streaks.ts"
 alias st="streaks"
@@ -79,3 +81,5 @@ alias trs="tmux rename-session -t"
 # nono
 alias nono="pokemon-colorscripts -n audino --no-title"
 alias fanfan="pokemon-colorscripts -n caterpie --no-title"
+
+alias ax="chmod +x"
