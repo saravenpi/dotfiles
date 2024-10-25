@@ -14,6 +14,7 @@ setp() {
 z() {
 	local args=("$@")
 	tmppath=$(zoxide query $args)
+	echo $tmppath
 	if [[ -z $tmppath ]]; then
 		echo "No such project"
 	else

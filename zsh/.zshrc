@@ -9,6 +9,7 @@
 . ~/.bash_functions
 # . ~/.bash_variables
 . ~/.zsh_settings
+. ~/.zsh_zoxide
 
 # Welcome
 welcome

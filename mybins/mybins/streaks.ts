@@ -5,11 +5,7 @@ import * as os from 'os';
 type HabitDay = {
 	file: string,
 	day: Date,
-	stretch: boolean,
-	meditate: boolean,
-	drink: boolean,
-	eat: boolean,
-	clean: boolean,
+	habits: {},
 }
 
 type HabitType = {
@@ -22,19 +18,6 @@ type HabitStreak = {
 	maxStreak: number,
 }
 
-const MEDITATE_MARK = '🧘'
-const STRETCH_MARK = '🤸'
-const DRINK_MARK = '💧'
-const EAT_MARK = '🍚'
-const CLEAN_MARK = '🧹'
-const habits: HabitType[] = [
-	{ name: 'meditate', mark: MEDITATE_MARK },
-	{ name: 'stretch', mark: STRETCH_MARK },
-	{ name: 'drink', mark: DRINK_MARK },
-	{ name: 'eat', mark: EAT_MARK },
-	{ name: 'clean', mark: CLEAN_MARK },
-]
-
 const HOME_DIR = os.homedir();
 const NOTES_DIR = `${HOME_DIR}/notes`
 const JOURNAL_DIR = `${NOTES_DIR}/journal/`
@@ -42,6 +25,15 @@ const JOURNAL_DIR = `${NOTES_DIR}/journal/`
 const FILE_EXTENSION = '.norg'
 const DONE_MARK = '(x)'
 const IGNORED_FILES = ['template.norg', 'index.norg']
+
+const HABITS: HabitType[] = [
+	{ name: 'drink', mark: '💧' },
+	{ name: 'stretch', mark: '🤸' },
+	{ name: 'meditate', mark: '🧘' },
+	{ name: 'eat', mark: '🍚' },
+	{ name: 'clean', mark: '🧹' },
+	// { name: 'permis', mark: '🛻' },
+]
 
 function getFilesRecursive(dirname: string): string[] {
 	const files = readdirSync(dirname, { withFileTypes: true })
@@ -69,25 +61,15 @@ function parseFileContent(fileName: string): HabitDay {
 	let habitDay: HabitDay = {
 		file: fileName,
 		day: new Date(),
-		stretch: false,
-		meditate: false,
-		drink: false,
-		clean: false,
-		eat: false
+		habits: {}
 	}
 
-	content.split('\n').forEach((line: string, index: number) => {
-		if (line.includes(MEDITATE_MARK) && line.includes(DONE_MARK))
-			habitDay.meditate = true
-		if (line.includes(DRINK_MARK) && line.includes(DONE_MARK))
-			habitDay.drink = true
-		if (line.includes(STRETCH_MARK) && line.includes(DONE_MARK))
-			habitDay.stretch = true
-		if (line.includes(EAT_MARK) && line.includes(DONE_MARK))
-			habitDay.eat = true
-		if (line.includes(CLEAN_MARK) && line.includes(DONE_MARK))
-			habitDay.clean = true
-
+	content.split('\n').forEach((line: string) => {
+		for (let habit of HABITS) {
+			if (line.includes(habit.mark)) {
+				habitDay.habits[habit.name] = line.includes(DONE_MARK)
+			}
+		}
 	})
 	habitDay.day = parseFileDate(fileName)
 	return habitDay
@@ -100,7 +82,7 @@ function countStreak(habitDays: HabitDay[], habit: string): HabitStreak {
 	};
 
 	habitDays.forEach((habitDay) => {
-		if (habitDay[habit]) {
+		if (habitDay.habits[habit]) {
 			habitStreak.streak++
 		} else {
 			if (habitDay.day.toDateString() != new Date().toDateString()) {
@@ -127,6 +109,15 @@ function getHabitDays() {
 	return habitDays
 }
 
+function logHabit(habit: HabitType, habitDays: HabitDay[]) {
+	let habitStreak = countStreak(habitDays, habit.name)
+	let offset = ""
+	if (habit.name.length <= 3) {
+		offset = "\t"
+	}
+	console.log(`${habit.mark} ${habit.name}:\t${offset}${habitStreak.streak} (max: ${habitStreak.maxStreak})\t(today: ${habitDays[habitDays.length - 1].habits[habit.name] ? '🎉' : '🕒'})`)
+}
+
 function logStreaks(habitDays: HabitDay[]) {
 	let today = new Date()
 	let lastHabitDay = habitDays[habitDays.length - 1]
@@ -135,24 +126,10 @@ function logStreaks(habitDays: HabitDay[]) {
 		console.log(`🚨 Tu n'as pas fait ton entrée aujourd'hui!`)
 		todayDone = false
 	}
-	let eatStreak = countStreak(habitDays, 'eat')
-	let drinkStreak = countStreak(habitDays, 'drink')
-	let cleanStreak = countStreak(habitDays, 'clean')
-	let meditateStreak = countStreak(habitDays, 'meditate')
-	let stretchStreak = countStreak(habitDays, 'stretch')
 
-	// console.log(`📅 Last entry: ${lastHabitDay.day.toDateString()}`)
-	console.log(`🍚 Eat streak:\t\t${eatStreak.streak} (max: ${eatStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.eat ? '🎉' : '🕒'})`)
-	console.log(`💧 Drink streak:\t${drinkStreak.streak} (max: ${drinkStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.drink ? '🎉' : '🕒'})`)
-	console.log(`🧹 Clean streak:\t${cleanStreak.streak} (max: ${cleanStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.clean ? '🎉' : '🕒'})`)
-	console.log(`🧘 Meditate streak:\t${meditateStreak.streak} (max: ${meditateStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.meditate ? '🎉' : '🕒'})`)
-	console.log(`🤸 Stretch streak:\t${stretchStreak.streak} (max: ${stretchStreak.maxStreak})\t(today: ${todayDone && lastHabitDay.stretch ? '🎉' : '🕒'})`)
-
-	// console.log(`- 🍚 Eat streak: ${}\t(today: ${todayDone && lastHabitDay.eat ? '🎉' : '🕒'})`)
-	// console.log(`- 💧 Drink streak: ${countStreak(habitDays, 'drink')}\t(today: ${todayDone && lastHabitDay.drink ? '🎉' : '🕒'})`)
-	// console.log(`- 🧹 Clean streak: ${countStreak(habitDays, 'clean')}\t(today: ${todayDone && lastHabitDay.clean ? '🎉' : '🕒'})`)
-	// console.log(`- 🧘 Meditate streak: ${countStreak(habitDays, 'meditate')}\t(today: ${todayDone && lastHabitDay.meditate ? '🎉' : '🕒'})`)
-	// console.log(`- 🤸 Stretch streak: ${countStreak(habitDays, 'stretch')}\t(today: ${todayDone && lastHabitDay.stretch ? '🎉' : '🕒'})`)
+	for (let habit of HABITS) {
+		logHabit(habit, habitDays)
+	}
 }
 
 function main() {
