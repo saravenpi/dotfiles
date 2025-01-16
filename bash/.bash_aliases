@@ -23,6 +23,8 @@ alias breload="clear && source $HOME/.bashrc"
 alias brel="breload"
 alias zreload="clear && source $HOME/.zshrc"
 alias zrel="zreload"
+alias treload="tmux source-file ~/.tmux.conf"
+alias trel="treload"
 
 # code
 alias nv="nvim"
@@ -51,6 +53,7 @@ alias cnvim="cd $HOME/.config/nvim/ && nvim ."
 alias cbash="cd $HOME && nvim .bashrc"
 alias czsh="cd $HOME && nvim .zshrc"
 alias caliases="cd $HOME && nvim .bash_aliases"
+alias ctmux="cd $HOME && nvim .tmux.conf"
 
 alias gs="git status"
 alias gp="git push"
