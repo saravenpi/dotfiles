@@ -38,3 +38,8 @@ eval "$(starship init zsh)"
 
 # Nix path
 if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; fi
+
+export PATH=$PATH:$(go env GOPATH)/bin
+export MANPAGER="nvim -c 'set ft=man' -"
+
+export PATH="/Users/yannthevenin/.cargo/bin:$PATH"

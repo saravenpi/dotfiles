@@ -70,12 +70,12 @@ ta() {
 }
 
 welcome() {
-	pokemon-colorscripts -n shaymin --no-title
+	# pokemon-colorscripts -n shaymin --no-title
 	# cal
-	# echo "👋 Salut ! :D"
+	echo "👋 Salut ! :D"
 	# bun run $HOME/code/blagues/index.ts
-	echo "🧠 Pense à checker ~/notes/ (wk)"
-	echo "📅 Aujourd'hui c'est: $(date)"
-	echo "🔥 Streaks: "
-	streaks
+	# echo "🧠 Pense à checker ~/notes/ (wk)"
+	# echo "📅 Aujourd'hui c'est: $(date)"
+	# echo "🔥 Streaks: "
+	# streaks
 }

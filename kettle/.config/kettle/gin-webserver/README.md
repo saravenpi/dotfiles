@@ -1,3 +1,7 @@
-# Todo
-- run: `go mod init gin-webserver/m`
-- run: `go mod tidy`
+# webserver
+
+## Setup
+- command: `./init.sh`
+
+## Run
+- command: `go run main.go`

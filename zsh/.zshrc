@@ -7,7 +7,7 @@
 
 # bash configuration
 . ~/.bash_functions
-# . ~/.bash_variables
+. ~/.bash_variables
 . ~/.zsh_settings
 . ~/.zsh_zoxide
 

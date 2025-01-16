@@ -1,6 +1,7 @@
 {
     "diagnostics.disable": [
-        "duplicate-index"
+        "duplicate-index",
+        "duplicate-set-field"
     ],
     "diagnostics.globals": [
         "vim",

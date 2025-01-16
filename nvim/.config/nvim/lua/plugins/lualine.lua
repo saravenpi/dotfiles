@@ -42,7 +42,7 @@ return {
                             -- right_padding = 2,
                         },
                     },
-                    lualine_b = { "diagnostics", { gato } },
+                    lualine_b = { "diagnostics", { gato }, "branch" },
                     lualine_c = { "filename" },
                     lualine_x = { "filetype" },
                     lualine_y = { "searchcount", "selectioncount" },

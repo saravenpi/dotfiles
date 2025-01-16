@@ -2,12 +2,12 @@
     "name": "gin-webserver",
     "imported_files": [
         "kettle.json",
-        "main.go"
+        "main.go",
+		"routes/ping.go",
+		"init.sh",
+		"packages.sh",
+		"README.md"
     ],
-    "init": [
-        "go mod init gin-webserver/m",
-        "go get github.com/gin-gonic/gin",
-        "go mod tidy"
-    ],
+	"init": [],
     "kettle_path": "~/.config/kettle/gin-webserver/"
 }
