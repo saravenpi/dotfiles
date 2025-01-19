@@ -10,6 +10,7 @@
 
 [alias]
 	fame = !python -m gitfame
+	graph = log --oneline --all --graph --decorate
 
 [core]
 	pager = delta
