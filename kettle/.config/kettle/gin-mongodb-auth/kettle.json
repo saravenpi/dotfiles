@@ -1,0 +1,22 @@
+{
+  "name": "gin-mongodb-auth",
+  "imported_files": [
+    "kettle.json",
+    "./go.mod",
+    "./.DS_Store",
+    "./Dockerfile",
+    "./go.sum",
+    "./models/user.go",
+    "./mongodb/client.go",
+    "./.env",
+    "./install_packages.sh",
+    "./kettle.json",
+    "./routes/register.go",
+    "./routes/ping.go",
+    "./routes/login.go",
+    "./main.go",
+    "./start.sh"
+  ],
+  "kettle_path": "/Users/yannthevenin/.config/kettle/gin-mongodb-auth/kettle.json",
+  "init": []
+}

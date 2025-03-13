@@ -43,3 +43,8 @@ export PATH=$PATH:$(go env GOPATH)/bin
 export MANPAGER="nvim -c 'set ft=man' -"
 
 export PATH="/Users/yannthevenin/.cargo/bin:$PATH"
+
+export PATH=$PATH:/Users/yannthevenin/.spicetify
+
+# Auto Suggestions
+. ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh

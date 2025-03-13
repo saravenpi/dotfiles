@@ -31,11 +31,25 @@ grp() {
 
 # quick open a project with zoxide
 o() {
-	cur=$(pwd)
-	z $1
-	ts $1
-	cd $cur
-	unset cur
+    local args=("$@")
+    local cur=$(pwd)
+
+    if [[ -z "$args" || "$args" == "." ]]; then
+        ts "$cur"
+    else
+        z "${args[@]}"
+        ts "${args[@]}"
+    fi
+
+    cd "$cur"
+    unset cur
+}
+
+op() {
+  tmppath=$(cat ~/.project)
+	cd $tmppath
+  ts $tmppath
+	unset tmppath
 }
 
 oe() {
