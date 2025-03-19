@@ -14,3 +14,6 @@
 # Welcome
 welcome
 
+
+# Added by Windsurf
+export PATH="/Users/yannthevenin/.codeium/windsurf/bin:$PATH"

@@ -101,17 +101,11 @@ echo "ℹ️ Creating a backup of your config files..."
 backupFile ".bashrc"
 backupFile ".bash_aliases"
 backupFile ".bash_functions"
-
 backupFile ".emacs"
-
 backupFile ".config/starship.toml"
-
 backupFile ".tmux.conf"
-
 backupFile ".clang-format"
-
 backupFile ".gitconfig"
-
 backupFile ".battery-warning.sh"
 backupFile ".currentapp.sh"
 backupFile ".desktop.sh"
@@ -137,6 +131,7 @@ backupProgram "nvim"
 backupProgram "picom"
 backupProgram "polybar"
 backupProgram "rofi"
+backupProgram "ghostty"
 
 echo "✅ Created a backup of your config files at: $backup_folder/"
 unset backup_folder
@@ -150,7 +145,7 @@ echo "ℹ️ Installing config with stow"
 cd $HOME/.dotfiles/
 stow fonts
 stow i3 dunst scripts picom polybar rofi
-stow kitty tmux fish bash starship
+stow kitty tmux fish bash starship ghostty
 stow nvim vim clang-format emacs
 stow git lazygit kettle
 stow mybins containers

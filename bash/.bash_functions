@@ -74,13 +74,24 @@ gcs() {
 }
 
 ta() {
-	if [ "$#" -eq 0 ]; then
-		sessions=$(tmux list-sessions -F "#{session_name}")
-		session=$(gum choose $sessions)
-		tmux a -t $session
-	else
-		tmux a -t $1
-	fi
+    if [ "$#" -eq 0 ]; then
+        # Get only active (running) tmux sessions
+        sessions=$(tmux list-sessions 2>/dev/null | awk -F: '{print $1}')
+
+        # If no active sessions, exit
+        if [ -z "$sessions" ]; then
+            echo "No active tmux sessions found."
+            return 1
+        fi
+
+        # Let the user choose a session using gum
+        session=$(echo "$sessions" | gum choose)
+
+        # Attach to the selected session if it's not empty
+        [ -n "$session" ] && tmux attach-session -t "$session"
+    else
+        tmux attach-session -t "$1"
+    fi
 }
 
 welcome() {
