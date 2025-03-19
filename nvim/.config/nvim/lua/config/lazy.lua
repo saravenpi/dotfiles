@@ -19,7 +19,7 @@ require("lazy").setup({
             "LazyVim/LazyVim",
             import = "lazyvim.plugins",
             opts = {
-                colorscheme = "catppuccin",
+                colorscheme = "gruvbox-material",
             },
         },
         { import = "lazyvim.plugins.extras.lang.typescript" },
