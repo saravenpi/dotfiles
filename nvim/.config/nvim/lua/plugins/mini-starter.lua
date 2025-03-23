@@ -48,37 +48,4 @@ return {
         }
         return config
     end,
-    config = function(_, config)
-        if vim.o.filetype == "lazy" then
-            vim.cmd.close()
-            vim.api.nvim_create_autocmd("User", {
-                pattern = "MiniStarterOpened",
-                callback = function()
-                    require("lazy").show()
-                end,
-            })
-        end
-
-        local starter = require("mini.starter")
-        starter.setup(config)
-
-        vim.api.nvim_create_autocmd("User", {
-            pattern = "LazyVimStarted",
-            callback = function(ev)
-                local stats = require("lazy").stats()
-                local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-                local pad_footer = string.rep(" ", 8)
-                starter.config.footer = pad_footer
-                    .. "⚡ Neovim loaded "
-                    .. stats.count
-                    .. " plugins in "
-                    .. ms
-                    .. "ms"
-                -- INFO: based on @echasnovski's recommendation (thanks a lot!!!)
-                if vim.bo[ev.buf].filetype == "starter" then
-                    pcall(starter.refresh)
-                end
-            end,
-        })
-    end,
 }
