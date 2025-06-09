@@ -25,44 +25,44 @@ echo "⚠️ This script will backup your current config and install the new one
 echo ""
 
 while true; do
-    read -p "Do you want to proceed? (Y/n) " yn </dev/tty
+  read -p "Do you want to proceed? (Y/n) " yn </dev/tty
 
-    case $yn in
-        [yY])
-            echo "ok, we will proceed"
-            break
-            ;;
-        [nN])
-            echo "exiting..."
-            exit
-            ;;
-        *)
-            if [[ $yn = "" ]]; then
-                echo "ok, we will proceed"
-                break
-            else
-                echo "invalid choice"
-            fi
-            ;;
-    esac
+  case $yn in
+  [yY])
+    echo "ok, we will proceed"
+    break
+    ;;
+  [nN])
+    echo "exiting..."
+    exit
+    ;;
+  *)
+    if [[ $yn = "" ]]; then
+      echo "ok, we will proceed"
+      break
+    else
+      echo "invalid choice"
+    fi
+    ;;
+  esac
 done
 
 # Check if git is installed
 if ! command -v git &>/dev/null; then
-    echo "The command git could not be found."
-    echo "The installation process requires git to continue."
-    echo "Please install git and try again."
-    echo "Exiting..."
-    exit 1
+  echo "The command git could not be found."
+  echo "The installation process requires git to continue."
+  echo "Please install git and try again."
+  echo "Exiting..."
+  exit 1
 fi
 
 # Check if stow is installed
 if ! command -v stow &>/dev/null; then
-    echo "The command stow could not be found."
-    echo "The installation process requires GNU stow to continue."
-    echo "Please install GNU stow and try again."
-    echo "Exiting..."
-    exit 1
+  echo "The command stow could not be found."
+  echo "The installation process requires GNU stow to continue."
+  echo "Please install GNU stow and try again."
+  echo "Exiting..."
+  exit 1
 fi
 
 # Prepare the backup folder
@@ -73,26 +73,26 @@ mkdir -p "$backup_folder/.config/"
 
 # Function to backup a file under the home folder
 backupFile() {
-    echo "📄 Backing up file: $1 to $backup_folder"
-    if [[ -f "$HOME/$1" ]]; then
-        mv $HOME/$1 $backup_folder
-    fi
+  echo "📄 Backing up file: $1 to $backup_folder"
+  if [[ -f "$HOME/$1" ]]; then
+    mv $HOME/$1 $backup_folder
+  fi
 }
 
 # Function to backup a folder under the home folder
 backupFolder() {
-    echo "📁 Backing up folder: $1 to $backup_folder"
-    if [[ -d "$HOME/$1" ]]; then
-        mv $HOME/$1 $backup_folder
-    fi
+  echo "📁 Backing up folder: $1 to $backup_folder"
+  if [[ -d "$HOME/$1" ]]; then
+    mv $HOME/$1 $backup_folder
+  fi
 }
 
 # Function to backup a program config folder under the home folder
 backupProgram() {
-    echo "💿 Backing up program: $1 to $backup_folder/.config/"
-    if [[ -d "$HOME/.config/$1" ]]; then
-        mv $HOME/.config/$1 "$backup_folder/.config/"
-    fi
+  echo "💿 Backing up program: $1 to $backup_folder/.config/"
+  if [[ -d "$HOME/.config/$1" ]]; then
+    mv $HOME/.config/$1 "$backup_folder/.config/"
+  fi
 }
 
 echo "ℹ️ Creating a backup of your config files..."
@@ -152,57 +152,111 @@ stow mybins containers
 
 # Ask to install additional programs
 while true; do
-    read -p "Do you want to install additional programs? (Y/n) " yn </dev/tty
+  read -p "Do you want to install additional programs? (Y/n) " yn </dev/tty
 
-    case $yn in
-        [yY])
-            echo "ok, we will proceed"
-            break
-            ;;
-        [nN])
-            echo "🎉 Dotfiles installed successfully! 🎉 (without additional programs)"
-            exit
-            ;;
-        *)
-            if [[ $yn = "" ]]; then
-                echo "ok, we will proceed"
-                break
-            else
-                echo "invalid choice"
-            fi
-            ;;
-    esac
+  case $yn in
+  [yY])
+    echo "ok, we will proceed"
+    break
+    ;;
+  [nN])
+    echo "🎉 Dotfiles installed successfully! 🎉 (without additional programs)"
+    exit
+    ;;
+  *)
+    if [[ $yn = "" ]]; then
+      echo "ok, we will proceed"
+      break
+    else
+      echo "invalid choice"
+    fi
+    ;;
+  esac
 done
 
 # Installing additional programs
 echo "ℹ️ Installing additional programs"
-if which node >/dev/null; then
-    echo "ℹ️ Installing gitmoji-cli"
-    echo "⚠️ sudo permissions needed to install gitmoji-cli globally"
-    sudo npm i -g gitmoji-cli
-    echo "✅ Installed gitmoji-cli successfully"
+
+# Install Bun
+echo "ℹ️ Installing bun"
+if [[ -d "$HOME/.bun" ]]; then
+  echo "ℹ️ bun is already installed"
 else
-    echo "❌ failed to install gitmoji-cli"
-    echo "npm command is not available"
+  echo "ℹ️ Installing bun"
+  curl -fsSL https://bun.sh/install | bash
+  if [[ $? -eq 0 ]]; then
+    echo "✅ Installed bun successfully"
+  else
+    echo "❌ failed to install bun"
+  fi
 fi
 
+# Install gitmoji-cli with bun
+if which bun >/dev/null; then
+  echo "ℹ️ Installing gitmoji-cli"
+  echo "⚠️ sudo permissions needed to install gitmoji-cli globally"
+  sudo bun i -g gitmoji-cli
+  if which gitmoji >/dev/null; then
+    echo "✅ Installed gitmoji-cli successfully"
+  else
+    echo "❌ failed to install gitmoji-cli"
+  fi
+else
+  echo "❌ failed to install gitmoji-cli"
+  echo "bun command is not available"
+fi
+
+# Install pokemon-colorscripts
 echo "ℹ️ Installing pokemon-colorscripts"
 git clone https://gitlab.com/phoneybadger/pokemon-colorscripts.git
 cd pokemon-colorscripts
 echo "⚠️ sudo permissions needed to install pokemon-colorscripts"
 sudo ./install.sh
 if which pokemon-colorscripts >/dev/null; then
-    echo "✅ Installed pokemon-colorscripts successfully"
+  echo "✅ Installed pokemon-colorscripts successfully"
 else
-    echo "❌ failed to install pokemon-colorscripts"
+  echo "❌ failed to install pokemon-colorscripts"
 fi
 
+# Install starship prompt
 echo "ℹ️ Installing starship prompt"
 curl -sS https://starship.rs/install.sh | sh
 echo "✅ Installed starship successfully"
 
+# Install Tmux Plugin Manager (tpm)
 echo "ℹ️ Installing tmp (tmux plugin manager)"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 echo "✅ Installed tpm successfully"
+
+# Optional: Install Nvim with ./nvim-install.sh script (prompt for yes/no)
+chmod +x $HOME/.dotfiles/scripts/nvim-install.sh
+if [[ -f $HOME/.dotfiles/scripts/nvim-install.sh ]]; then
+  while true; do
+    read -p "Do you want to install Neovim? (Y/n) " yn </dev/tty
+
+    case $yn in
+    [yY])
+      echo "ok, we will proceed"
+      $HOME/.dotfiles/scripts/nvim-install.sh
+      break
+      ;;
+    [nN])
+      echo "Skipping Neovim installation"
+      break
+      ;;
+    *)
+      if [[ $yn = "" ]]; then
+        echo "ok, we will proceed"
+        $HOME/.dotfiles/scripts/nvim-install.sh
+        break
+      else
+        echo "invalid choice"
+      fi
+      ;;
+    esac
+  done
+else
+  echo "❌ nvim-install.sh script not found"
+fi
 
 echo "🎉 Dotfiles installed successfully! 🎉"
