@@ -217,7 +217,6 @@ if which pokemon-colorscripts >/dev/null; then
 else
   echo "❌ failed to install pokemon-colorscripts"
 fi
-rm -rf pokemon-colorscripts
 
 # Install starship prompt
 echo "ℹ️ Installing starship prompt"
@@ -261,7 +260,7 @@ else
 fi
 
 # Install zsh plugins
-echjo "ℹ️ Installing zsh plugins"
+echo "ℹ️ Installing zsh plugins"
 if [[ ! -d "$HOME/.zsh" ]]; then
   mkdir -p $HOME/.zsh
 fi
