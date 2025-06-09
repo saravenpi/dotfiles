@@ -260,4 +260,11 @@ else
   echo "❌ nvim-install.sh script not found"
 fi
 
+# Install zsh plugins
+echjo "ℹ️ Installing zsh plugins"
+if [[ ! -d "$HOME/.zsh" ]]; then
+  mkdir -p $HOME/.zsh
+fi
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+
 echo "🎉 Dotfiles installed successfully! 🎉"
