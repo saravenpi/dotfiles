@@ -152,7 +152,7 @@ stow mybins containers
 
 # Ask to install additional programs
 while true; do
-  read -p "Do you want to install additional programs? (Y/n) " yn </dev/tty
+  read -p "Do you want to install additional programs? (bun, gitmoji-cli, pokemon-colorscripts, starship, tpm, nvim) (Y/n) " yn </dev/tty
 
   case $yn in
   [yY])
