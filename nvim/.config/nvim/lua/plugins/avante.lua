@@ -4,11 +4,13 @@ return {
     version = false, -- Never set this value to "*"! Never!
     opts = {
         provider = "openai",
-        openai = {
-            endpoint = "https://api.openai.com/v1",
-            model = "gpt-4o",
-            timeout = 30000,
-            temperature = 0,
+        providers = {
+            openai = {
+                endpoint = "https://api.openai.com/v1",
+                model = "gpt-4o",
+                timeout = 30000,
+                temperature = 0,
+            },
         },
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
