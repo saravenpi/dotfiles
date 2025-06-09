@@ -1,23 +1,11 @@
 #!/bin/bash
 
 # Display the welcome message
-echo " _                        "
-echo " \`*-.                    "
-echo "  )  _\`-.                 "
-echo " .  : \`. .                "
-echo " : _   '  \               "
-echo " ; *\` _.   \`*-._          "
-echo " \`-.-\'          \`-.       "
-echo "   ;       \`       \`.     "
-echo "   :.       .        \    "
-echo "   . \  .   :   .-'   .   "
-echo "   '  \`+.;  ;  '      :   "
-echo "   :  '  |    ;       ;-. "
-echo "   ; '   : :\`-:     _.\`* ;"
-echo ".*' /  .*' ; .*\`- +'  \`*' "
-echo "\`*-*   \`*-*  \`*-*'"
+echo " /\\_/\\"
+echo "( o.o )"
+echo " > ^ <"
 echo "                          "
-echo "dotfiles made by @saravenpi"
+echo "dotfiles configuration by @saravenpi"
 echo "                          "
 
 # Prompt user for install
