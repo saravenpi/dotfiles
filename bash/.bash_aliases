@@ -39,8 +39,10 @@ alias goc="cd $HOME/code/"
 alias gos="cd $HOME/school/"
 alias gob="cd $HOME/brain/"
 alias gon="cd $HOME/notes/ && nvim index.md"
+
+OBSIDIAN="$HOME/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/"
 alias wk="cd $HOME/notes/ && nvim index.md"
-alias b="cd $HOME/brain/ && nvim"
+alias b="cd $OBSIDIAN/brain && nvim"
 
 alias streaks="streaks.ts"
 alias st="streaks"
@@ -58,8 +60,12 @@ alias ga="git add"
 alias gc="git clone"
 alias gd="git diff"
 alias gb="git branch"
+alias gba="git branch -a"
+alias gco="git checkout"
 alias gr="git remove"
-alias gitu="git add . && gitmoji -c && git push"
+# alias gitu="git add . && gitmoji -c && git push"
+alias gitu="git add . && git commit"
+alias gitup="git add . && git commit && git push"
 
 # clang
 alias m="make"
@@ -73,13 +79,16 @@ alias vgf="valgrind --leak-check=full"
 alias cinit="kettle use c ."
 
 # tmux
-alias t="tmux"
-alias tl="tmux ls -F '#{session_name}'"
-alias tll="tmux ls"
-alias trs="tmux rename-session -t"
+# alias t="tmux"
+alias t="tmux" # start tmux
+alias tl="tmux ls -F '#{session_name}'" # list sessions
+alias sl="tmux ls -F '#{session_name}'" # list sessions
+alias tll="tmux ls" # list sessions with details
+alias trs="tmux rename-session -t" # remame tmux session
 
 # nono
 alias nono="pokemon-colorscripts -n audino --no-title"
 alias fanfan="pokemon-colorscripts -n caterpie --no-title"
 
 alias ax="chmod +x"
+alias starwars="telnet towel.blinkenlights.nl"

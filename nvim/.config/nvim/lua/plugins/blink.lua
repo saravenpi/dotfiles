@@ -16,9 +16,7 @@ return {
             default = {
                 "copilot",
                 "avante",
-                "emoji",
                 "lsp",
-                "env",
                 "path",
                 "snippets",
                 "buffer",

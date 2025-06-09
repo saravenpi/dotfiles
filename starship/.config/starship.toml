@@ -11,5 +11,5 @@ charging_symbol = '⚡️ '
 discharging_symbol = '💀 '
 
 [time]
-disabled = false
-format = '[ 🌵 ]($style)'
+disabled = true
+# format = '[ 🌵 ]($style)'

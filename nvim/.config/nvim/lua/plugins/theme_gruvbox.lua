@@ -6,7 +6,7 @@ return {
             vim.g.gruvbox_material_foreground = "original" -- "material" | "mix" | "original"
             vim.g.gruvbox_material_enable_italic = 1
             vim.g.gruvbox_material_enable_bold = 1
-            vim.g.gruvbox_material_transparent_background = 0 -- 0 | 1 | 2
+            vim.g.gruvbox_material_transparent_background = 2 -- 0 | 1 | 2
             vim.g.gruvbox_material_enable_bold = 1
         end,
     },

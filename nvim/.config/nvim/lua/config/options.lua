@@ -9,4 +9,6 @@ o.tabstop = 2
 o.shiftwidth = 2
 o.spell = false
 o.colorcolumn = "80"
+o.conceallevel = 1
+o.laststatus = 3
 vim.g.autoformat = false

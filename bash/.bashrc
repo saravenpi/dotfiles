@@ -14,3 +14,4 @@
 . ~/.bash_starship
 
 welcome
+. "$HOME/.cargo/env"

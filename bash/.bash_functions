@@ -73,7 +73,7 @@ gcs() {
 	git clone "git@github.com:$1.git"
 }
 
-ta() {
+s() {
     if [ "$#" -eq 0 ]; then
         # Get only active (running) tmux sessions
         sessions=$(tmux list-sessions 2>/dev/null | awk -F: '{print $1}')
@@ -104,3 +104,20 @@ welcome() {
 	# echo "🔥 Streaks: "
 	# streaks
 }
+
+
+killport() {
+  if [ -z "$1" ]; then
+    echo "Usage: killport <port>"
+    return 1
+  fi
+
+  PID=$(lsof -ti tcp:$1)
+
+  if [ -z "$PID" ]; then
+    echo "🔍 No process found on port $1"
+  else
+    kill -9 $PID && echo "💥 Port $1 freeed (PID $PID killed)"
+  fi
+}
+
