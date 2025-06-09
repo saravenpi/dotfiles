@@ -217,6 +217,7 @@ if which pokemon-colorscripts >/dev/null; then
 else
   echo "❌ failed to install pokemon-colorscripts"
 fi
+rm -rf pokemon-colorscripts
 
 # Install starship prompt
 echo "ℹ️ Installing starship prompt"
@@ -237,7 +238,7 @@ if [[ -f $HOME/.dotfiles/scripts/nvim-install.sh ]]; then
     case $yn in
     [yY])
       echo "ok, we will proceed"
-      $HOME/.dotfiles/scripts/nvim-install.sh
+      $HOME/.dotfiles/nvim-install.sh
       break
       ;;
     [nN])
@@ -247,7 +248,7 @@ if [[ -f $HOME/.dotfiles/scripts/nvim-install.sh ]]; then
     *)
       if [[ $yn = "" ]]; then
         echo "ok, we will proceed"
-        $HOME/.dotfiles/scripts/nvim-install.sh
+        $HOME/.dotfiles/nvim-install.sh
         break
       else
         echo "invalid choice"
