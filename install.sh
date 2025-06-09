@@ -175,7 +175,7 @@ while true; do
 done
 
 # Installing additional programs
-echo "ℹ️ Installing additional programs"
+echo "ℹ️ Installing additional programs (bun, gitmoji-cli, pokemon-colorscripts, starship, tpm, nvim)"
 
 # Install Bun
 echo "ℹ️ Installing bun"
@@ -193,11 +193,11 @@ fi
 
 # Install gitmoji-cli with bun
 if which bun >/dev/null; then
-  echo "ℹ️ Installing gitmoji-cli"
+  echo "ℹ️ Installing gitmoji-cli (with bun)"
   echo "⚠️ sudo permissions needed to install gitmoji-cli globally"
   sudo bun i -g gitmoji-cli
   if which gitmoji >/dev/null; then
-    echo "✅ Installed gitmoji-cli successfully"
+    echo "✅ Installed gitmoji-cli successfully (with bun)"
   else
     echo "❌ failed to install gitmoji-cli"
   fi
@@ -207,13 +207,13 @@ else
 fi
 
 # Install pokemon-colorscripts
-echo "ℹ️ Installing pokemon-colorscripts"
+echo "ℹ️ Installing pokemon-colorscripts (from source)"
 git clone https://gitlab.com/phoneybadger/pokemon-colorscripts.git
 cd pokemon-colorscripts
 echo "⚠️ sudo permissions needed to install pokemon-colorscripts"
 sudo ./install.sh
 if which pokemon-colorscripts >/dev/null; then
-  echo "✅ Installed pokemon-colorscripts successfully"
+  echo "✅ Installed pokemon-colorscripts successfully (from source)"
 else
   echo "❌ failed to install pokemon-colorscripts"
 fi
@@ -230,8 +230,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 echo "✅ Installed tpm successfully"
 
 # Optional: Install Nvim with ./nvim-install.sh script (prompt for yes/no)
-chmod +x $HOME/.dotfiles/scripts/nvim-install.sh
-if [[ -f $HOME/.dotfiles/scripts/nvim-install.sh ]]; then
+chmod +x $HOME/.dotfiles/nvim-install.sh
+if [[ -f $HOME/.dotfiles/nvim-install.sh ]]; then
   while true; do
     read -p "Do you want to install Neovim? (Y/n) " yn </dev/tty
 
