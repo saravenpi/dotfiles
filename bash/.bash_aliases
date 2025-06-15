@@ -69,7 +69,7 @@ alias gitup="git add . && git commit && git push"
 
 # clang
 alias m="make"
-alias mc="make clean"
+# alias mc="make clean"
 alias mf="make fclean"
 alias mfc="make fclean"
 alias mr="make re"
