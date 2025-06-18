@@ -11,4 +11,4 @@ o.spell = false
 o.colorcolumn = "80"
 o.conceallevel = 1
 o.laststatus = 3
-vim.g.autoformat = false
+vim.g.autoformat = true -- to format on save
