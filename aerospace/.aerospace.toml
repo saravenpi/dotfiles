@@ -11,6 +11,9 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 # Mouse follows focus when focused monitor changes
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 on-focus-changed = "move-mouse window-lazy-center"
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+automatically-unhide-macos-hidden-apps = false
 
 [mode.main.binding]
     # See: https://nikitabobko.github.io/AeroSpace/goodies#open-a-new-window-with-applescript
@@ -76,23 +79,25 @@ on-focus-changed = "move-mouse window-lazy-center"
     ctrl-9 = 'workspace 9'
     ctrl-0 = 'workspace 10'
 
-    ctrl-shift-1 = 'move-node-to-workspace 1'
-    ctrl-shift-2 = 'move-node-to-workspace 2'
-    ctrl-shift-3 = 'move-node-to-workspace 3'
-    ctrl-shift-4 = 'move-node-to-workspace 4'
-    ctrl-shift-5 = 'move-node-to-workspace 5'
-    ctrl-shift-6 = 'move-node-to-workspace 6'
-    ctrl-shift-7 = 'move-node-to-workspace 7'
-    ctrl-shift-8 = 'move-node-to-workspace 8'
-    ctrl-shift-9 = 'move-node-to-workspace 9'
-    ctrl-shift-0 = 'move-node-to-workspace 10'
+    ctrl-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+    ctrl-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+    ctrl-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+    ctrl-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+    ctrl-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+    ctrl-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+    ctrl-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+    ctrl-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+    ctrl-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+    ctrl-shift-0 = ['move-node-to-workspace 10', 'workspace 10']
+
+
+    alt-t = 'workspace 10' # move to terminal workspace
+    alt-b = 'workspace 1' # move to browser workspace
 
     alt-shift-c = 'reload-config'
 
     alt-r = 'mode resize'
     alt-m = 'mode service'
-
-    # alt-shift-f = 'fullscreen'
 
 [mode.service.binding]
     esc = ['reload-config', 'mode main']
@@ -139,3 +144,25 @@ run = "move-node-to-workspace 2"
 [[on-window-detected]]
 if.app-id = 'com.apple.mail'
 run = "move-node-to-workspace 3"
+
+[workspace-to-monitor-force-assignment]
+    # 1 = 1                            # Monitor sequence number from left to right. 1-based indexing
+    # 2 = 'main'                       # Main monitor
+    # 3 = 'secondary'                  # Non-main monitor in case when there are only two monitors
+    # 4 = 'built-in'                   # Case insensitive regex substring
+    # 5 = '^built-in retina display$'  # Case insensitive regex match
+    # 6 = ['secondary', 'dell']        # You can specify multiple patterns. The first matching pattern will be used
+    1 = 'main'
+    2 = 'main'
+    3 = 'main'
+    4 = 'main'
+    5 = 'main'
+    6 = 'main'
+    7 = 'main'
+    8 = 'secondary'
+    9 = 'secondary'
+    10 = 'secondary'
+
+exec-on-workspace-change = ['/bin/bash', '-c',
+    'aerospace workspace $AEROSPACE_FOCUSED_WORKSPACE'
+]
