@@ -44,9 +44,6 @@ OBSIDIAN="$HOME/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/"
 alias wk="cd $HOME/notes/ && nvim index.md"
 alias b="cd $OBSIDIAN/brain && nvim"
 
-alias streaks="streaks.ts"
-alias st="streaks"
-
 # quick config
 alias cnvim="cd $HOME/.config/nvim/ && nvim ."
 alias cbash="cd $HOME && nvim .bashrc"
@@ -92,3 +89,6 @@ alias fanfan="pokemon-colorscripts -n caterpie --no-title"
 
 alias ax="chmod +x"
 alias starwars="telnet towel.blinkenlights.nl"
+
+# Egg script
+alias e="egg"

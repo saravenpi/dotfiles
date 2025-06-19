@@ -29,26 +29,28 @@ grp() {
 	nvim .
 }
 
-# quick open a project with zoxide
+# o : zoxide → egg → retour maison
 o() {
-    local args=("$@")
-    local cur=$(pwd)
+    local origin="$PWD" # point de départ
 
-    if [[ -z "$args" || "$args" == "." ]]; then
-        ts "$cur"
+    if [[ $# -eq 0 || "$1" == "." ]]; then
+        # Aucune cible : reste ici
+        egg "$(basename "$origin")"
     else
-        z "${args[@]}"
-        ts "${args[@]}"
+        # zoxide vers la cible (alias, sous-chemin, etc.)
+        z "$@" || return
+        egg "$(basename "$PWD")"
     fi
 
-    cd "$cur"
-    unset cur
+    cd "$origin" # on remet les chaussons
+    unset origin
 }
+
 
 op() {
   tmppath=$(cat ~/.project)
 	cd $tmppath
-  ts $tmppath
+  egg
 	unset tmppath
 }
 
@@ -95,14 +97,7 @@ s() {
 }
 
 welcome() {
-	# pokemon-colorscripts -n shaymin --no-title
-	# cal
 	echo "👋 Salut ! :D"
-	# bun run $HOME/code/blagues/index.ts
-	# echo "🧠 Pense à checker ~/notes/ (wk)"
-	# echo "📅 Aujourd'hui c'est: $(date)"
-	# echo "🔥 Streaks: "
-	# streaks
 }
 
 

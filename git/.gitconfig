@@ -23,6 +23,7 @@
 
 [diff]
 	colorMoved = default
+
 [http]
 	version = HTTP/1.1
 	postBuffer = 157286400
