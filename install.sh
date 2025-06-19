@@ -217,6 +217,11 @@ echo "ℹ️ Installing tmp (tmux plugin manager)"
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 echo "✅ Installed tpm successfully"
 
+# Install Egg, tmux layout manager
+echo "ℹ️ Installing egg (tmux layout manager)"
+chmod +x $HOME/.dotfiles/egg-install.sh
+bash $HOME/.dotfiles/egg-install.sh
+
 # Optional: Install Nvim with ./nvim-install.sh script (prompt for yes/no)
 chmod +x $HOME/.dotfiles/nvim-install.sh
 if [[ -f $HOME/.dotfiles/nvim-install.sh ]]; then
