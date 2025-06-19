@@ -219,8 +219,8 @@ echo "✅ Installed tpm successfully"
 
 # Install Egg, tmux layout manager
 echo "ℹ️ Installing egg (tmux layout manager)"
-chmod +x $HOME/.dotfiles/egg-install.sh
-bash $HOME/.dotfiles/egg-install.sh
+curl -fsSL https://raw.githubusercontent.com/saravenpi/egg/main/install.sh | bash
+echo "✅ Installed egg successfully"
 
 # Optional: Install Nvim with ./nvim-install.sh script (prompt for yes/no)
 chmod +x $HOME/.dotfiles/nvim-install.sh

@@ -8,7 +8,7 @@
 ## How to install the config
 Paste this one line in your terminal:
 ```sh
-curl -fsSL https://saravenpi.me/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh | bash
 ``` 
 🎉 ! Now the config should be up and running !
 
