@@ -92,3 +92,5 @@ alias starwars="telnet towel.blinkenlights.nl"
 
 # Egg script
 alias e="egg"
+
+alias g="gemini"

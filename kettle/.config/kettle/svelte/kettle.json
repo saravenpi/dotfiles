@@ -60,7 +60,8 @@
     "./src/routes/+page.svelte",
     "./src/routes/(auth)/register/+page.svelte",
     "./src/routes/(auth)/login/+page.svelte",
-    "./src/routes/+layout.svelte"
+    "./src/routes/+layout.svelte",
+    "src/routes/+layout.ts"
   ],
   "kettle_path": "/Users/yannthevenin/.config/kettle/svelte/kettle.json",
   "init": []

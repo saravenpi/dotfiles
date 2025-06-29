@@ -130,6 +130,10 @@ if.app-id = 'app.zen-browser.zen'
 run = "move-node-to-workspace 1"
 
 [[on-window-detected]]
+if.app-id = 'company.thebrowser.dia'
+run = "move-node-to-workspace 1"
+
+[[on-window-detected]]
 if.app-id = 'com.hnc.Discord'
 run = "move-node-to-workspace 2"
 
@@ -156,6 +160,7 @@ run = "move-node-to-workspace 8"
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = "move-node-to-workspace 9"
+
 
 [workspace-to-monitor-force-assignment]
     # 1 = 1                            # Monitor sequence number from left to right. 1-based indexing
