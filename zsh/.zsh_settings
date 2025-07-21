@@ -40,7 +40,6 @@ eval "$(starship init zsh)"
 if [ -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh; fi
 
 export PATH=$PATH:$(go env GOPATH)/bin
-export MANPAGER="nvim -c 'set ft=man' -"
 
 export PATH="/Users/yannthevenin/.cargo/bin:$PATH"
 
@@ -48,3 +47,8 @@ export PATH=$PATH:/Users/yannthevenin/.spicetify
 
 # Auto Suggestions
 . ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# opencode
+export PATH=/Users/yannthevenin/.opencode/bin:$PATH
+
+export MANPAGER="nvim +Man!"

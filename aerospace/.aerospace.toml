@@ -150,6 +150,10 @@ if.app-id = 'com.apple.iCal'
 run = "move-node-to-workspace 5"
 
 [[on-window-detected]]
+if.app-id = 'com.linear'
+run = "move-node-to-workspace 6"
+
+[[on-window-detected]]
 if.app-id = 'com.bitwarden.desktop'
 run = "move-node-to-workspace 7"
 

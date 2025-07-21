@@ -35,3 +35,5 @@ export VIMWIKIGRAPH_CONFIG=$HOME/.vimwikigraph.cfg
 
 bind 'set show-all-if-ambiguous on'
 bind 'TAB:menu-complete'
+
+export MANPAGER="nvim +Man!"

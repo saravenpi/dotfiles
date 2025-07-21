@@ -1,4 +1,3 @@
-# If not running interactively, don't do anything and return early
 [[ $- == *i* ]] || return
 
 # bash configuration
@@ -14,4 +13,3 @@
 . ~/.bash_starship
 
 welcome
-. "$HOME/.cargo/env"

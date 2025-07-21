@@ -77,11 +77,11 @@ alias cinit="kettle use c ."
 
 # tmux
 # alias t="tmux"
-alias t="tmux" # start tmux
+alias t="tmux"                          # start tmux
 alias tl="tmux ls -F '#{session_name}'" # list sessions
 alias sl="tmux ls -F '#{session_name}'" # list sessions
-alias tll="tmux ls" # list sessions with details
-alias trs="tmux rename-session -t" # remame tmux session
+alias tll="tmux ls"                     # list sessions with details
+alias trs="tmux rename-session -t"      # remame tmux session
 
 # nono
 alias nono="pokemon-colorscripts -n audino --no-title"
@@ -94,3 +94,8 @@ alias starwars="telnet towel.blinkenlights.nl"
 alias e="egg"
 
 alias g="gemini"
+alias oc="opencode"
+
+# SSH clipbooard utils
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
