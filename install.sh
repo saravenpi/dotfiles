@@ -15,7 +15,7 @@ readonly WHITE='\033[1;37m'
 readonly NC='\033[0m' # No Color
 
 # Global variables
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_DIR="${HOME}/.dotfiles"
 readonly LOG_FILE="$HOME/.dotfiles-install.log"
 readonly BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 STEP_COUNT=0
