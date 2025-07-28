@@ -4,6 +4,7 @@ M.specs = {
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
 	{ src = "https://github.com/folke/noice.nvim" },
 	{ src = "https://github.com/rcarriga/nvim-notify" },
+	{ src = "https://github.com/akinsho/bufferline.nvim" },
 }
 
 M.setup = function()
@@ -33,6 +34,25 @@ M.setup = function()
 			section_separators = "",
 			component_separators = "",
 			globalstatus = true,
+		},
+	})
+
+	require("bufferline").setup({
+		options = {
+			numbers = "none",
+			diagnostics = "nvim_lsp",
+			separator_style = "slant",
+			show_buffer_close_icons = true,
+			show_close_icon = true,
+			show_tab_indicators = true,
+			offsets = {
+				{
+					filetype = "NvimTree",
+					text = "File Explorer",
+					text_align = "left",
+					separator = true,
+				},
+			},
 		},
 	})
 end

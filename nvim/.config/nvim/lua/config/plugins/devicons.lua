@@ -19,6 +19,46 @@ M.setup = function()
 	})
 
 	devicons.set_icon({
+		[".egg.yml"] = {
+			icon = "🥚",
+			color = "#ffaa00",
+			name = "EggYml",
+		},
+	})
+
+	devicons.set_icon({
+		["glint.yml"] = {
+			icon = "📰",
+			color = "#6d8086",
+			name = "Glint",
+		},
+	})
+
+	devicons.set_icon({
+		[".glint.yml"] = {
+			icon = "📰",
+			color = "#6d8086",
+			name = "Glint",
+		},
+	})
+
+	devicons.set_icon({
+		["purse.yml"] = {
+			icon = "💰",
+			color = "#6d8086",
+			name = "Purse",
+		},
+	})
+
+	devicons.set_icon({
+		[".purse.yml"] = {
+			icon = "💰",
+			color = "#6d8086",
+			name = "Purse",
+		},
+	})
+
+	devicons.set_icon({
 		yml = {
 			icon = "📄",
 			color = "#6d8086",
@@ -28,4 +68,3 @@ M.setup = function()
 end
 
 return M
-
