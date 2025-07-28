@@ -118,8 +118,6 @@ automatically-unhide-macos-hidden-apps = false
     esc = 'mode main'
 
 
-
-
 # run aerospace list-apps to get the list of apps id
 [[on-window-detected]]
 if.app-id = 'com.mitchellh.ghostty'
@@ -131,6 +129,10 @@ run = "move-node-to-workspace 1"
 
 [[on-window-detected]]
 if.app-id = 'company.thebrowser.dia'
+run = "move-node-to-workspace 1"
+
+[[on-window-detected]]
+if.app-id = 'org.mozilla.firefox'
 run = "move-node-to-workspace 1"
 
 [[on-window-detected]]

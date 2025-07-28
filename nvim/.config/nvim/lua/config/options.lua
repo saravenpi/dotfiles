@@ -1,14 +1,11 @@
--- Options are automatically loaded before lazy.nvim startup
--- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
--- Add any additional options here
-local o = vim.o
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.signcolumn = "yes"
+vim.opt.termguicolors = true
+vim.opt.wrap = false
+vim.opt.tabstop = 4
+vim.opt.swapfile = false
+vim.opt.winborder = "rounded"
+vim.opt.clipboard = "unnamedplus"
+vim.g.mapleader = " "
 
-o.expandtab = true --set to true to insert spaces when tab is pressed
-o.smartindent = true
-o.tabstop = 2
-o.shiftwidth = 2
-o.spell = false
-o.colorcolumn = "80"
-o.conceallevel = 1
-o.laststatus = 3
-vim.g.autoformat = false -- to format on save

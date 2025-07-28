@@ -13,3 +13,4 @@
 . ~/.bash_starship
 
 welcome
+export PATH="$PATH:$HOME/.local/bin"

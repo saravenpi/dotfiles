@@ -99,3 +99,10 @@ alias oc="opencode"
 # SSH clipbooard utils
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
+
+# Purse
+alias p="purse i"
+
+# Claude Code
+alias cy="claude --dangerously-skip-permissions"
+alias claudey="claude --dangerously-skip-permissions"

@@ -21,3 +21,5 @@ export PATH="/Users/yannthevenin/.codeium/windsurf/bin:$PATH"
 # bun completions
 [ -s "/Users/yannthevenin/.bun/_bun" ] && source "/Users/yannthevenin/.bun/_bun"
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
