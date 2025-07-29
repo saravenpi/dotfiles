@@ -434,7 +434,14 @@ safe_git_clone() {
     if [[ -d "$destination" ]]; then
         warn "Directory exists: $destination"
         if prompt_user "Remove existing directory and continue?" "y"; then
+            # Change to a safe directory before removing destination
+            local current_dir="$PWD"
+            cd "$HOME" || cd /tmp || cd /
             rm -rf "$destination"
+            # Restore original directory if it still exists
+            if [[ -d "$current_dir" ]]; then
+                cd "$current_dir"
+            fi
         else
             error "Cannot proceed with existing directory"
             return 1
