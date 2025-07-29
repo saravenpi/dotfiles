@@ -7,15 +7,25 @@ M.specs = {
 }
 
 M.setup = function()
-	require("gitsigns").setup({
-		current_line_blame = true,
-		signs = {
-			add = { text = "│" },
-			change = { text = "│" },
-			delete = { text = "_" },
-			topdelete = { text = "‾" },
-			changedelete = { text = "~" },
-		},
+	-- Lazy load gitsigns to avoid git scanning on startup
+	vim.api.nvim_create_autocmd({"BufEnter", "BufNewFile"}, {
+		callback = function()
+			if vim.fn.isdirectory(vim.fn.getcwd() .. "/.git") == 1 then
+				require("gitsigns").setup({
+					current_line_blame = false, -- Disable for performance
+					signs = {
+						add = { text = "│" },
+						change = { text = "│" },
+						delete = { text = "_" },
+						topdelete = { text = "‾" },
+						changedelete = { text = "~" },
+					},
+					attach_to_untracked = false, -- Skip untracked files
+					max_file_length = 40000, -- Skip large files
+				})
+			end
+		end,
+		once = true
 	})
 end
 

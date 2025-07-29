@@ -1,3 +1,6 @@
+-- Load startup optimizations first
+require("config.startup-optimization")
+
 require("config.options")
 require("config.keymaps")
 require("config.markdown-links").setup()

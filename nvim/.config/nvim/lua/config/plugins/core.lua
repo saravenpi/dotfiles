@@ -25,38 +25,49 @@ M.specs = {
 M.setup = function()
 	require("mini.pick").setup()
 	require("oil").setup()
-	require("neo-tree").setup()
+	
+	-- Lazy setup neo-tree only when first called
+	vim.api.nvim_create_autocmd("VimEnter", {
+		callback = function()
+			vim.defer_fn(function()
+				local ok, neotree = pcall(require, "neo-tree")
+				if ok then 
+					neotree.setup({
+						filesystem = {
+							scan_mode = "shallow", -- Use shallow scan for better performance
+							use_libuv_file_watcher = false, -- Disable file watching for large dirs
+							hijack_netrw_behavior = "disabled", -- Don't hijack netrw
+						},
+						source_selector = {
+							winbar = false, -- Disable winbar for performance
+						},
+					})
+				end
+			end, 50) -- Small delay after startup
+		end,
+		once = true
+	})
 
 	require("nvim-treesitter.configs").setup({
 		ensure_installed = {
-			-- Core
+			-- Core only - others will install on-demand
 			"lua",
 			"vim",
 			"vimdoc",
 			"query",
-			-- Web / Frontend
-			"typescript",
-			"tsx",
-			"javascript",
-			"svelte",
-			"html",
-			"css",
-			"json",
-			"jsonc",
-			"yaml",
-			"toml",
-			-- Backend / Others
-			"elixir",
-			"heex",
-			"sql",
-			"bash",
-			"dockerfile",
-			"markdown",
-			"markdown_inline",
-			"c",
-			"typst",
 		},
-		highlight = { enable = true },
+		auto_install = true, -- Install parsers on-demand when opening files
+		highlight = { 
+			enable = true,
+			disable = function(lang, buf)
+				-- Disable for large files
+				local max_filesize = 100 * 1024 -- 100 KB
+				local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+				if ok and stats and stats.size > max_filesize then
+					return true
+				end
+			end,
+		},
 	})
 
 	require("markview").setup({})

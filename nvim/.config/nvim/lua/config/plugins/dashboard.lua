@@ -30,14 +30,41 @@ function M.setup()
 		dashboard.button("q", "  Quit Neovim", ":qa<CR>"),
 	}
 
-	-- Set footer
-	dashboard.section.footer.val = "Have a great day!"
+	-- Set footer with startup time
+	local startup_time = vim.fn.reltimestr(vim.fn.reltime(vim.g.start_time or vim.fn.reltime()))
+	startup_time = string.format("%.0f", tonumber(startup_time) * 1000) -- Convert to ms
+	dashboard.section.footer.val = {
+		"Have a great day!",
+		"",
+		"⚡ Neovim took " .. startup_time .. " ms to start"
+	}
 
 	-- Send config to alpha
 	alpha.setup(dashboard.opts)
 
-	-- Disable folding on alpha buffer
-	vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
+	-- Disable folding and line numbers on alpha buffer
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = "alpha",
+		callback = function()
+			vim.opt_local.foldenable = false
+			vim.opt_local.number = false
+			vim.opt_local.relativenumber = false
+			vim.opt_local.cursorline = false
+		end,
+	})
+	
+	-- Also handle case where alpha opens before FileType is set
+	vim.api.nvim_create_autocmd("BufEnter", {
+		pattern = "*",
+		callback = function()
+			if vim.bo.filetype == "alpha" then
+				vim.opt_local.foldenable = false
+				vim.opt_local.number = false
+				vim.opt_local.relativenumber = false
+				vim.opt_local.cursorline = false
+			end
+		end,
+	})
 end
 
 return M

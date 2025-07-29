@@ -9,13 +9,14 @@ local function build_file_cache()
     file_cache = {}
     local cwd = vim.fn.getcwd()
     
-    -- Use vim.fs.find for faster file discovery
+    -- Limit search depth and add reasonable limits to prevent scanning entire filesystem
     local md_files = vim.fs.find(function(name)
         return name:match("%.md$")
     end, {
         path = cwd,
         type = "file",
-        limit = math.huge
+        limit = 1000, -- Reasonable limit instead of math.huge
+        upward = false -- Don't search parent directories
     })
     
     -- Build lookup table: filename without extension -> full path
@@ -129,8 +130,7 @@ end
 
 -- Setup function to create the keymap
 function M.setup()
-    -- Build initial cache
-    build_file_cache()
+    -- Don't build cache on startup - defer until first use
     
     -- Watch for file changes to invalidate cache
     vim.api.nvim_create_autocmd({"BufWritePost", "BufNewFile", "BufDelete"}, {
