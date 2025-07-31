@@ -14,8 +14,8 @@ vim.defer_fn(function()
 end, 100)
 
 -- Optimize file operations
-vim.opt.updatetime = 300  -- Faster CursorHold events
-vim.opt.timeoutlen = 500  -- Faster key sequence timeout
+vim.opt.updatetime = 300 -- Faster CursorHold events
+vim.opt.timeoutlen = 500 -- Faster key sequence timeout
 vim.opt.redrawtime = 1500 -- Limit syntax highlighting time
 
 -- Disable expensive features for large files
@@ -27,7 +27,7 @@ vim.api.nvim_create_autocmd("BufReadPre", {
 			vim.opt_local.swapfile = false
 			vim.opt_local.undofile = false
 		end
-	end
+	end,
 })
 
 -- Skip certain directories entirely
@@ -38,9 +38,10 @@ local skip_dirs = {
 	"build",
 	"dist",
 	".next",
-	"vendor"
+	"vendor",
 }
 
 for _, dir in ipairs(skip_dirs) do
 	vim.opt.wildignore:append("*/" .. dir .. "/*")
 end
+

@@ -9,10 +9,12 @@ M.specs = {
 	{ src = "https://github.com/echasnovski/mini.pick" },
 	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
 
+	-- Text manipulation
+	{ src = "https://github.com/echasnovski/mini.surround" },
+
 	-- Core dependencies
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
-	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 
 	-- Syntax and parsing
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
@@ -23,16 +25,44 @@ M.specs = {
 }
 
 M.setup = function()
-	require("mini.pick").setup()
+	require("mini.pick").setup({
+		window = {
+			config = {
+				anchor = "NW",
+				col = math.floor(vim.o.columns * 0.5) - 40,
+				row = math.floor(vim.o.lines * 0.5) - 10,
+				width = 80,
+				height = 20,
+			},
+		},
+	})
 	require("oil").setup()
-	
+
 	-- Lazy setup neo-tree only when first called
 	vim.api.nvim_create_autocmd("VimEnter", {
 		callback = function()
 			vim.defer_fn(function()
 				local ok, neotree = pcall(require, "neo-tree")
-				if ok then 
+				if ok then
 					neotree.setup({
+						default_component_configs = {
+							icon = {
+								-- folder_closed = "📁",
+								-- folder_open = "📂",
+								-- folder_empty = "📁",
+								provider = function(icon, node, state)
+									if node.type == "file" or node.type == "terminal" then
+										local success, mini_icons = pcall(require, "mini.icons")
+										if success then
+											local name = node.type == "terminal" and "terminal" or node.name
+											local devicon, hl, is_default = mini_icons.get("file", name)
+											icon.text = devicon or ""
+											icon.highlight = hl
+										end
+									end
+								end,
+							},
+						},
 						filesystem = {
 							scan_mode = "shallow", -- Use shallow scan for better performance
 							use_libuv_file_watcher = false, -- Disable file watching for large dirs
@@ -45,7 +75,7 @@ M.setup = function()
 				end
 			end, 50) -- Small delay after startup
 		end,
-		once = true
+		once = true,
 	})
 
 	require("nvim-treesitter.configs").setup({
@@ -57,7 +87,7 @@ M.setup = function()
 			"query",
 		},
 		auto_install = true, -- Install parsers on-demand when opening files
-		highlight = { 
+		highlight = {
 			enable = true,
 			disable = function(lang, buf)
 				-- Disable for large files
@@ -71,7 +101,8 @@ M.setup = function()
 	})
 
 	require("markview").setup({})
+
+	require("mini.surround").setup({})
 end
 
 return M
-

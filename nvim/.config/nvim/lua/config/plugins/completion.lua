@@ -100,42 +100,43 @@ M.setup = function()
 	local ts_entry = require("lspconfig").ts_ls and "ts_ls" or "tsserver"
 	table.insert(mason_servers, ts_entry)
 
-	require("mason-lspconfig").setup({ 
+	require("mason-lspconfig").setup({
 		ensure_installed = mason_servers,
-		automatic_installation = false -- Prevent auto-install delays
+		automatic_installation = false, -- Prevent auto-install delays
 	})
 
 	-- Lazy load LSP servers only for relevant filetypes
 	local lspconfig = require("lspconfig")
 	local server_filetypes = {
-		lua_ls = {"lua"},
-		biome = {"javascript", "typescript", "json", "jsonc"},
-		ts_ls = {"javascript", "typescript", "tsx", "jsx"},
-		tsserver = {"javascript", "typescript", "tsx", "jsx"},
-		tinymist = {"typst"},
-		emmet_language_server = {"html", "css", "scss", "sass"},
-		svelte = {"svelte"},
-		elixirls = {"elixir", "eex", "heex"},
-		html = {"html"},
-		cssls = {"css", "scss", "sass"},
-		jsonls = {"json", "jsonc"},
-		yamlls = {"yaml", "yml"},
-		sqls = {"sql"},
-		bashls = {"sh", "bash", "zsh"}
+		lua_ls = { "lua" },
+		biome = { "javascript", "typescript", "json", "jsonc" },
+		ts_ls = { "javascript", "typescript", "tsx", "jsx" },
+		tsserver = { "javascript", "typescript", "tsx", "jsx" },
+		tinymist = { "typst" },
+		emmet_language_server = { "html", "css", "scss", "sass" },
+		svelte = { "svelte" },
+		elixirls = { "elixir", "eex", "heex" },
+		html = { "html" },
+		cssls = { "css", "scss", "sass" },
+		jsonls = { "json", "jsonc" },
+		yamlls = { "yaml", "yml" },
+		sqls = { "sql" },
+		bashls = { "sh", "bash", "zsh" },
 	}
-	
+
 	for _, server in ipairs(mason_servers) do
 		local filetypes = server_filetypes[server]
 		if filetypes then
 			vim.api.nvim_create_autocmd("FileType", {
 				pattern = filetypes,
 				callback = function()
-					lspconfig[server].setup({ 
+					lspconfig[server].setup({
 						capabilities = capabilities,
-						root_dir = lspconfig.util.find_git_ancestor or lspconfig.util.root_pattern("package.json", ".git")
+						root_dir = lspconfig.util.find_git_ancestor
+							or lspconfig.util.root_pattern("package.json", ".git"),
 					})
 				end,
-				once = true
+				once = true,
 			})
 		else
 			lspconfig[server].setup({ capabilities = capabilities })

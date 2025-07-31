@@ -3,18 +3,22 @@ local M = {}
 M.specs = {
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
 	{ src = "https://github.com/folke/noice.nvim" },
-	{ src = "https://github.com/rcarriga/nvim-notify" },
+	{ src = "https://github.com/echasnovski/mini.nvim" },
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 }
 
 M.setup = function()
-	local notify_ok, notify = pcall(require, "notify")
-	if notify_ok then
-		notify.setup({ render = "compact" })
-		vim.notify = notify
-	end
+	require("mini.notify").setup({
+		content = {
+			duration = 2000,
+		},
+	})
+	vim.notify = require("mini.notify").make_notify()
 
 	require("noice").setup({
+		notify = {
+			enabled = false,
+		},
 		presets = {
 			bottom_search = true,
 			command_palette = true,

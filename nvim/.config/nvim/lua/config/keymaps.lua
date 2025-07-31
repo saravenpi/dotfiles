@@ -4,9 +4,9 @@ vim.keymap.set("n", "<leader>qq", ":quit<CR>")
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y')
 vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d')
 
-vim.keymap.set("n", "<leader>f", ":Telescope find_files<CR>")
-vim.keymap.set("n", "<leader><leader>", ":Telescope find_files<CR>")
-vim.keymap.set("n", "<leader>/", ":Telescope live_grep<CR>")
+vim.keymap.set("n", "<leader>f", ":Pick files<CR>")
+vim.keymap.set("n", "<leader><leader>", ":Pick files<CR>")
+vim.keymap.set("n", "<leader>/", ":Pick grep_live<CR>")
 vim.keymap.set("n", "<leader>h", ":Pick help<CR>")
 vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>")
 
