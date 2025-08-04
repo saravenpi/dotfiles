@@ -26,6 +26,14 @@ M.specs = {
 
 M.setup = function()
 	require("mini.pick").setup({
+		mappings = {
+			move_down = '<C-j>',
+			move_up = '<C-k>',
+		},
+		options = {
+			fuzzy_match_ignore_case = true,
+			use_cache = true,
+		},
 		window = {
 			config = {
 				anchor = "NW",

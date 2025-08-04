@@ -7,4 +7,7 @@ vim.opt.tabstop = 2
 vim.opt.swapfile = false
 vim.opt.winborder = "rounded"
 vim.opt.clipboard = "unnamedplus"
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.g.colorcolum = "80"
 vim.g.mapleader = " "
