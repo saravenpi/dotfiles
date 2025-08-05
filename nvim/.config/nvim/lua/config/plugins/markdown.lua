@@ -15,7 +15,7 @@ M.setup = function()
 		auto_setup_keymaps = true,
 
 		-- Set up global keymaps (disabled by default)
-		global_keymaps = false,
+		global_keymaps = true,
 	})
 end
 
