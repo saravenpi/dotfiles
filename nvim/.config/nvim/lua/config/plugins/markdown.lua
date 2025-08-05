@@ -1,0 +1,16 @@
+local M = {}
+
+M.specs = {
+	-- Document preview
+	{ src = "https://github.com/OXY2DEV/markview.nvim" },
+
+	-- Markdown links
+	{ src = "https://github.com/saravenpi/pebble.nvim" },
+}
+
+M.setup = function()
+	require("markview").setup({})
+	require("pebble").setup()
+end
+
+return M

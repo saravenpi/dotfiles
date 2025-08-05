@@ -4,6 +4,8 @@ vim.keymap.set("n", "<leader>qq", ":quit<CR>")
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y')
 vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d')
 
+vim.api.nvim_set_keymap("n", "<leader>pu", ":lua vim.pack.update()<CR>", { noremap = true, silent = true })
+
 vim.keymap.set("n", "<leader>f", ":Pick files<CR>")
 vim.keymap.set("n", "<leader><leader>", ":Pick files<CR>")
 vim.keymap.set("n", "<leader>/", ":Pick grep_live<CR>")
@@ -23,7 +25,32 @@ end, { desc = "Open Neogit" })
 -- Trouble (diagnostics list)
 vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<CR>", { desc = "Trouble Diagnostics" })
 vim.keymap.set("n", "<leader>xq", "<cmd>Trouble quickfix toggle<CR>", { desc = "Trouble Quickfix" })
-vim.keymap.set("n", "<leader>cd", "<cmd>Trouble diagnostics toggle filter.buf=0<CR>", { desc = "Line Diagnostics" })
+-- Custom function to toggle diagnostic float focus
+local function toggle_diagnostic_float()
+	local float_wins = {}
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local config = vim.api.nvim_win_get_config(win)
+		if config.relative ~= "" then
+			table.insert(float_wins, win)
+		end
+	end
+	
+	-- If there are floating windows, try to focus the first one
+	if #float_wins > 0 then
+		vim.api.nvim_set_current_win(float_wins[1])
+	else
+		-- No floating window exists, open diagnostic float
+		vim.diagnostic.open_float()
+	end
+end
+
+vim.keymap.set("n", "<leader>cd", toggle_diagnostic_float, { desc = "Show/focus diagnostic details" })
+
+-- Diagnostic navigation and display
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+vim.keymap.set("n", "<leader>cl", vim.diagnostic.open_float, { desc = "Show line diagnostics" })
+vim.keymap.set("n", "<leader>cq", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
 -- TODO comments list
 vim.keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<CR>", { desc = "Todo list (Trouble)" })
@@ -70,3 +97,24 @@ vim.keymap.set("n", "<leader>7", "<cmd>BufferLineGoToBuffer 7<CR>", { desc = "Go
 vim.keymap.set("n", "<leader>8", "<cmd>BufferLineGoToBuffer 8<CR>", { desc = "Go to tab 8" })
 vim.keymap.set("n", "<leader>9", "<cmd>BufferLineGoToBuffer 9<CR>", { desc = "Go to tab 9" })
 vim.keymap.set("n", "<leader>$", "<cmd>BufferLineGoToBuffer -1<CR>", { desc = "Go to last tab" })
+
+-- Avante AI
+vim.keymap.set("n", "<leader>aa", function()
+	require("avante.api").ask()
+end, { desc = "Avante: Ask" })
+vim.keymap.set("v", "<leader>aa", function()
+	require("avante.api").ask()
+end, { desc = "Avante: Ask" })
+vim.keymap.set("n", "<leader>ar", function()
+	require("avante.api").refresh()
+end, { desc = "Avante: Refresh" })
+vim.keymap.set("n", "<leader>ae", function()
+	require("avante.api").edit()
+end, { desc = "Avante: Edit" })
+vim.keymap.set("v", "<leader>ae", function()
+	require("avante.api").edit()
+end, { desc = "Avante: Edit" })
+vim.keymap.set("n", "<leader>at", "<cmd>AvanteToggle<CR>", { desc = "Avante: Toggle" })
+vim.keymap.set("n", "<leader>af", "<cmd>AvanteFocus<CR>", { desc = "Avante: Focus" })
+vim.keymap.set("n", "<leader>ac", "<cmd>AvanteChat<CR>", { desc = "Avante: Chat" })
+vim.keymap.set("n", "<leader>as", "<cmd>AvanteSwitchProvider<CR>", { desc = "Avante: Switch Provider" })

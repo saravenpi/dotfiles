@@ -21,14 +21,13 @@ M.specs = {
 
 	-- Document preview
 	{ src = "https://github.com/chomosuke/typst-preview.nvim" },
-	{ src = "https://github.com/OXY2DEV/markview.nvim" },
 }
 
 M.setup = function()
 	require("mini.pick").setup({
 		mappings = {
-			move_down = '<C-j>',
-			move_up = '<C-k>',
+			move_down = "<C-j>",
+			move_up = "<C-k>",
 		},
 		options = {
 			fuzzy_match_ignore_case = true,
@@ -107,8 +106,6 @@ M.setup = function()
 			end,
 		},
 	})
-
-	require("markview").setup({})
 
 	require("mini.surround").setup({})
 end
