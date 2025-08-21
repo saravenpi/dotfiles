@@ -53,5 +53,9 @@ function M.setup_all()
 	end
 end
 
+-- Auto-load and setup plugins when module is required
+vim.pack.add(M.get_specs())
+M.setup_all()
+
 return M
 

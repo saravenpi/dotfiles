@@ -2,6 +2,7 @@ local M = {}
 
 M.specs = {
 	{ src = "https://github.com/sainnhe/gruvbox-material" },
+	{ src = "https://github.com/mellow-theme/mellow.nvim" },
 }
 
 M.setup = function()
@@ -15,7 +16,12 @@ M.setup = function()
 	vim.g.gruvbox_material_diagnostic_sign_highlight = "colored"
 	vim.g.gruvbox_material_palette = "mix"
 
-	vim.cmd.colorscheme("gruvbox-material")
+	vim.g.mellow_italic_functions = true
+	vim.g.mellow_bold_functions = true
+	vim.g.mellow_transparent = true
+
+	-- vim.cmd.colorscheme("gruvbox-material")
+	vim.cmd.colorscheme("mellow")
 end
 
 return M

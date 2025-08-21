@@ -116,3 +116,13 @@ killport() {
   fi
 }
 
+
+# osascript -e 'display notification "Le build est fini !" with title "CI"'
+notify-send() {
+  osascript -e "display notification \"$2\" with title \"$1\""
+}
+
+
+tellme() {
+curl -d "$1" ntfy.klysium.com/sara-tellme
+}

@@ -48,7 +48,6 @@ M.setup = function()
 			end,
 		},
 		mapping = cmp.mapping.preset.insert({
-			["<C-Space>"] = cmp.mapping.complete(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
 			["<Tab>"] = cmp.mapping(function(fallback)
 				if cmp.visible() then
@@ -154,9 +153,94 @@ M.setup = function()
 			map("n", "gi", vim.lsp.buf.implementation)
 			map("n", "K", vim.lsp.buf.hover)
 			map("n", "<leader>rn", vim.lsp.buf.rename)
-			map("n", "<leader>ca", vim.lsp.buf.code_action)
 		end,
 	})
+
+	-- Override code action UI to show centered floating window
+	vim.lsp.handlers["textDocument/codeAction"] = vim.lsp.with(function(err, actions, context)
+		if not actions or #actions == 0 then
+			vim.notify("No code actions available", vim.log.levels.INFO)
+			return
+		end
+
+		local items = {}
+		for i, action in ipairs(actions) do
+			items[i] = string.format("%d: %s", i, action.title)
+		end
+
+		local lines = vim.api.nvim_get_option("lines")
+		local columns = vim.api.nvim_get_option("columns")
+		local height = math.min(#items + 2, math.floor(lines * 0.8))
+		local width = math.min(60, math.floor(columns * 0.8))
+		local row = math.floor((lines - height) / 2)
+		local col = math.floor((columns - width) / 2)
+
+		local buf = vim.api.nvim_create_buf(false, true)
+		vim.api.nvim_buf_set_lines(buf, 0, -1, false, items)
+
+		local win = vim.api.nvim_open_win(buf, true, {
+			relative = "editor",
+			width = width,
+			height = height,
+			row = row,
+			col = col,
+			style = "minimal",
+			border = "rounded",
+			title = " Code Actions ",
+			title_pos = "center",
+		})
+
+		vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", "", {
+			callback = function()
+				local line = vim.api.nvim_win_get_cursor(win)[1]
+				local action = actions[line]
+				if action then
+					if action.edit then
+						vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
+					elseif action.command then
+						vim.lsp.buf.execute_command(action.command)
+					end
+				end
+				vim.api.nvim_win_close(win, true)
+			end,
+			noremap = true,
+			silent = true,
+		})
+
+		vim.api.nvim_buf_set_keymap(buf, "n", "q", "", {
+			callback = function()
+				vim.api.nvim_win_close(win, true)
+			end,
+			noremap = true,
+			silent = true,
+		})
+
+		vim.api.nvim_buf_set_keymap(buf, "n", "<Esc>", "", {
+			callback = function()
+				vim.api.nvim_win_close(win, true)
+			end,
+			noremap = true,
+			silent = true,
+		})
+
+		for i = 1, #actions do
+			vim.api.nvim_buf_set_keymap(buf, "n", tostring(i), "", {
+				callback = function()
+					local action = actions[i]
+					if action then
+						if action.edit then
+							vim.lsp.util.apply_workspace_edit(action.edit, "utf-8")
+						elseif action.command then
+							vim.lsp.buf.execute_command(action.command)
+						end
+					end
+					vim.api.nvim_win_close(win, true)
+				end,
+				noremap = true,
+				silent = true,
+			})
+		end
+	end, {})
 
 	require("conform").setup({
 		formatters_by_ft = {

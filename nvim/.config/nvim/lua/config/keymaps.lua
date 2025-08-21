@@ -6,16 +6,26 @@ vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d')
 
 vim.api.nvim_set_keymap("n", "<leader>pu", ":lua vim.pack.update()<CR>", { noremap = true, silent = true })
 
-vim.keymap.set("n", "<leader>f", ":Pick files<CR>")
-vim.keymap.set("n", "<leader><leader>", ":Pick files<CR>")
-vim.keymap.set("n", "<leader>/", ":Pick grep_live<CR>")
-vim.keymap.set("n", "<leader>h", ":Pick help<CR>")
-vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>")
+vim.keymap.set("n", "<leader>f", "<cmd>Telescope find_files<CR>")
+vim.keymap.set("n", "<leader><leader>", "<cmd>Telescope find_files<CR>")
+vim.keymap.set("n", "<leader>/", "<cmd>Telescope live_grep<CR>")
+vim.keymap.set("n", "<leader>h", "<cmd>Telescope help_tags<CR>")
+vim.keymap.set("n", "<leader>b", "<cmd>Telescope buffers<CR>")
+vim.keymap.set("n", "<leader>r", "<cmd>Telescope oldfiles<CR>")
+vim.keymap.set("n", "<leader>e", ":Neotree toggle reveal<CR>", { desc = "Toggle Neotree and focus current file" })
 
 -- Formatting (Conform)
 vim.keymap.set("n", "<leader>cf", function()
 	require("conform").format({ async = true, lsp_format = "fallback" })
 end, { desc = "Format buffer" })
+
+-- LSP (Language Server Protocol) keymaps
+vim.keymap.set("n", "<leader>cr", function()
+	return ":IncRename " .. vim.fn.expand("<cword>")
+end, { expr = true })
+vim.keymap.set({ "n", "x" }, "<leader>ca", function()
+	require("tiny-code-action").code_action()
+end, { noremap = true, silent = true })
 
 -- Git UI (Neogit)
 vim.keymap.set("n", "<leader>gn", function()
@@ -34,7 +44,7 @@ local function toggle_diagnostic_float()
 			table.insert(float_wins, win)
 		end
 	end
-	
+
 	-- If there are floating windows, try to focus the first one
 	if #float_wins > 0 then
 		vim.api.nvim_set_current_win(float_wins[1])

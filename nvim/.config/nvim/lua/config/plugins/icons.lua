@@ -9,6 +9,9 @@ M.setup = function()
 	icons.setup({
 		style = "glyph",
 		file = {
+			["knot.yml"] = { glyph = "🪢", hl = "MiniIconsGreen" },
+			["app.yml"] = { glyph = "🚀", hl = "MiniIconsGreen" },
+			["package.yml"] = { glyph = "📦", hl = "MiniIconsGreen" },
 			["kettle.json"] = { glyph = "🫖", hl = "MiniIconsGreen" },
 			["tsconfig.json"] = { glyph = "⚙️", hl = "MiniIconsGreen" },
 			["package.json"] = { glyph = "📦", hl = "MiniIconsGreen" },

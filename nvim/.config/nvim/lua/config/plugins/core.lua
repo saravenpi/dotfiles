@@ -4,13 +4,14 @@ M.specs = {
 	-- File management
 	{ src = "https://github.com/stevearc/oil.nvim" },
 	{ src = "https://github.com/nvim-neo-tree/neo-tree.nvim" },
+	{ src = "https://github.com/rachartier/tiny-code-action.nvim" },
 
 	-- Pickers/Finders
-	{ src = "https://github.com/echasnovski/mini.pick" },
 	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
 
 	-- Text manipulation
 	{ src = "https://github.com/echasnovski/mini.surround" },
+	{ src = "https://github.com/smjonas/inc-rename.nvim" },
 
 	-- Core dependencies
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
@@ -24,25 +25,27 @@ M.specs = {
 }
 
 M.setup = function()
-	require("mini.pick").setup({
-		mappings = {
-			move_down = "<C-j>",
-			move_up = "<C-k>",
-		},
-		options = {
-			fuzzy_match_ignore_case = true,
-			use_cache = true,
-		},
-		window = {
-			config = {
-				anchor = "NW",
-				col = math.floor(vim.o.columns * 0.5) - 40,
-				row = math.floor(vim.o.lines * 0.5) - 10,
-				width = 80,
-				height = 20,
+	require("telescope").setup({
+		defaults = {
+			mappings = {
+				i = {
+					["<C-j>"] = "move_selection_next",
+					["<C-k>"] = "move_selection_previous",
+				},
 			},
+			layout_config = {
+				center = {
+					height = 0.4,
+					preview_cutoff = 40,
+					prompt_position = "top",
+					width = 0.5,
+				},
+			},
+			layout_strategy = "center",
+			sorting_strategy = "ascending",
 		},
 	})
+
 	require("oil").setup()
 
 	-- Lazy setup neo-tree only when first called
@@ -52,18 +55,18 @@ M.setup = function()
 				local ok, neotree = pcall(require, "neo-tree")
 				if ok then
 					neotree.setup({
+						close_if_last_window = false,
+						enable_git_status = true,
+						enable_diagnostics = true,
 						default_component_configs = {
 							icon = {
-								-- folder_closed = "📁",
-								-- folder_open = "📂",
-								-- folder_empty = "📁",
-								provider = function(icon, node, state)
+								provider = function(icon, node)
 									if node.type == "file" or node.type == "terminal" then
 										local success, mini_icons = pcall(require, "mini.icons")
 										if success then
 											local name = node.type == "terminal" and "terminal" or node.name
-											local devicon, hl, is_default = mini_icons.get("file", name)
-											icon.text = devicon or ""
+											local devicon, hl = mini_icons.get("file", name)
+											icon.text = devicon or "📄"
 											icon.highlight = hl
 										end
 									end
@@ -71,12 +74,22 @@ M.setup = function()
 							},
 						},
 						filesystem = {
-							scan_mode = "shallow", -- Use shallow scan for better performance
-							use_libuv_file_watcher = false, -- Disable file watching for large dirs
-							hijack_netrw_behavior = "disabled", -- Don't hijack netrw
+							follow_current_file = {
+								enabled = true,
+								leave_dirs_open = false,
+							},
+							use_libuv_file_watcher = true,
 						},
 						source_selector = {
-							winbar = false, -- Disable winbar for performance
+							winbar = false,
+						},
+						event_handlers = {
+							{
+								event = "file_open_requested",
+								handler = function()
+									require("neo-tree.command").execute({ action = "close" })
+								end,
+							},
 						},
 					})
 				end
@@ -108,6 +121,38 @@ M.setup = function()
 	})
 
 	require("mini.surround").setup({})
+
+	require("tiny-code-action").setup({
+		picker = {
+			"buffer",
+			opts = {
+				hotkeys = true, -- Enable hotkeys for quick selection of actions
+				hotkeys_mode = "text_diff_based", -- Modes for generating hotkeys
+				auto_preview = true, -- Enable or disable automatic preview
+				auto_accept = false, -- Automatically accept the selected action
+				position = "cursor", -- Position of the picker window
+				winborder = "rounded",
+				custom_keys = {
+					{ key = "m", pattern = "Fill match arms" },
+					{ key = "r", pattern = "Rename.*" }, -- Lua pattern matching
+				},
+				signs = {
+					quickfix = { "", { link = "DiagnosticWarning" } },
+					others = { "", { link = "DiagnosticWarning" } },
+					refactor = { "", { link = "DiagnosticInfo" } },
+					["refactor.move"] = { "󰪹", { link = "DiagnosticInfo" } },
+					["refactor.extract"] = { "", { link = "DiagnosticError" } },
+					["source.organizeImports"] = { "", { link = "DiagnosticWarning" } },
+					["source.fixAll"] = { "󰃢", { link = "DiagnosticError" } },
+					["source"] = { "", { link = "DiagnosticError" } },
+					["rename"] = { "󰑕", { link = "DiagnosticWarning" } },
+					["codeAction"] = { "", { link = "DiagnosticWarning" } },
+				},
+			},
+		},
+	})
+
+	require("inc_rename").setup()
 end
 
 return M

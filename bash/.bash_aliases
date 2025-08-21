@@ -30,7 +30,8 @@ alias trel="treload"
 alias nv="nvim"
 alias n="nvim"
 alias lg="lazygit"
-alias k="kettle"
+alias ke="kettle"
+alias k="knot"
 
 # quick navigation
 alias h="clear && cd $HOME && welcome"
@@ -106,3 +107,5 @@ alias p="purse i"
 # Claude Code
 alias cy="claude --dangerously-skip-permissions"
 alias claudey="claude --dangerously-skip-permissions"
+
+alias cportals="cd $HOME/portals && nvim ."
