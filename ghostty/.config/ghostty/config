@@ -1,0 +1,4 @@
+background-opacity = 0.75
+theme = mellow-dark
+font-size = 16
+# command = ~/.local/bin/ash

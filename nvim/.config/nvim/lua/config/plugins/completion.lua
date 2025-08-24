@@ -83,7 +83,6 @@ M.setup = function()
 
 	local mason_servers = {
 		"lua_ls",
-		"biome",
 		"tinymist",
 		"emmet_language_server",
 		"svelte",
@@ -108,7 +107,6 @@ M.setup = function()
 	local lspconfig = require("lspconfig")
 	local server_filetypes = {
 		lua_ls = { "lua" },
-		biome = { "javascript", "typescript", "json", "jsonc" },
 		ts_ls = { "javascript", "typescript", "tsx", "jsx" },
 		tsserver = { "javascript", "typescript", "tsx", "jsx" },
 		tinymist = { "typst" },
@@ -156,7 +154,6 @@ M.setup = function()
 		end,
 	})
 
-	-- Override code action UI to show centered floating window
 	vim.lsp.handlers["textDocument/codeAction"] = vim.lsp.with(function(err, actions, context)
 		if not actions or #actions == 0 then
 			vim.notify("No code actions available", vim.log.levels.INFO)
@@ -245,10 +242,10 @@ M.setup = function()
 	require("conform").setup({
 		formatters_by_ft = {
 			lua = { "stylua" },
-			typescript = { "biome", "prettierd", "prettier" },
-			javascript = { "biome", "prettierd", "prettier" },
-			json = { "biome", "prettierd", "prettier" },
-			jsonc = { "biome", "prettierd", "prettier" },
+			typescript = { "prettierd", "prettier" },
+			javascript = { "prettierd", "prettier" },
+			json = { "prettierd", "prettier" },
+			jsonc = { "prettierd", "prettier" },
 			yaml = { "prettierd", "prettier" },
 			svelte = { "prettierd", "prettier" },
 			elixir = { "mix" },

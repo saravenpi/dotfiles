@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Detect if running from pipe/curl and save to temp file for proper execution
+if [ ! -t 0 ] && [ -z "${BASH_SOURCE[0]:-}" ]; then
+    # Script is being piped, save to temp and execute
+    TEMP_SCRIPT="$(mktemp /tmp/dotfiles-install-XXXXXX.sh)"
+    cat > "$TEMP_SCRIPT"
+    chmod +x "$TEMP_SCRIPT"
+    bash "$TEMP_SCRIPT" "$@"
+    rm -f "$TEMP_SCRIPT"
+    exit $?
+fi
+
 # Strict error handling
 set -euo pipefail
 IFS=$'\n\t'
@@ -82,10 +93,10 @@ show_banner() {
     echo "( o.o )"
     echo " > ^ <"
     echo -e "${NC}"
-    echo -e "${WHITE}═══════════════════════════════════════${NC}"
+    echo -e "${WHITE}=======================================${NC}"
     echo -e "${WHITE}    Dotfiles Configuration Installer${NC}"
     echo -e "${WHITE}         by @saravenpi${NC}"
-    echo -e "${WHITE}═══════════════════════════════════════${NC}\n"
+    echo -e "${WHITE}=======================================${NC}\n"
 }
 
 # System detection with validation
@@ -107,17 +118,26 @@ detect_system() {
                 distro="debian"
             elif [[ -f /etc/redhat-release ]]; then
                 distro="rhel"
+            elif [[ -f /etc/alpine-release ]]; then
+                distro="alpine"
             fi
 
             case "$distro" in
-                ubuntu|debian) DISTRO="debian" ;;
-                fedora|rhel|centos) DISTRO="rhel" ;;
-                arch|manjaro) DISTRO="arch" ;;
+                ubuntu|debian|raspbian) DISTRO="debian" ;;
+                fedora|rhel|centos|rocky|almalinux) DISTRO="rhel" ;;
+                arch|manjaro|endeavouros) DISTRO="arch" ;;
                 void) DISTRO="void" ;;
+                alpine) DISTRO="alpine" ;;
+                opensuse*|suse*) DISTRO="suse" ;;
                 *) DISTRO="unknown" ;;
             esac
 
             info "Detected: Linux ($distro)"
+            ;;
+        FreeBSD|OpenBSD|NetBSD)
+            OS="BSD"
+            DISTRO="bsd"
+            info "Detected: BSD variant"
             ;;
         *)
             error "Unsupported operating system: $os_name"
@@ -153,10 +173,10 @@ safe_mkdir() {
     return 0
 }
 
-# URL validation
+# URL validation (with timeout for slow connections)
 validate_url() {
     local url="$1"
-    if curl --output /dev/null --silent --head --fail "$url" 2>/dev/null; then
+    if curl --output /dev/null --silent --head --fail --connect-timeout 10 --max-time 15 "$url" 2>/dev/null; then
         return 0
     else
         warn "URL validation failed: $url"
@@ -195,10 +215,21 @@ prompt_user() {
     local default="${2:-y}"
     local response
 
+    # Check if running non-interactively
+    if [[ ! -t 0 ]] || [[ "${NONINTERACTIVE:-}" == "1" ]]; then
+        info "Non-interactive mode: using default ($default) for: $message"
+        [[ "$default" == "y" ]]
+        return $?
+    fi
+
     while true; do
         echo -e "\n${CYAN}$message${NC}"
         echo -e "${WHITE}[y/N]${NC} (default: $default): "
-        read -r response </dev/tty
+        if [[ -t 0 ]]; then
+            read -r response
+        else
+            read -r response </dev/tty 2>/dev/null || response="$default"
+        fi
 
         # Use default if empty
         response="${response:-$default}"
@@ -221,25 +252,47 @@ prompt_user() {
 preflight_checks() {
     step "Running pre-flight system checks"
 
-    # Check if running as root (not recommended)
+    # Check if running as root (not recommended, but allow in containers)
     if [[ $EUID -eq 0 ]]; then
-        error "This script should not be run as root!"
-        error "Please run as a regular user (sudo will be prompted when needed)"
-        exit 1
+        if [[ -f /.dockerenv ]] || [[ -f /run/.containerenv ]] || [[ "${container:-}" == "docker" ]]; then
+            warn "Running as root in a container environment"
+        else
+            error "This script should not be run as root!"
+            error "Please run as a regular user (sudo will be prompted when needed)"
+            exit 1
+        fi
     fi
 
-    # Check internet connectivity
+    # Check internet connectivity (cross-platform)
     info "Checking internet connectivity..."
-    if ! ping -c 1 google.com >/dev/null 2>&1 && ! ping -c 1 github.com >/dev/null 2>&1; then
-        error "No internet connectivity detected"
-        error "Please check your network connection and try again"
-        exit 1
+    if command_exists curl; then
+        if ! curl -s --connect-timeout 5 https://github.com >/dev/null 2>&1; then
+            error "No internet connectivity detected"
+            error "Please check your network connection and try again"
+            exit 1
+        fi
+    elif command_exists wget; then
+        if ! wget -q --timeout=5 --spider https://github.com 2>/dev/null; then
+            error "No internet connectivity detected"
+            error "Please check your network connection and try again"
+            exit 1
+        fi
+    else
+        warn "Cannot verify internet connectivity (curl/wget not found)"
     fi
     success "Internet connectivity verified"
 
-    # Check available disk space (minimum 1GB)
+    # Check available disk space (minimum 1GB) - cross-platform
     local available_space
-    available_space=$(df "$HOME" | tail -1 | awk '{print $4}')
+    if [[ "$OS" == "Darwin" ]]; then
+        # macOS df shows 512-byte blocks by default
+        available_space=$(df "$HOME" | tail -1 | awk '{print $4}')
+        # Convert to KB (512-byte blocks / 2)
+        available_space=$((available_space / 2))
+    else
+        # Linux df -k shows KB
+        available_space=$(df -k "$HOME" | tail -1 | awk '{print $4}')
+    fi
     if [[ $available_space -lt 1048576 ]]; then # 1GB in KB
         warn "Low disk space detected (less than 1GB available)"
         if ! prompt_user "Continue anyway?" "n"; then
@@ -247,27 +300,29 @@ preflight_checks() {
         fi
     fi
 
-    # Check if curl is available
-    if ! command_exists curl; then
-        error "curl is required but not installed"
-        error "Please install curl and try again"
+    # Check if curl or wget is available
+    if ! command_exists curl && ! command_exists wget; then
+        error "curl or wget is required but not installed"
+        error "Please install curl or wget and try again"
         exit 1
     fi
 
-    # Validate critical URLs
-    info "Validating external dependencies..."
-    local urls=(
-        "https://github.com/saravenpi/dotfiles"
-        "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-        "https://sh.rustup.rs"
-        "https://starship.rs/install.sh"
-    )
+    # Skip URL validation in offline/restricted environments
+    if [[ "${SKIP_URL_VALIDATION:-}" != "1" ]]; then
+        info "Validating external dependencies..."
+        local urls=(
+            "https://github.com/saravenpi/dotfiles"
+            "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+            "https://sh.rustup.rs"
+            "https://starship.rs/install.sh"
+        )
 
-    for url in "${urls[@]}"; do
-        if ! validate_url "$url"; then
-            warn "Could not validate URL: $url"
-        fi
-    done
+        for url in "${urls[@]}"; do
+            if ! validate_url "$url"; then
+                warn "Could not validate URL: $url"
+            fi
+        done
+    fi
 
     success "Pre-flight checks completed"
 }
@@ -281,9 +336,15 @@ install_dependencies() {
             info "Installing dependencies on macOS"
             if ! command_exists brew; then
                 info "Installing Homebrew..."
-                if safe_execute '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"' "Homebrew installation"; then
-                    # Add Homebrew to PATH for current session
-                    eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv 2>/dev/null || true)"
+                # Use NONINTERACTIVE mode for automated installation
+                if NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >> "$LOG_FILE" 2>&1; then
+                    # Add Homebrew to PATH for current session (check both ARM and Intel paths)
+                    if [[ -f "/opt/homebrew/bin/brew" ]]; then
+                        eval "$(/opt/homebrew/bin/brew shellenv)"
+                    elif [[ -f "/usr/local/bin/brew" ]]; then
+                        eval "$(/usr/local/bin/brew shellenv)"
+                    fi
+                    success "Homebrew installation completed"
                 else
                     error "Failed to install Homebrew"
                     return 1
@@ -301,33 +362,109 @@ install_dependencies() {
             info "Installing dependencies on Linux ($DISTRO)"
             case "$DISTRO" in
                 debian)
-                    safe_execute "sudo apt-get update" "Updating package lists"
-                    for pkg in git stow; do
-                        if ! command_exists "$pkg"; then
-                            safe_execute "sudo apt-get install -y $pkg" "Installing $pkg"
-                        fi
-                    done
+                    # Check if sudo is available
+                    if command_exists sudo; then
+                        safe_execute "sudo apt-get update" "Updating package lists"
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "sudo apt-get install -y $pkg" "Installing $pkg"
+                            fi
+                        done
+                    else
+                        warn "sudo not available, trying as root or with current permissions"
+                        safe_execute "apt-get update" "Updating package lists"
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "apt-get install -y $pkg" "Installing $pkg"
+                            fi
+                        done
+                    fi
                     ;;
                 rhel)
-                    for pkg in git stow; do
-                        if ! command_exists "$pkg"; then
-                            safe_execute "sudo yum install -y $pkg" "Installing $pkg"
-                        fi
-                    done
+                    # Check for dnf first (newer Fedora/RHEL), then yum
+                    local pkg_manager="yum"
+                    if command_exists dnf; then
+                        pkg_manager="dnf"
+                    fi
+                    
+                    if command_exists sudo; then
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "sudo $pkg_manager install -y $pkg" "Installing $pkg"
+                            fi
+                        done
+                    else
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "$pkg_manager install -y $pkg" "Installing $pkg"
+                            fi
+                        done
+                    fi
                     ;;
                 arch)
-                    for pkg in git stow; do
-                        if ! command_exists "$pkg"; then
-                            safe_execute "sudo pacman -S --noconfirm $pkg" "Installing $pkg"
-                        fi
-                    done
+                    if command_exists sudo; then
+                        # Update package database first
+                        safe_execute "sudo pacman -Sy" "Updating package database"
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "sudo pacman -S --noconfirm $pkg" "Installing $pkg"
+                            fi
+                        done
+                    else
+                        safe_execute "pacman -Sy" "Updating package database"
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "pacman -S --noconfirm $pkg" "Installing $pkg"
+                            fi
+                        done
+                    fi
                     ;;
                 void)
-                    for pkg in git stow; do
-                        if ! command_exists "$pkg"; then
-                            safe_execute "sudo xbps-install -Sy $pkg" "Installing $pkg"
-                        fi
-                    done
+                    if command_exists sudo; then
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "sudo xbps-install -Sy $pkg" "Installing $pkg"
+                            fi
+                        done
+                    else
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "xbps-install -Sy $pkg" "Installing $pkg"
+                            fi
+                        done
+                    fi
+                    ;;
+                alpine)
+                    if command_exists sudo; then
+                        safe_execute "sudo apk update" "Updating package lists"
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "sudo apk add $pkg" "Installing $pkg"
+                            fi
+                        done
+                    else
+                        safe_execute "apk update" "Updating package lists"
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "apk add $pkg" "Installing $pkg"
+                            fi
+                        done
+                    fi
+                    ;;
+                suse)
+                    if command_exists sudo; then
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "sudo zypper install -y $pkg" "Installing $pkg"
+                            fi
+                        done
+                    else
+                        for pkg in git stow; do
+                            if ! command_exists "$pkg"; then
+                                safe_execute "zypper install -y $pkg" "Installing $pkg"
+                            fi
+                        done
+                    fi
                     ;;
                 *)
                     warn "Unknown Linux distribution: $DISTRO"
@@ -338,6 +475,19 @@ install_dependencies() {
                     fi
                     ;;
             esac
+            ;;
+        BSD)
+            info "Installing dependencies on BSD"
+            if command_exists pkg; then
+                for pkg in git stow; do
+                    if ! command_exists "$pkg"; then
+                        safe_execute "pkg install -y $pkg" "Installing $pkg"
+                    fi
+                done
+            else
+                warn "Package manager not found on BSD system"
+                warn "Please install git and stow manually"
+            fi
             ;;
     esac
 
@@ -433,6 +583,19 @@ safe_git_clone() {
     # Remove existing directory if it exists
     if [[ -d "$destination" ]]; then
         warn "Directory exists: $destination"
+        if [[ "$destination" == "$HOME/.dotfiles" ]]; then
+            # For dotfiles specifically, check if it's a git repo
+            if [[ -d "$destination/.git" ]]; then
+                info "Existing dotfiles repo found, pulling latest changes..."
+                if (cd "$destination" && git pull origin main 2>/dev/null || git pull origin master 2>/dev/null); then
+                    success "Updated existing dotfiles repository"
+                    return 0
+                else
+                    warn "Could not update existing repo, will clone fresh"
+                fi
+            fi
+        fi
+        
         if prompt_user "Remove existing directory and continue?" "y"; then
             # Change to a safe directory before removing destination
             local current_dir="$PWD"
@@ -441,6 +604,8 @@ safe_git_clone() {
             # Restore original directory if it still exists
             if [[ -d "$current_dir" ]]; then
                 cd "$current_dir"
+            else
+                cd "$HOME"
             fi
         else
             error "Cannot proceed with existing directory"
@@ -472,6 +637,7 @@ install_dotfiles() {
     }
 
     info "Installing configuration with stow..."
+    # Handle stow packages more carefully
     local stow_packages=(
         "fonts"
         "i3 dunst scripts picom polybar rofi aerospace"
@@ -482,10 +648,12 @@ install_dotfiles() {
     )
 
     for package_group in "${stow_packages[@]}"; do
-        if safe_execute "stow $package_group" "Stowing $package_group"; then
+        # Use --adopt to handle existing files gracefully
+        # Also handle multi-word package groups properly
+        if safe_execute "stow --adopt $package_group 2>/dev/null || stow $package_group" "Stowing $package_group"; then
             success "Installed: $package_group"
         else
-            warn "Failed to install: $package_group"
+            warn "Failed to install: $package_group (may already exist)"
         fi
     done
 
@@ -534,7 +702,12 @@ install_program() {
             if command_exists bun || [[ -x "$HOME/.bun/bin/bun" ]]; then
                 local bun_cmd
                 bun_cmd=$(command_exists bun && echo "bun" || echo "$HOME/.bun/bin/bun")
-                safe_execute "sudo $bun_cmd install -g gitmoji-cli" "Installing gitmoji-cli"
+                # Try without sudo first, then with sudo if it fails
+                if ! safe_execute "$bun_cmd install -g gitmoji-cli" "Installing gitmoji-cli"; then
+                    if command_exists sudo; then
+                        safe_execute "sudo $bun_cmd install -g gitmoji-cli" "Installing gitmoji-cli with sudo"
+                    fi
+                fi
             else
                 warn "Bun not available, skipping gitmoji-cli"
             fi
@@ -546,7 +719,14 @@ install_program() {
             else
                 local temp_dir="/tmp/pokemon-colorscripts-$$"
                 if safe_git_clone "https://gitlab.com/phoneybadger/pokemon-colorscripts.git" "$temp_dir" "pokemon-colorscripts"; then
-                    (cd "$temp_dir" && safe_execute "sudo ./install.sh" "Installing pokemon-colorscripts")
+                    if [[ -f "$temp_dir/install.sh" ]]; then
+                        chmod +x "$temp_dir/install.sh"
+                        if command_exists sudo; then
+                            (cd "$temp_dir" && safe_execute "sudo ./install.sh" "Installing pokemon-colorscripts")
+                        else
+                            (cd "$temp_dir" && safe_execute "./install.sh" "Installing pokemon-colorscripts")
+                        fi
+                    fi
                     rm -rf "$temp_dir"
                 fi
             fi
@@ -554,7 +734,8 @@ install_program() {
 
         starship)
             if ! command_exists starship; then
-                safe_execute 'curl -sS https://starship.rs/install.sh | sh' "Installing starship"
+                # Use non-interactive installation
+                safe_execute 'curl -sS https://starship.rs/install.sh | sh -s -- -y' "Installing starship"
             else
                 info "starship already installed"
             fi
@@ -647,7 +828,9 @@ install_bob_cargo() {
     if ! command_exists cargo; then
         info "Installing Rust (required for bob)..."
         if safe_execute 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y' "Installing Rust"; then
-            source "$HOME/.cargo/env"
+            if [[ -f "$HOME/.cargo/env" ]]; then
+                source "$HOME/.cargo/env"
+            fi
         else
             error "Failed to install Rust"
             return 1
@@ -757,7 +940,7 @@ final_verification() {
 show_summary() {
     step "Installation Summary"
 
-    echo -e "\n${GREEN}🎉 Dotfiles installation completed successfully! 🎉${NC}\n"
+    echo -e "\n${GREEN}Dotfiles installation completed successfully!${NC}\n"
 
     echo -e "${WHITE}Installation Details:${NC}"
     echo -e "  ${CYAN}• System:${NC} $OS ($DISTRO)"
@@ -775,7 +958,17 @@ show_summary() {
     fi
 
     echo -e "\n${WHITE}Report issues at:${NC} ${BLUE}https://github.com/saravenpi/dotfiles/issues${NC}"
-    echo -e "${WHITE}═══════════════════════════════════════${NC}"
+    echo -e "${WHITE}=======================================${NC}"
+    
+    # Call the welcome function if it exists
+    if command_exists welcome; then
+        welcome
+    elif [[ -f "$HOME/.bash_functions" ]]; then
+        source "$HOME/.bash_functions" 2>/dev/null
+        if command_exists welcome; then
+            welcome
+        fi
+    fi
 }
 
 # Main installation flow
@@ -792,10 +985,13 @@ main() {
     preflight_checks
 
     # Ask for confirmation before proceeding
-    echo -e "\n${YELLOW}⚠️  This script will backup your current config and install new dotfiles.${NC}"
+    echo -e "\n${YELLOW}This script will backup your current config and install new dotfiles.${NC}"
     echo -e "${WHITE}Backup location: $BACKUP_DIR${NC}"
-
-    if ! prompt_user "Do you want to proceed with the installation?" "y"; then
+    
+    # In non-interactive mode, proceed automatically
+    if [[ "${NONINTERACTIVE:-}" == "1" ]] || [[ "${CI:-}" == "true" ]]; then
+        info "Running in non-interactive mode, proceeding with installation"
+    elif ! prompt_user "Do you want to proceed with the installation?" "y"; then
         info "Installation cancelled by user"
         exit 0
     fi

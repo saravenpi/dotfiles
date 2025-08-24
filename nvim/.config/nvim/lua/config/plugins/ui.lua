@@ -26,12 +26,6 @@ M.setup = function()
 		},
 	})
 
-	local lualine_theme = "gruvbox-material"
-	local ok_theme, _ = pcall(require, "lualine.themes." .. lualine_theme)
-	if not ok_theme then
-		lualine_theme = "gruvbox"
-	end
-
 	require("lualine").setup({
 		options = {
 			theme = lualine_theme,

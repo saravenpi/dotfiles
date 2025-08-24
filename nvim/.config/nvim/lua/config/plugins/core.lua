@@ -2,7 +2,6 @@ local M = {}
 
 M.specs = {
 	-- File management
-	{ src = "https://github.com/stevearc/oil.nvim" },
 	{ src = "https://github.com/nvim-neo-tree/neo-tree.nvim" },
 	{ src = "https://github.com/rachartier/tiny-code-action.nvim" },
 
@@ -45,8 +44,6 @@ M.setup = function()
 			sorting_strategy = "ascending",
 		},
 	})
-
-	require("oil").setup()
 
 	-- Lazy setup neo-tree only when first called
 	vim.api.nvim_create_autocmd("VimEnter", {
