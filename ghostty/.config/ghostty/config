@@ -1,4 +1,4 @@
-background-opacity = 0.75
+background-opacity = 0.9
 theme = mellow-dark
-font-size = 16
-# command = ~/.local/bin/ash
+font-family = GohuFont 14 Nerd Font Mono
+font-size = 24

@@ -108,6 +108,9 @@ vim.keymap.set("n", "<leader>8", "<cmd>BufferLineGoToBuffer 8<CR>", { desc = "Go
 vim.keymap.set("n", "<leader>9", "<cmd>BufferLineGoToBuffer 9<CR>", { desc = "Go to tab 9" })
 vim.keymap.set("n", "<leader>$", "<cmd>BufferLineGoToBuffer -1<CR>", { desc = "Go to last tab" })
 
+-- UI colorscheme picker
+vim.keymap.set("n", "<leader>uc", "<cmd>Telescope colorscheme<CR>", { desc = "Select colorscheme" })
+
 -- Avante AI
 vim.keymap.set("n", "<leader>aa", function()
 	require("avante.api").ask()

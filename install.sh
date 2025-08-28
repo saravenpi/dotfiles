@@ -645,6 +645,7 @@ install_dotfiles() {
         "nvim vim clang-format emacs"
         "git lazygit kettle"
         "mybins containers"
+        "claude"
     )
 
     for package_group in "${stow_packages[@]}"; do

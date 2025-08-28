@@ -9,3 +9,9 @@
 /vim/.vim/.netrwhist
 /mybins/mybins/work
 pokemon-colorscripts
+
+# Claude configuration - ignore confidential parts
+claude/.claude/projects/
+claude/.claude/statsig/
+claude/.claude/shell-snapshots/
+claude/.claude/todos/
