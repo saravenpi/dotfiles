@@ -21,6 +21,9 @@ M.specs = {
 }
 
 M.setup = function()
+	-- Disable LSP logging to prevent startup warnings
+	vim.lsp.set_log_level("off")
+	
 	require("copilot").setup({ suggestion = { enabled = false }, panel = { enabled = false } })
 	require("copilot_cmp").setup()
 

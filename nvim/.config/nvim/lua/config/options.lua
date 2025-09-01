@@ -12,6 +12,9 @@ vim.opt.smartcase = true
 vim.g.colorcolum = "80"
 vim.g.mapleader = " "
 
+-- Disable LSP logging to prevent large log files
+vim.lsp.set_log_level("off")
+
 vim.diagnostic.config({
 	virtual_text = {
 		prefix = "●",

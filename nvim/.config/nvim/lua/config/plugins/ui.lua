@@ -28,7 +28,7 @@ M.setup = function()
 
 	require("lualine").setup({
 		options = {
-			theme = lualine_theme,
+			theme = "auto",
 			section_separators = "",
 			component_separators = "",
 			globalstatus = true,

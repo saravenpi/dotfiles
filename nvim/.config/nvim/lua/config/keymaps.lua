@@ -110,24 +110,3 @@ vim.keymap.set("n", "<leader>$", "<cmd>BufferLineGoToBuffer -1<CR>", { desc = "G
 
 -- UI colorscheme picker
 vim.keymap.set("n", "<leader>uc", "<cmd>Telescope colorscheme<CR>", { desc = "Select colorscheme" })
-
--- Avante AI
-vim.keymap.set("n", "<leader>aa", function()
-	require("avante.api").ask()
-end, { desc = "Avante: Ask" })
-vim.keymap.set("v", "<leader>aa", function()
-	require("avante.api").ask()
-end, { desc = "Avante: Ask" })
-vim.keymap.set("n", "<leader>ar", function()
-	require("avante.api").refresh()
-end, { desc = "Avante: Refresh" })
-vim.keymap.set("n", "<leader>ae", function()
-	require("avante.api").edit()
-end, { desc = "Avante: Edit" })
-vim.keymap.set("v", "<leader>ae", function()
-	require("avante.api").edit()
-end, { desc = "Avante: Edit" })
-vim.keymap.set("n", "<leader>at", "<cmd>AvanteToggle<CR>", { desc = "Avante: Toggle" })
-vim.keymap.set("n", "<leader>af", "<cmd>AvanteFocus<CR>", { desc = "Avante: Focus" })
-vim.keymap.set("n", "<leader>ac", "<cmd>AvanteChat<CR>", { desc = "Avante: Chat" })
-vim.keymap.set("n", "<leader>as", "<cmd>AvanteSwitchProvider<CR>", { desc = "Avante: Switch Provider" })
