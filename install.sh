@@ -265,15 +265,22 @@ install_dotfiles() {
     )
 
     for package_group in "${stow_packages[@]}"; do
-        # Use --adopt to handle existing files gracefully
-        if stow --adopt $package_group 2>/dev/null || stow $package_group 2>/dev/null; then
+        # First, try to restow (update) existing packages
+        if stow --restow $package_group 2>/dev/null; then
+            success "Updated: $package_group"
+        # If restow fails, try normal stow
+        elif stow $package_group 2>/dev/null; then
             success "Installed: $package_group"
+        # If both fail, try adopt mode as last resort
+        elif stow --adopt $package_group 2>/dev/null; then
+            success "Merged: $package_group"
         else
-            warn "Failed to install: $package_group (may already exist)"
+            # Only warn if it truly failed
+            warn "Skipped: $package_group (manual intervention may be needed)"
         fi
     done
 
-    success "Dotfiles configuration installed"
+    success "Dotfiles configuration completed"
 }
 
 # Show installation summary
