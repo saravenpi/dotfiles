@@ -114,54 +114,54 @@ prompt_user() {
 # Check dependencies
 check_dependencies() {
     info "Checking dependencies..."
-    
+
     local missing_deps=()
-    
+
     if ! command_exists git; then
         missing_deps+=("git")
     fi
-    
+
     if ! command_exists stow; then
         missing_deps+=("stow")
     fi
-    
+
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         error "Missing required dependencies: ${missing_deps[*]}"
         echo -e "\n${YELLOW}Please install the missing dependencies first:${NC}"
         echo -e "${WHITE}See installation instructions at: https://github.com/saravenpi/dotfiles#requirements${NC}"
         exit 1
     fi
-    
+
     success "All dependencies are installed"
 }
 
 # Create backup of existing configuration
 create_backup() {
     info "Creating backup of existing configuration..."
-    
+
     if ! safe_mkdir "$BACKUP_DIR"; then
         return 1
     fi
-    
+
     safe_mkdir "$BACKUP_DIR/.config"
-    
+
     local files_to_backup=(
         ".bashrc" ".bash_aliases" ".bash_functions" ".emacs" ".tmux.conf"
         ".clang-format" ".gitconfig" ".battery-warning.sh" ".currentapp.sh"
         ".desktop.sh" ".menu.sh" ".openchatgpt.sh" ".aerospace.toml"
     )
-    
+
     local dirs_to_backup=(
         "fonts" ".dotfiles"
     )
-    
+
     local config_dirs_to_backup=(
         "dunst" "fish" "gtk-3.0" "home-manager" "hyprland" "i3" "kettle"
         "kitty" "lazygit" "nixpkgs" "nvim" "picom" "polybar" "rofi" "ghostty"
     )
-    
+
     local backup_count=0
-    
+
     # Backup home directory files
     for file in "${files_to_backup[@]}"; do
         if [[ -f "$HOME/$file" ]]; then
@@ -173,7 +173,7 @@ create_backup() {
             fi
         fi
     done
-    
+
     # Backup home directory folders
     for dir in "${dirs_to_backup[@]}"; do
         if [[ -d "$HOME/$dir" ]]; then
@@ -185,7 +185,7 @@ create_backup() {
             fi
         fi
     done
-    
+
     # Backup config directory folders
     for dir in "${config_dirs_to_backup[@]}"; do
         if [[ -d "$HOME/.config/$dir" ]]; then
@@ -197,7 +197,7 @@ create_backup() {
             fi
         fi
     done
-    
+
     if [[ $backup_count -gt 0 ]]; then
         success "Backed up $backup_count items to: $BACKUP_DIR"
     else
@@ -208,7 +208,7 @@ create_backup() {
 # Clone dotfiles repository
 clone_dotfiles() {
     info "Setting up dotfiles repository..."
-    
+
     # Check if dotfiles already exist
     if [[ -d "$HOME/.dotfiles" ]]; then
         warn "Directory exists: $HOME/.dotfiles"
@@ -221,7 +221,7 @@ clone_dotfiles() {
                 warn "Could not update existing repo, will clone fresh"
             fi
         fi
-        
+
         if prompt_user "Remove existing directory and continue?" "y"; then
             # Change to safe directory before removing
             cd "$HOME" || cd /tmp || cd /
@@ -231,7 +231,7 @@ clone_dotfiles() {
             return 1
         fi
     fi
-    
+
     info "Cloning dotfiles repository..."
     if git clone "https://github.com/saravenpi/dotfiles" "$HOME/.dotfiles"; then
         success "Successfully cloned dotfiles repository"
@@ -245,14 +245,14 @@ clone_dotfiles() {
 # Install dotfiles with stow
 install_dotfiles() {
     info "Installing dotfiles configuration..."
-    
+
     cd "$HOME/.dotfiles" || {
         error "Failed to enter dotfiles directory"
         return 1
     }
-    
+
     info "Installing configuration with stow..."
-    
+
     # Handle stow packages
     local stow_packages=(
         "fonts"
@@ -263,7 +263,7 @@ install_dotfiles() {
         "mybins containers"
         "claude"
     )
-    
+
     for package_group in "${stow_packages[@]}"; do
         # Use --adopt to handle existing files gracefully
         if stow --adopt $package_group 2>/dev/null || stow $package_group 2>/dev/null; then
@@ -272,30 +272,30 @@ install_dotfiles() {
             warn "Failed to install: $package_group (may already exist)"
         fi
     done
-    
+
     success "Dotfiles configuration installed"
 }
 
 # Show installation summary
 show_summary() {
     echo -e "\n${GREEN}Dotfiles installation completed successfully!${NC}\n"
-    
+
     echo -e "${WHITE}Installation Details:${NC}"
     echo -e "  ${CYAN}• Backup:${NC} $BACKUP_DIR"
     echo -e "  ${CYAN}• Install time:${NC} $(date)"
-    
+
     echo -e "\n${WHITE}Next Steps:${NC}"
     echo -e "  ${CYAN}1.${NC} Restart your terminal or run: ${YELLOW}source ~/.bashrc${NC} (or ~/.zshrc)"
     echo -e "  ${CYAN}2.${NC} Install optional programs as needed"
     echo -e "  ${CYAN}3.${NC} See README for program installation links"
-    
+
     echo -e "\n${WHITE}Optional programs documentation:${NC}"
     echo -e "  ${BLUE}https://github.com/saravenpi/dotfiles#optional-programs${NC}"
-    
+
     echo -e "\n${WHITE}Report issues at:${NC}"
     echo -e "  ${BLUE}https://github.com/saravenpi/dotfiles/issues${NC}"
     echo -e "${WHITE}=======================================${NC}"
-    
+
     # Call the welcome function if it exists
     if command_exists welcome; then
         welcome
@@ -310,14 +310,14 @@ show_summary() {
 # Main installation flow
 main() {
     show_banner
-    
+
     # Check dependencies
     check_dependencies
-    
+
     # Ask for confirmation before proceeding
     echo -e "\n${YELLOW}This script will backup your current config and install new dotfiles.${NC}"
     echo -e "${WHITE}Backup location: $BACKUP_DIR${NC}"
-    
+
     # In non-interactive mode, proceed automatically
     if [[ "${NONINTERACTIVE:-}" == "1" ]] || [[ "${CI:-}" == "true" ]]; then
         info "Non-interactive mode: proceeding with installation"
@@ -325,14 +325,14 @@ main() {
         info "Installation cancelled by user"
         exit 0
     fi
-    
+
     # Run installation steps
     create_backup || { error "Backup creation failed"; exit 1; }
     clone_dotfiles || { error "Repository cloning failed"; exit 1; }
     install_dotfiles || { error "Dotfiles installation failed"; exit 1; }
-    
+
     show_summary
-    
+
     success "Installation completed successfully!"
 }
 
