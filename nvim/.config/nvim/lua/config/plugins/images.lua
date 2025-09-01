@@ -2,6 +2,7 @@ local M = {}
 
 M.specs = {
 	{ src = "https://github.com/3rd/image.nvim" },
+	{ src = "https://github.com/3rd/diagram.nvim" },
 }
 
 M.setup = function()
@@ -43,6 +44,28 @@ M.setup = function()
 		editor_only_render_when_focused = false, -- auto show/hide images when the editor gains/looses focus
 		tmux_show_only_in_active_window = false, -- auto show/hide images in the correct Tmux window (needs visual-activity off)
 		hijack_file_patterns = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp", "*.avif" }, -- render image files as images when opened
+	})
+
+	require("diagram").setup({
+		integrations = {
+			require("diagram.integrations.markdown"),
+			require("diagram.integrations.neorg"),
+		},
+		renderer_options = {
+			mermaid = {
+				theme = "forest",
+			},
+			plantuml = {
+				charset = "utf-8",
+			},
+			d2 = {
+				theme_id = 1,
+			},
+			gnuplot = {
+				theme = "dark",
+				size = "800,600",
+			},
+		},
 	})
 end
 

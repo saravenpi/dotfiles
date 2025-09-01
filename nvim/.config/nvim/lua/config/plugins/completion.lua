@@ -41,6 +41,10 @@ M.setup = function()
 					luasnip = "📝",
 					buffer = "📄",
 					path = "📁",
+					pebble_wiki_links = "🔗",
+					pebble_markdown_links = "📎",
+					pebble_tags = "🏷️",
+					pebble = "🪨",
 				}
 				vim_item.kind = string.format("%s %s", icons[entry.source.name] or "•", vim_item.kind)
 				vim_item.menu = string.format("[%s]", entry.source.name)
@@ -72,9 +76,10 @@ M.setup = function()
 			{ name = "copilot" },
 			{ name = "nvim_lsp" },
 			{ name = "luasnip" },
+			{ name = "pebble", priority = 100 },
 			{ name = "buffer" },
 			{ name = "path" },
-		}),
+		})
 	})
 
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()

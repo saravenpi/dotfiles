@@ -20,8 +20,8 @@ M.setup = function()
 	vim.g.mellow_bold_functions = true
 	vim.g.mellow_transparent = true
 
-	-- vim.cmd.colorscheme("gruvbox-material")
-	vim.cmd.colorscheme("mellow")
+	vim.cmd.colorscheme("gruvbox-material")
+	-- vim.cmd.colorscheme("mellow")
 end
 
 return M
