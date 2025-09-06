@@ -1,27 +1,18 @@
 # If not running interactively, don't do anything and return early
 [[ $- == *i* ]] || return
 
+if [ -f ~/.variables ]; then
+								. ~/.variables
+fi
+
 # # aliases
-. ~/.bash_aliases
+. ~/.aliases
 . ~/containers/.bash_aliases
 
 # bash configuration
-. ~/.bash_functions
-. ~/.bash_variables
+. ~/.functions
 . ~/.zsh_settings
 . ~/.zsh_zoxide
 
 # Welcome
 welcome
-
-
-# Added by Windsurf
-export PATH="/Users/yannthevenin/.codeium/windsurf/bin:$PATH"
-
-# bun completions
-[ -s "/Users/yannthevenin/.bun/_bun" ] && source "/Users/yannthevenin/.bun/_bun"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$PATH:$HOME/.local/bin"
-export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
-export PATH="$HOME/bin:$PATH"
-export HOMEBREW_CASK_OPTS="--fontdir=~/.fonts"

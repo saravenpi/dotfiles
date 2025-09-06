@@ -1,0 +1,13 @@
+#!/bin/bash
+
+OPENAI_API_KEY="$(skate get openai_api_key)"
+ANTHROPIC_API_KEY="$(skate get anthropic_api_key)"
+KNOT_TOKEN="$(skate get knot_token)"
+NTFY_SH="$(skate get ntfy_sh)"
+OBSIDIAN="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/"
+
+export OPENAI_API_KEY
+export ANTHROPIC_API_KEY
+export KNOT_TOKEN
+export NTFY_SH
+export OBSIDIAN

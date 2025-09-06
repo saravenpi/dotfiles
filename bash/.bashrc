@@ -1,12 +1,12 @@
 [[ $- == *i* ]] || return
 
 # bash configuration
-. ~/.bash_functions
-. ~/.bash_variables
+. ~/.functions
+. ~/.variables
 . ~/.bash_settings
 
 # aliases
-. ~/.bash_aliases
+. ~/.aliases
 . ~/containers/.bash_aliases
 
 # other programs

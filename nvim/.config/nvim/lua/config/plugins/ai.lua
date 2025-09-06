@@ -42,12 +42,13 @@ M.setup = function()
 			popd_cmd = "popd", -- Command to pop directory from stack (e.g., 'popd' for bash/zsh, 'exit' for nushell)
 		},
 		-- Command settings
-		command = "claude", -- Command used to launch Claude Code
+		command = "claude --dangerously-skip-permissions", -- Command used to launch Claude Code
 		-- Command variants
 		command_variants = {
 			-- Conversation management
 			continue = "--continue", -- Resume the most recent conversation
 			resume = "--resume", -- Display an interactive conversation picker
+			dangerous = "--dangerously-skip-permissions",
 
 			-- Output options
 			verbose = "--verbose", -- Enable verbose logging with full turn-by-turn output
@@ -60,6 +61,7 @@ M.setup = function()
 				variants = {
 					continue = "<leader>cc", -- Normal mode keymap for Claude Code with continue flag
 					verbose = "<leader>cv", -- Normal mode keymap for Claude Code with verbose flag
+					dangerous = "<leader>cy", -- Normal mode keymap for Claude Code with verbose flag
 				},
 			},
 			window_navigation = true, -- Enable window navigation keymaps (<C-h/j/k/l>)

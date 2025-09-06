@@ -10,7 +10,7 @@ M.setup = function()
 	if not image_ok then
 		return
 	end
-	
+
 	-- Try to setup image.nvim with error handling
 	pcall(image.setup, {
 		backend = "kitty",

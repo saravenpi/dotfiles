@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # goes to the saved project path
 gop() {
 	tmppath=$(cat ~/.project)
@@ -124,5 +126,5 @@ notify-send() {
 
 
 tellme() {
-curl -d "$1" ntfy.klysium.com/sara-tellme
+				curl -d "$1" "$NTFY_SH"
 }

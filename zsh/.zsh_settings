@@ -52,3 +52,11 @@ export PATH=$PATH:/Users/yannthevenin/.spicetify
 export PATH=/Users/yannthevenin/.opencode/bin:$PATH
 
 export MANPAGER="nvim +Man!"
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
+export PATH="$HOME/bin:$PATH"
+export HOMEBREW_CASK_OPTS="--fontdir=~/.fonts"

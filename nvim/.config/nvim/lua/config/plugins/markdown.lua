@@ -8,9 +8,8 @@ M.specs = {
 	{ src = "https://github.com/saravenpi/pebble.nvim" },
 }
 
-
 M.setup = function()
-	require("markview").setup({})
+	require("markview").setup()
 	require("pebble").setup({
 		auto_setup_keymaps = true,
 		global_keymaps = true,
@@ -24,7 +23,7 @@ M.setup = function()
 			debug = false,
 		},
 		search = {
-			ripgrep_path = "rg",  -- Use ripgrep for optimal performance
+			ripgrep_path = "rg", -- Use ripgrep for optimal performance
 		},
 	})
 end
