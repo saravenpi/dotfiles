@@ -89,8 +89,8 @@ tmux_session_switcher() {
                     project_path=\$(cd \"\$session_name\" && pwd)
                     zoxide add \"\$project_path\" 2>/dev/null
                 else
-                    # Fallback to current directory
-                    project_path=\"\$PWD\"
+                    # Fallback to home directory
+                    project_path=\"\$HOME\"
                 fi
             fi
 
@@ -103,6 +103,10 @@ tmux_session_switcher() {
             # Create the new session
             tmux new-session -d -s \"\$session_name\" -c \"\$project_path\"
             tmux switch-client -t \"\$session_name\"
+            # Apply the tmux layout with egg --current if egg.yml exists
+            if [ -f \"\$project_path/egg.yml\" ]; then
+                tmux send-keys -t \"\$session_name\" 'egg --current' Enter
+            fi
         fi
     "
 }

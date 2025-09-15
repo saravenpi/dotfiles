@@ -82,19 +82,90 @@ s() {
         # Get only active (running) tmux sessions
         sessions=$(tmux list-sessions 2>/dev/null | awk -F: '{print $1}')
 
-        # If no active sessions, exit
-        if [ -z "$sessions" ]; then
-            echo "No active tmux sessions found."
-            return 1
+        # Let the user choose a session using fzf (allow typing new names)
+        session=$(echo "$sessions" | fzf --prompt="Select or create tmux session: " --height=40% --border --print-query | tail -1)
+
+        # If no selection was made, exit
+        if [ -z "$session" ]; then
+            return 0
         fi
 
-        # Let the user choose a session using gum
-        session=$(echo "$sessions" | gum choose)
+        # Check if it's an existing session
+        if tmux has-session -t "$session" 2>/dev/null; then
+            tmux attach-session -t "$session"
+            return 0
+        fi
 
-        # Attach to the selected session if it's not empty
-        [ -n "$session" ] && tmux attach-session -t "$session"
+        # If session doesn't exist, treat as new session name
+        # Try to get path from zoxide
+        project_path=$(zoxide query "$session" 2>/dev/null)
+
+        # If no exact match, try listing all and grep for partial matches
+        if [ -z "$project_path" ]; then
+            project_path=$(zoxide query --list | grep -i "$session" | head -1)
+        fi
+
+        # If still no match, check if it's a valid directory path or use current directory
+        if [ -z "$project_path" ]; then
+            # Check if session is a valid directory path
+            if [ -d "$session" ]; then
+                project_path=$(cd "$session" && pwd)
+                zoxide add "$project_path" 2>/dev/null
+            else
+                # Fallback to current directory
+                project_path="$(pwd)"
+            fi
+        fi
+
+        # Create new session with the determined path
+        # Ensure we have a valid directory
+        if [ ! -d "$project_path" ]; then
+            project_path="$(pwd)"
+        fi
+
+        # Create the new session
+        tmux new-session -d -s "$session" -c "$project_path"
+
+        # Apply the tmux layout with egg --current if egg.yml exists
+        if [ -f "$project_path/egg.yml" ]; then
+            tmux send-keys -t "$session" 'egg --current' Enter
+        fi
+
+        tmux attach-session -t "$session"
     else
-        tmux attach-session -t "$1"
+        # If session name is provided as argument
+        if tmux has-session -t "$1" 2>/dev/null; then
+            tmux attach-session -t "$1"
+        else
+            # Create new session with zoxide lookup
+            project_path=$(zoxide query "$1" 2>/dev/null)
+
+            if [ -z "$project_path" ]; then
+                project_path=$(zoxide query --list | grep -i "$1" | head -1)
+            fi
+
+            if [ -z "$project_path" ]; then
+                if [ -d "$1" ]; then
+                    project_path=$(cd "$1" && pwd)
+                    zoxide add "$project_path" 2>/dev/null
+                else
+                    project_path="$(pwd)"
+                fi
+            fi
+
+            if [ ! -d "$project_path" ]; then
+                project_path="$(pwd)"
+            fi
+
+            tmux new-session -d -s "$1" -c "$project_path"
+
+            # Apply the tmux layout with egg --current if egg.yml exists
+            if [ -f "$project_path/egg.yml" ]; then
+                tmux send-keys -t "$1" 'egg --current' Enter
+            fi
+
+            tmux attach-session -t "$1"
+        fi
     fi
 }
 
