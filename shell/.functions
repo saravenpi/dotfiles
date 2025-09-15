@@ -99,7 +99,8 @@ s() {
 }
 
 welcome() {
-	echo "👋 Salut ! :D"
+    # echo "👋 Salut ! :D"
+    pokemon-colorscripts -r --no-title
 }
 
 
@@ -126,5 +127,47 @@ notify-send() {
 
 
 tellme() {
-				curl -d "$1" "$NTFY_SH"
+				curl -s -d "$1" "$NTFY_SH" > /dev/null && echo "📱 Notification sent successfully! ✨" || echo "❌ Failed to send notification"
+}
+
+clean_node_modules() {
+    local current_dir="${1:-$(pwd)}"
+
+    echo "🔍 Searching for root-level node_modules directories..."
+
+    # Find only root-level node_modules directories (exclude nested ones)
+    local node_modules_dirs=()
+    while IFS= read -r -d '' dir; do
+        # Check if this node_modules is not inside another node_modules
+        if [[ ! "$dir" =~ /node_modules/.*/node_modules$ ]]; then
+            node_modules_dirs+=("$dir")
+        fi
+    done < <(fd -t d -H '^node_modules$' "$current_dir" -0 2>/dev/null)
+
+    if [ ${#node_modules_dirs[@]} -eq 0 ]; then
+        echo "✅ No root-level node_modules directories found."
+        return 0
+    fi
+
+    echo "📦 Found ${#node_modules_dirs[@]} root-level node_modules directories:"
+    printf '%s\n' "${node_modules_dirs[@]}"
+    echo
+
+    # Calculate total size
+    local total_size=$(du -sh "${node_modules_dirs[@]}" 2>/dev/null | awk '{sum += $1} END {print sum "M"}' 2>/dev/null || echo "unknown")
+
+    # Use gum to confirm deletion
+    if gum confirm "🗑️  Delete all ${#node_modules_dirs[@]} root-level node_modules directories? (Total size: ~$total_size)"; then
+        echo "🧹 Cleaning up node_modules directories..."
+
+        for dir in "${node_modules_dirs[@]}"; do
+            echo "  Removing: $dir"
+            rip "$dir"
+        done
+
+        echo "✅ All root-level node_modules directories have been removed!"
+    else
+        echo "❌ Operation cancelled."
+        return 1
+    fi
 }
