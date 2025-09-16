@@ -78,21 +78,36 @@ gcs() {
 }
 
 s() {
+    # Check if we're already inside a tmux session
+    if [ -n "$TMUX" ]; then
+        # We're inside tmux, use switch-client instead of attach-session
+        TMUX_COMMAND="switch-client"
+    else
+        # We're not in tmux, use attach-session
+        TMUX_COMMAND="attach-session"
+    fi
+
     if [ "$#" -eq 0 ]; then
-        # Get only active (running) tmux sessions
-        sessions=$(tmux list-sessions 2>/dev/null | awk -F: '{print $1}')
+        # Get active tmux sessions sorted by last activity (most recent first)
+        active_sessions=$(tmux list-sessions -F "#{session_last_attached} #{session_name}" 2>/dev/null | sort -rn | awk '{print $2}')
+
+        # Use only active sessions
+        all_options="$active_sessions"
 
         # Let the user choose a session using fzf (allow typing new names)
-        session=$(echo "$sessions" | fzf --prompt="Select or create tmux session: " --height=40% --border --print-query | tail -1)
+        session=$(echo "$all_options" | fzf --prompt="Select or create tmux session: " --height=40% --border --print-query | tail -1)
 
         # If no selection was made, exit
         if [ -z "$session" ]; then
             return 0
         fi
 
+        # Clean the session name
+        session=$(echo "$session" | xargs)
+
         # Check if it's an existing session
         if tmux has-session -t "$session" 2>/dev/null; then
-            tmux attach-session -t "$session"
+            tmux $TMUX_COMMAND -t "$session"
             return 0
         fi
 
@@ -131,11 +146,11 @@ s() {
             tmux send-keys -t "$session" 'egg --current' Enter
         fi
 
-        tmux attach-session -t "$session"
+        tmux $TMUX_COMMAND -t "$session"
     else
         # If session name is provided as argument
         if tmux has-session -t "$1" 2>/dev/null; then
-            tmux attach-session -t "$1"
+            tmux $TMUX_COMMAND -t "$1"
         else
             # Create new session with zoxide lookup
             project_path=$(zoxide query "$1" 2>/dev/null)
@@ -164,14 +179,14 @@ s() {
                 tmux send-keys -t "$1" 'egg --current' Enter
             fi
 
-            tmux attach-session -t "$1"
+            tmux $TMUX_COMMAND -t "$1"
         fi
     fi
 }
 
 welcome() {
     # echo "👋 Salut ! :D"
-    pokemon-colorscripts -r --no-title
+    pokemon-colorscripts -r --no-title -n ambipom
 }
 
 

@@ -44,7 +44,7 @@ bind S list-sessions
 bind C command-prompt -p "New session name:" \
   "new-session -s %1"
 
-bind o run-shell "~/mybins/sertren"
+bind o run-shell "~/mybins/tmux-session-switcher.sh"
 
 # Kill pane with confirmation
 bind x display-popup -x C -y C -w 30 -h 5 -E "~/mybins/tmux-confirm-kill-pane.sh"
@@ -118,11 +118,31 @@ set -g status-bg default
 set -g status-style "bg=default,fg=#{@mellow_foreground}"
 set -g status-right "#[fg=#{@mellow_purple},bg=default]#{@left_border}#[bg=#{@mellow_purple},fg=#{@mellow_background}] #(~/mybins/wisp-tmux.sh) "
 
-# WISP Session Timer - Key bindings
-bind m run-shell "~/mybins/wisp toggle"              # Toggle work session
-bind M run-shell "~/mybins/wisp-menu.sh"    # Show WISP menu
-bind _ run-shell "~/mybins/wisp complete"            # Complete current session
+# Pomodoro
+set -g @pomodoro_toggle 'm'                    # Start/pause a Pomodoro/break
+set -g @pomodoro_cancel 'M'                    # Cancel the current session
+set -g @pomodoro_skip '_'                      # Skip a Pomodoro/break
 
-set -g status-interval 1                       # Refresh status every second for live timer
+set -g @pomodoro_mins 25                       # The duration of the Pomodoro
+set -g @pomodoro_break_mins 5                  # The duration of the break after the Pomodoro completes
+set -g @pomodoro_intervals 4                   # The number of intervals before a longer break is started
+set -g @pomodoro_long_break_mins 25            # The duration of the long break
+set -g @pomodoro_repeat 'off'                  # Automatically repeat the Pomodoros?
+set -g @pomodoro_disable_breaks 'off'          # Turn off breaks
+
+set -g @pomodoro_on "  "                      # The formatted output when the Pomodoro is running
+set -g @pomodoro_complete " ✔︎ "                 # The formatted output when the break is running
+set -g @pomodoro_pause " ⏸︎ "                    # The formatted output when the Pomodoro/break is paused
+set -g @pomodoro_prompt_break " ⏲︎ break?"      # The formatted output when waiting to start a break
+set -g @pomodoro_prompt_pomodoro " ⏱︎ start?"   # The formatted output when waiting to start a Pomodoro
+
+set -g @pomodoro_menu_position "R"             # The location of the menu relative to the screen
+set -g @pomodoro_sound 'on'                    # Sound for desktop notifications (Run `ls /System/Library/Sounds` for a list of sounds to use on Mac)
+                                               # (On Linux add `on` to use the `beep` program or add your custom beeping command)
+
+set -g @pomodoro_notifications 'on'           # Enable desktop notifications from your terminal
+set -g @pomodoro_granularity 'on'
+set -g status-interval 1                       # Refresh the status line every second
+set -g @pomodoro_interval_display "[%s/%s]"
 
 run '~/.tmux/plugins/tpm/tpm'

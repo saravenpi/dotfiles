@@ -44,8 +44,8 @@ alias gob='cd $HOME/brain/'
 alias gon='cd $HOME/notes/ && nvim index.md'
 
 alias wk='cd $HOME/notes/ && nvim index.md'
-alias brain='cd "$OBSIDIAN/brain" && nvim'
-alias b='cd "$OBSIDIAN/brain" && nvim'
+alias brain='cd "$OBSIDIAN/brain" && egg Brain'
+alias b='cd "$OBSIDIAN/brain" && egg Brain'
 alias todo='cd "$OBSIDIAN/brain" && nvim todo.md'
 alias t='cd "$OBSIDIAN/brain" && nvim todo.md'
 

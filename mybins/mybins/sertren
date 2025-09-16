@@ -27,12 +27,13 @@ tmux_session_switcher() {
         all_options=("$current_session (current)" "${all_options[@]}")
     fi
 
+
     # Write options to a temp file
     local temp_file="/tmp/tmux-session-options-$$"
     printf '%s\n' "${all_options[@]}" > "$temp_file"
 
     # Use fzf in popup and capture result
-    tmux popup -w 40% -h 40% -E "
+    tmux popup -w 40% -h 40% -T " Sertren " -E "
         # Source shell configuration to ensure zoxide is available
         [ -f ~/.zshrc ] && source ~/.zshrc >/dev/null 2>&1
 
@@ -64,7 +65,7 @@ tmux_session_switcher() {
                 exit 0
             fi
 
-            # Clean the selection (remove any leading/trailing spaces and (current) suffix)
+            # Clean the selection (remove suffixes and trim spaces)
             session_name=\$(echo \"\$selection\" | sed 's/ (current)$//' | xargs)
 
             # Check if it's an existing session

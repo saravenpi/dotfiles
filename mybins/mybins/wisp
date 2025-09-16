@@ -1,0 +1,248 @@
+#!/usr/bin/env bash
+
+# WISP - Work Time Tracker
+# Standalone work session logger with YAML output
+
+WORK_LOG="$HOME/.wisp.yml"
+DEFAULT_DURATION=25  # Default session duration in minutes
+
+# Initialize work log
+init_work_log() {
+    if [ ! -f "$WORK_LOG" ]; then
+        cat > "$WORK_LOG" << 'EOF'
+# WISP Work Session History
+# Tracks work sessions with start/end times and duration
+sessions:
+EOF
+    fi
+}
+
+# Get current date and time
+get_date() { date +%Y-%m-%d; }
+get_time() { date +%H:%M; }
+get_timestamp() { date +%s; }
+
+# Add a session entry
+log_session_start() {
+    local session_type="${1:-work}"
+    local duration="${2:-$DEFAULT_DURATION}"
+    local date=$(get_date)
+    local time=$(get_time)
+    local timestamp=$(get_timestamp)
+
+    echo "  - date: $date" >> "$WORK_LOG"
+    echo "    start_time: $time" >> "$WORK_LOG"
+    echo "    start_timestamp: $timestamp" >> "$WORK_LOG"
+    echo "    type: $session_type" >> "$WORK_LOG"
+    echo "    planned_minutes: $duration" >> "$WORK_LOG"
+    echo "    status: in_progress" >> "$WORK_LOG"
+    echo "" >> "$WORK_LOG"
+}
+
+# Complete current session
+log_session_complete() {
+    local end_time=$(get_time)
+    local end_timestamp=$(get_timestamp)
+
+    if [ -f "$WORK_LOG" ]; then
+        # Simple approach - just update the last in_progress session
+        sed -i.bak '/status: in_progress/,$ {
+            s/status: in_progress/status: completed/
+            /status: completed/ a\
+    end_time: '"$end_time"'\
+    end_timestamp: '"$end_timestamp"'
+        }' "$WORK_LOG"
+        rm -f "$WORK_LOG.bak" 2>/dev/null
+    fi
+}
+
+# Cancel current session
+log_session_cancel() {
+    if [ -f "$WORK_LOG" ]; then
+        sed -i.bak 's/status: in_progress/status: cancelled/' "$WORK_LOG"
+        rm -f "$WORK_LOG.bak" 2>/dev/null
+    fi
+}
+
+# Pause current session
+log_session_pause() {
+    local pause_time=$(get_time)
+    local pause_timestamp=$(get_timestamp)
+
+    if [ -f "$WORK_LOG" ]; then
+        # First remove any existing pause entries, then add new ones
+        sed -i.bak '/pause_time:/d; /pause_timestamp:/d' "$WORK_LOG"
+        sed -i.bak '/status: in_progress/,$ {
+            s/status: in_progress/status: paused/
+            /status: paused/ a\
+    pause_time: '"$pause_time"'\
+    pause_timestamp: '"$pause_timestamp"'
+        }' "$WORK_LOG"
+        rm -f "$WORK_LOG.bak" 2>/dev/null
+    fi
+}
+
+# Resume paused session
+log_session_resume() {
+    if [ -f "$WORK_LOG" ]; then
+        # Remove pause entries and change status
+        sed -i.bak '/pause_time:/d; /pause_timestamp:/d; s/status: paused/status: in_progress/' "$WORK_LOG"
+        rm -f "$WORK_LOG.bak" 2>/dev/null
+    fi
+}
+
+# Show basic statistics
+show_stats() {
+    if [ ! -f "$WORK_LOG" ]; then
+        echo "No work log found. Start a session first!"
+        return 1
+    fi
+
+    echo "=== Work Session Statistics ==="
+    echo
+
+    # Count sessions by status
+    local total=$(grep -c "date:" "$WORK_LOG" 2>/dev/null)
+    local completed=$(grep -c "status: completed" "$WORK_LOG" 2>/dev/null)
+    local cancelled=$(grep -c "status: cancelled" "$WORK_LOG" 2>/dev/null)
+    local in_progress=$(grep -c "status: in_progress" "$WORK_LOG" 2>/dev/null)
+    local paused=$(grep -c "status: paused" "$WORK_LOG" 2>/dev/null)
+
+    # Ensure we have valid numbers
+    total=${total:-0}
+    completed=${completed:-0}
+    cancelled=${cancelled:-0}
+    in_progress=${in_progress:-0}
+    paused=${paused:-0}
+
+    echo "Total sessions: $total"
+    echo "Completed: $completed"
+    echo "Cancelled: $cancelled"
+    echo "In progress: $in_progress"
+    echo "Paused: $paused"
+
+    # Show today's sessions
+    local today=$(get_date)
+    local today_sessions=$(grep -A 10 "date: $today" "$WORK_LOG" 2>/dev/null | grep -c "status: completed" 2>/dev/null)
+    today_sessions=${today_sessions:-0}
+
+    if [ "$today_sessions" -gt 0 ]; then
+        echo
+        echo "Today ($today): $today_sessions completed sessions"
+    fi
+}
+
+# Main function
+main() {
+    local cmd="$1"
+    shift
+
+    init_work_log
+
+    case "$cmd" in
+        "start")
+            # Check if there's already a session running
+            if [ -f "$WORK_LOG" ] && grep -q "status: in_progress" "$WORK_LOG" 2>/dev/null; then
+                # Auto-complete expired sessions
+                log_session_complete
+            fi
+            local duration="$DEFAULT_DURATION"
+            # Allow custom duration as second argument
+            if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
+                duration="$1"
+            fi
+            log_session_start "work" "$duration"
+            ;;
+        "complete"|"done"|"finish")
+            log_session_complete
+            ;;
+        "cancel"|"stop")
+            log_session_cancel
+            ;;
+        "pause")
+            log_session_pause
+            ;;
+        "resume")
+            log_session_resume
+            ;;
+        "toggle")
+            # Check current session status
+            if [ -f "$WORK_LOG" ] && grep -q "status: in_progress" "$WORK_LOG" 2>/dev/null; then
+                # Check if timer has expired
+                local timer_status=$(~/mybins/tmux/wisp-tmux.sh)
+                if [[ "$timer_status" == *"Done"* ]]; then
+                    # Complete the expired session and start new one
+                    log_session_complete
+                    local duration="$DEFAULT_DURATION"
+                    if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
+                        duration="$1"
+                    fi
+                    log_session_start "work" "$duration"
+                else
+                    # Pause the current session
+                    log_session_pause
+                fi
+            elif [ -f "$WORK_LOG" ] && grep -q "status: paused" "$WORK_LOG" 2>/dev/null; then
+                # Resume the paused session
+                log_session_resume
+            else
+                # Start a new session
+                local duration="$DEFAULT_DURATION"
+                if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
+                    duration="$1"
+                fi
+                log_session_start "work" "$duration"
+            fi
+            ;;
+        "stats"|"status"|"summary")
+            show_stats
+            ;;
+        "log"|"history"|"show")
+            if [ -f "$WORK_LOG" ]; then
+                cat "$WORK_LOG"
+            else
+                echo "No work log found."
+            fi
+            ;;
+        "today")
+            if [ -f "$WORK_LOG" ]; then
+                local today=$(get_date)
+                echo "=== Today's Sessions ($today) ==="
+                grep -A 15 "date: $today" "$WORK_LOG" | head -20
+            else
+                echo "No work log found."
+            fi
+            ;;
+        "help"|"-h"|"--help")
+            echo "WISP - Work Time Tracker"
+            echo
+            echo "Usage: $0 [command] [duration]"
+            echo
+            echo "Commands:"
+            echo "  start [mins] Start new work session (default: 25 min)"
+            echo "  toggle       Toggle session (start/pause/resume)"
+            echo "  pause        Pause current session"
+            echo "  resume       Resume paused session"
+            echo "  complete     Mark current session as completed"
+            echo "  cancel       Cancel current session"
+            echo "  stats        Show work statistics"
+            echo "  today        Show today's sessions"
+            echo "  log          Show full work history"
+            echo "  help         Show this help"
+            echo
+            echo "Examples:"
+            echo "  wisp start       # Start 25-minute session"
+            echo "  wisp start 45    # Start 45-minute session"
+            echo "  wisp complete    # Mark session as done"
+            echo
+            echo "Work sessions are logged to ~/.wisp.yml"
+            ;;
+        *)
+            echo "Unknown command: $cmd"
+            echo "Use 'wisp help' for available commands"
+            return 1
+            ;;
+    esac
+}
+
+main "$@"
