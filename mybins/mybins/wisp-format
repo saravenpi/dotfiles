@@ -1,0 +1,118 @@
+
+#!/usr/bin/env bash
+
+WISP_FORMAT_DIR="$HOME/.config/wisp/formats"
+
+get_status_info() {
+    local session_info="$1"
+    local format_name="${2:-default}"
+
+    if [ -z "$session_info" ]; then
+        echo "inactive||󰒲 Inactive"
+        return
+    fi
+
+    IFS='|' read -r start_time planned_minutes start_timestamp status pause_timestamp total_pause_time <<< "$session_info"
+
+    local current_timestamp=$(date +%s)
+    local elapsed_seconds
+
+    if [ "$status" = "paused" ] && [ -n "$pause_timestamp" ]; then
+        elapsed_seconds=$((pause_timestamp - start_timestamp))
+    else
+        elapsed_seconds=$((current_timestamp - start_timestamp - total_pause_time))
+    fi
+
+    local planned_seconds=$((planned_minutes * 60))
+    local remaining_seconds=$((planned_seconds - elapsed_seconds))
+
+    if [ $remaining_seconds -le 0 ]; then
+        ~/mybins/wisp stop >/dev/null 2>&1
+        echo "completed||󰒲 Inactive"
+        return
+    fi
+
+    local remaining_minutes=$((remaining_seconds / 60))
+    local remaining_secs=$((remaining_seconds % 60))
+    local time_display=$(printf "%02d:%02d" "$remaining_minutes" "$remaining_secs")
+
+    if [ "$status" = "paused" ]; then
+        echo "paused||󰏤 $time_display"
+    else
+        echo "running||󰥔 $time_display"
+    fi
+}
+
+apply_format() {
+    local status="$1"
+    local display="${2#|}"
+    local format_name="${3:-default}"
+
+    local format_file="$WISP_FORMAT_DIR/$format_name.sh"
+
+    if [ -f "$format_file" ]; then
+        source "$format_file"
+        format_status "$status" "$display"
+    else
+        echo "$display"
+    fi
+}
+
+main() {
+    local format_name="${1:-default}"
+
+    WORK_LOG="$HOME/.wisp.yml"
+
+    if [ ! -f "$WORK_LOG" ]; then
+        apply_format "inactive" "󰒲 Inactive" "$format_name"
+        return
+    fi
+
+    local session_found=""
+    local session_info=""
+    local start_time=""
+    local planned_minutes=""
+    local start_timestamp=""
+    local session_status=""
+    local pause_timestamp=""
+    local total_pause_time=0
+
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*date: ]]; then
+            session_info=""
+            start_time=""
+            planned_minutes=""
+            start_timestamp=""
+            session_status=""
+            pause_timestamp=""
+            total_pause_time=0
+        elif [[ "$line" =~ ^[[:space:]]*start_time:[[:space:]]*(.+) ]]; then
+            start_time="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^[[:space:]]*start_timestamp:[[:space:]]*([0-9]+) ]]; then
+            start_timestamp="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^[[:space:]]*planned_minutes:[[:space:]]*([0-9]+) ]]; then
+            planned_minutes="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ pause_timestamp:[[:space:]]*([0-9]+) ]]; then
+            pause_timestamp="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^[[:space:]]*total_pause_time:[[:space:]]*([0-9]+) ]]; then
+            total_pause_time="${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ^[[:space:]]*status:[[:space:]]*in_progress ]]; then
+            session_status="in_progress"
+            session_found="found"
+        elif [[ "$line" =~ ^[[:space:]]*status:[[:space:]]*paused ]]; then
+            session_status="paused"
+            session_found="found"
+        fi
+    done < "$WORK_LOG"
+
+    if [ "$session_found" = "found" ]; then
+        session_info="$start_time|$planned_minutes|$start_timestamp|$session_status|${pause_timestamp:-}|${total_pause_time:-0}"
+        local result=$(get_status_info "$session_info" "$format_name")
+        IFS='||' read -r status display <<< "$result"
+        apply_format "$status" "$display" "$format_name"
+    else
+        apply_format "inactive" "󰒲 Inactive" "$format_name"
+    fi
+}
+
+main "$@"

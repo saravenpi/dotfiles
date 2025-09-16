@@ -118,3 +118,6 @@ alias gf="claude \"/commit\""
 
 alias cportals='cd $HOME/portals && nvim .'
 alias cclaude='cd $HOME/.claude && nvim .'
+
+# wisp
+alias w="wisp"

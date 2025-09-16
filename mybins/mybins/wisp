@@ -1,28 +1,19 @@
+
 #!/usr/bin/env bash
 
-# WISP - Work Time Tracker
-# Standalone work session logger with YAML output
-
 WORK_LOG="$HOME/.wisp.yml"
-DEFAULT_DURATION=25  # Default session duration in minutes
-
-# Initialize work log
+DEFAULT_DURATION=25
 init_work_log() {
     if [ ! -f "$WORK_LOG" ]; then
         cat > "$WORK_LOG" << 'EOF'
-# WISP Work Session History
-# Tracks work sessions with start/end times and duration
 sessions:
 EOF
     fi
 }
 
-# Get current date and time
 get_date() { date +%Y-%m-%d; }
 get_time() { date +%H:%M; }
 get_timestamp() { date +%s; }
-
-# Add a session entry
 log_session_start() {
     local session_type="${1:-work}"
     local duration="${2:-$DEFAULT_DURATION}"
@@ -37,26 +28,41 @@ log_session_start() {
     echo "    planned_minutes: $duration" >> "$WORK_LOG"
     echo "    status: in_progress" >> "$WORK_LOG"
     echo "" >> "$WORK_LOG"
+
+    if [ -n "$TMUX" ]; then
+        tmux refresh-client -S >/dev/null 2>&1
+    fi
 }
 
-# Complete current session
 log_session_complete() {
     local end_time=$(get_time)
     local end_timestamp=$(get_timestamp)
 
     if [ -f "$WORK_LOG" ]; then
-        # Simple approach - just update the last in_progress session
-        sed -i.bak '/status: in_progress/,$ {
-            s/status: in_progress/status: completed/
-            /status: completed/ a\
+        sed -i.bak '
+            /status: in_progress/ {
+                s/status: in_progress/status: completed/
+                a\
     end_time: '"$end_time"'\
     end_timestamp: '"$end_timestamp"'
-        }' "$WORK_LOG"
+            }
+            /status: paused/ {
+                s/status: paused/status: completed/
+                a\
+    end_time: '"$end_time"'\
+    end_timestamp: '"$end_timestamp"'
+            }
+            /pause_time:/d
+            /pause_timestamp:/d
+        ' "$WORK_LOG"
         rm -f "$WORK_LOG.bak" 2>/dev/null
+    fi
+
+    if [ -n "$TMUX" ]; then
+        tmux refresh-client -S >/dev/null 2>&1
     fi
 }
 
-# Cancel current session
 log_session_cancel() {
     if [ -f "$WORK_LOG" ]; then
         sed -i.bak 's/status: in_progress/status: cancelled/' "$WORK_LOG"
@@ -64,13 +70,11 @@ log_session_cancel() {
     fi
 }
 
-# Pause current session
 log_session_pause() {
     local pause_time=$(get_time)
     local pause_timestamp=$(get_timestamp)
 
     if [ -f "$WORK_LOG" ]; then
-        # First remove any existing pause entries, then add new ones
         sed -i.bak '/pause_time:/d; /pause_timestamp:/d' "$WORK_LOG"
         sed -i.bak '/status: in_progress/,$ {
             s/status: in_progress/status: paused/
@@ -80,18 +84,210 @@ log_session_pause() {
         }' "$WORK_LOG"
         rm -f "$WORK_LOG.bak" 2>/dev/null
     fi
-}
 
-# Resume paused session
-log_session_resume() {
-    if [ -f "$WORK_LOG" ]; then
-        # Remove pause entries and change status
-        sed -i.bak '/pause_time:/d; /pause_timestamp:/d; s/status: paused/status: in_progress/' "$WORK_LOG"
-        rm -f "$WORK_LOG.bak" 2>/dev/null
+    if [ -n "$TMUX" ]; then
+        tmux refresh-client -S >/dev/null 2>&1
     fi
 }
 
-# Show basic statistics
+log_session_resume() {
+    if [ -f "$WORK_LOG" ]; then
+        sed -i.bak '/pause_time:/d; /pause_timestamp:/d; s/status: paused/status: in_progress/' "$WORK_LOG"
+        rm -f "$WORK_LOG.bak" 2>/dev/null
+    fi
+
+    if [ -n "$TMUX" ]; then
+        tmux refresh-client -S >/dev/null 2>&1
+    fi
+}
+
+calculate_session_duration() {
+    local start_ts="$1"
+    local end_ts="$2"
+
+    if [ -n "$start_ts" ] && [ -n "$end_ts" ]; then
+        echo $((end_ts - start_ts))
+    else
+        echo 0
+    fi
+}
+
+calculate_daily_total() {
+    local target_date="$1"
+    local total_seconds=0
+    local in_session=false
+    local start_ts=""
+    local end_ts=""
+    local session_status=""
+
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*date:[[:space:]]*(.+) ]]; then
+            # Process the previous session if it was completed
+            if [ "$in_session" = true ] && [ "$session_status" = "completed" ] && [ -n "$start_ts" ] && [ -n "$end_ts" ]; then
+                local duration=$(calculate_session_duration "$start_ts" "$end_ts")
+                total_seconds=$((total_seconds + duration))
+            fi
+
+            # Start new session
+            local session_date="${BASH_REMATCH[1]}"
+            if [ "$session_date" = "$target_date" ]; then
+                in_session=true
+                start_ts=""
+                end_ts=""
+                session_status=""
+            else
+                in_session=false
+            fi
+        elif [ "$in_session" = true ]; then
+            if [[ "$line" =~ ^[[:space:]]*start_timestamp:[[:space:]]*([0-9]+) ]]; then
+                start_ts="${BASH_REMATCH[1]}"
+            elif [[ "$line" =~ ^[[:space:]]*end_timestamp:[[:space:]]*([0-9]+) ]]; then
+                end_ts="${BASH_REMATCH[1]}"
+            elif [[ "$line" =~ ^[[:space:]]*status:[[:space:]]*(.+) ]]; then
+                session_status="${BASH_REMATCH[1]}"
+            fi
+        fi
+    done < "$WORK_LOG"
+
+    # Process the last session if it was completed
+    if [ "$in_session" = true ] && [ "$session_status" = "completed" ] && [ -n "$start_ts" ] && [ -n "$end_ts" ]; then
+        local duration=$(calculate_session_duration "$start_ts" "$end_ts")
+        total_seconds=$((total_seconds + duration))
+    fi
+
+    echo $total_seconds
+}
+
+format_duration() {
+    local seconds="$1"
+    local hours=$((seconds / 3600))
+    local minutes=$(((seconds % 3600) / 60))
+    local secs=$((seconds % 60))
+
+    if [ $hours -gt 0 ]; then
+        printf "%dh %02dm %02ds" "$hours" "$minutes" "$secs"
+    elif [ $minutes -gt 0 ]; then
+        printf "%dm %02ds" "$minutes" "$secs"
+    else
+        printf "%ds" "$secs"
+    fi
+}
+
+show_grouped_log() {
+    echo "=== Work Session History ==="
+    echo
+
+    local current_date=""
+    local session_count=0
+    local day_sessions=()
+    local all_dates=()
+
+    # First pass: collect all unique dates
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*date:[[:space:]]*(.+) ]]; then
+            local date="${BASH_REMATCH[1]}"
+            # Add to array if not already present
+            if [[ ! " ${all_dates[@]} " =~ " ${date} " ]]; then
+                all_dates+=("$date")
+            fi
+        fi
+    done < "$WORK_LOG"
+
+    # Sort dates (newest first)
+    IFS=$'\n' all_dates=($(sort -r <<< "${all_dates[*]}"))
+
+    # Process each date
+    for date in "${all_dates[@]}"; do
+        echo "📅 $date"
+
+        local in_session=false
+        local start_time=""
+        local end_time=""
+        local session_type=""
+        local planned_minutes=""
+        local session_status=""
+        local sessions_for_day=0
+        local completed_for_day=0
+
+        # Read through file again for this specific date
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^[[:space:]]*-[[:space:]]*date:[[:space:]]*(.+) ]]; then
+                # Process previous session if we were in one
+                if [ "$in_session" = true ]; then
+                    sessions_for_day=$((sessions_for_day + 1))
+                    if [ "$session_status" = "completed" ]; then
+                        completed_for_day=$((completed_for_day + 1))
+                    fi
+                    display_session "$start_time" "$end_time" "$session_type" "$planned_minutes" "$session_status"
+                fi
+
+                # Check if this is our target date
+                local session_date="${BASH_REMATCH[1]}"
+                if [ "$session_date" = "$date" ]; then
+                    in_session=true
+                    start_time=""
+                    end_time=""
+                    session_type=""
+                    planned_minutes=""
+                    session_status=""
+                else
+                    in_session=false
+                fi
+            elif [ "$in_session" = true ]; then
+                if [[ "$line" =~ ^[[:space:]]*start_time:[[:space:]]*(.+) ]]; then
+                    start_time="${BASH_REMATCH[1]}"
+                elif [[ "$line" =~ ^[[:space:]]*end_time:[[:space:]]*(.+) ]]; then
+                    end_time="${BASH_REMATCH[1]}"
+                elif [[ "$line" =~ ^[[:space:]]*type:[[:space:]]*(.+) ]]; then
+                    session_type="${BASH_REMATCH[1]}"
+                elif [[ "$line" =~ ^[[:space:]]*planned_minutes:[[:space:]]*([0-9]+) ]]; then
+                    planned_minutes="${BASH_REMATCH[1]}"
+                elif [[ "$line" =~ ^[[:space:]]*status:[[:space:]]*(.+) ]]; then
+                    session_status="${BASH_REMATCH[1]}"
+                fi
+            fi
+        done < "$WORK_LOG"
+
+        # Process the last session if we were in one for this date
+        if [ "$in_session" = true ]; then
+            sessions_for_day=$((sessions_for_day + 1))
+            if [ "$session_status" = "completed" ]; then
+                completed_for_day=$((completed_for_day + 1))
+            fi
+            display_session "$start_time" "$end_time" "$session_type" "$planned_minutes" "$session_status"
+        fi
+
+        # Show daily summary
+        local daily_total_seconds=$(calculate_daily_total "$date")
+        local daily_total_formatted=$(format_duration "$daily_total_seconds")
+        echo "   📊 Total: $sessions_for_day sessions, $completed_for_day completed, $daily_total_formatted"
+        echo
+    done
+}
+
+display_session() {
+    local start_time="$1"
+    local end_time="$2"
+    local session_type="$3"
+    local planned_minutes="$4"
+    local session_status="$5"
+
+    local status_icon="❓"
+    case "$session_status" in
+        "completed") status_icon="✅" ;;
+        "cancelled") status_icon="❌" ;;
+        "in_progress") status_icon="🔄" ;;
+        "paused") status_icon="⏸️" ;;
+    esac
+
+    local time_range="$start_time"
+    if [ -n "$end_time" ]; then
+        time_range="$start_time → $end_time"
+    fi
+
+    echo "   $status_icon $time_range (${planned_minutes}min ${session_type})"
+}
+
 show_stats() {
     if [ ! -f "$WORK_LOG" ]; then
         echo "No work log found. Start a session first!"
@@ -101,14 +297,12 @@ show_stats() {
     echo "=== Work Session Statistics ==="
     echo
 
-    # Count sessions by status
     local total=$(grep -c "date:" "$WORK_LOG" 2>/dev/null)
     local completed=$(grep -c "status: completed" "$WORK_LOG" 2>/dev/null)
     local cancelled=$(grep -c "status: cancelled" "$WORK_LOG" 2>/dev/null)
     local in_progress=$(grep -c "status: in_progress" "$WORK_LOG" 2>/dev/null)
     local paused=$(grep -c "status: paused" "$WORK_LOG" 2>/dev/null)
 
-    # Ensure we have valid numbers
     total=${total:-0}
     completed=${completed:-0}
     cancelled=${cancelled:-0}
@@ -121,18 +315,19 @@ show_stats() {
     echo "In progress: $in_progress"
     echo "Paused: $paused"
 
-    # Show today's sessions
     local today=$(get_date)
     local today_sessions=$(grep -A 10 "date: $today" "$WORK_LOG" 2>/dev/null | grep -c "status: completed" 2>/dev/null)
     today_sessions=${today_sessions:-0}
 
     if [ "$today_sessions" -gt 0 ]; then
+        local today_total_seconds=$(calculate_daily_total "$today")
+        local today_total_formatted=$(format_duration "$today_total_seconds")
         echo
         echo "Today ($today): $today_sessions completed sessions"
+        echo "Today's total time: $today_total_formatted"
     fi
 }
 
-# Main function
 main() {
     local cmd="$1"
     shift
@@ -141,23 +336,17 @@ main() {
 
     case "$cmd" in
         "start")
-            # Check if there's already a session running
-            if [ -f "$WORK_LOG" ] && grep -q "status: in_progress" "$WORK_LOG" 2>/dev/null; then
-                # Auto-complete expired sessions
+            if [ -f "$WORK_LOG" ] && (grep -q "status: in_progress" "$WORK_LOG" 2>/dev/null || grep -q "status: paused" "$WORK_LOG" 2>/dev/null); then
                 log_session_complete
             fi
             local duration="$DEFAULT_DURATION"
-            # Allow custom duration as second argument
             if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
                 duration="$1"
             fi
             log_session_start "work" "$duration"
             ;;
-        "complete"|"done"|"finish")
+        "stop")
             log_session_complete
-            ;;
-        "cancel"|"stop")
-            log_session_cancel
             ;;
         "pause")
             log_session_pause
@@ -166,27 +355,11 @@ main() {
             log_session_resume
             ;;
         "toggle")
-            # Check current session status
             if [ -f "$WORK_LOG" ] && grep -q "status: in_progress" "$WORK_LOG" 2>/dev/null; then
-                # Check if timer has expired
-                local timer_status=$(~/mybins/tmux/wisp-tmux.sh)
-                if [[ "$timer_status" == *"Done"* ]]; then
-                    # Complete the expired session and start new one
-                    log_session_complete
-                    local duration="$DEFAULT_DURATION"
-                    if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
-                        duration="$1"
-                    fi
-                    log_session_start "work" "$duration"
-                else
-                    # Pause the current session
-                    log_session_pause
-                fi
+                log_session_pause
             elif [ -f "$WORK_LOG" ] && grep -q "status: paused" "$WORK_LOG" 2>/dev/null; then
-                # Resume the paused session
                 log_session_resume
             else
-                # Start a new session
                 local duration="$DEFAULT_DURATION"
                 if [ -n "$1" ] && [[ "$1" =~ ^[0-9]+$ ]]; then
                     duration="$1"
@@ -199,7 +372,7 @@ main() {
             ;;
         "log"|"history"|"show")
             if [ -f "$WORK_LOG" ]; then
-                cat "$WORK_LOG"
+                show_grouped_log
             else
                 echo "No work log found."
             fi
@@ -209,6 +382,10 @@ main() {
                 local today=$(get_date)
                 echo "=== Today's Sessions ($today) ==="
                 grep -A 15 "date: $today" "$WORK_LOG" | head -20
+                echo
+                local today_total_seconds=$(calculate_daily_total "$today")
+                local today_total_formatted=$(format_duration "$today_total_seconds")
+                echo "Today's total time: $today_total_formatted"
             else
                 echo "No work log found."
             fi
@@ -223,8 +400,7 @@ main() {
             echo "  toggle       Toggle session (start/pause/resume)"
             echo "  pause        Pause current session"
             echo "  resume       Resume paused session"
-            echo "  complete     Mark current session as completed"
-            echo "  cancel       Cancel current session"
+            echo "  stop         Stop current session"
             echo "  stats        Show work statistics"
             echo "  today        Show today's sessions"
             echo "  log          Show full work history"
@@ -233,9 +409,15 @@ main() {
             echo "Examples:"
             echo "  wisp start       # Start 25-minute session"
             echo "  wisp start 45    # Start 45-minute session"
-            echo "  wisp complete    # Mark session as done"
+            echo "  wisp stop        # Stop current session"
             echo
             echo "Work sessions are logged to ~/.wisp.yml"
+            echo
+            echo "Status formatting:"
+            echo "  wisp-format [format] # Get formatted status"
+            echo "  Formats: default, tmux, minimal, simple"
+            echo "  Custom formats: ~/.config/wisp/formats/"
+            echo "  Note: tmux status uses wisp-format tmux"
             ;;
         *)
             echo "Unknown command: $cmd"
