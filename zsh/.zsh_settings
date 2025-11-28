@@ -1,0 +1,57 @@
+# history
+HISTCONTROL=ignoreboth
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# PATH
+export PATH=$PATH:$HOME/.local/bin
+
+# bun path
+export BUN_INSTALL="$HOME/.bun"
+export PATH=$BUN_INSTALL/bin:$PATH
+
+# mybins path
+export MYBINS="$HOME/mybins"
+export PATH=$MYBINS:$PATH
+
+# ruby path
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+
+# Add rubygems to the path
+export PATH=/opt/homebrew/lib/ruby/gems/2.7.0/bin:$PATH
+# # or
+export PATH=/usr/local/lib/ruby/gems/2.7.0/bin:$PATH
+
+# android path
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+# Starship prompt
+eval "$(starship init zsh)"
+
+export PATH=$PATH:$(go env GOPATH)/bin
+
+export PATH="/Users/yannthevenin/.cargo/bin:$PATH"
+
+export PATH=$PATH:/Users/yannthevenin/.spicetify
+
+# Auto Suggestions
+. ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# opencode
+export PATH=/Users/yannthevenin/.opencode/bin:$PATH
+
+export MANPAGER="nvim +Man!"
+
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+export PATH="$PATH:$HOME/.local/bin"
+
+export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
+
+export PATH="$HOME/bin:$PATH"
+
+export HOMEBREW_CASK_OPTS="--fontdir=~/.fonts"
+
+export TLDR_AUTO_UPDATE_DISABLED="true"

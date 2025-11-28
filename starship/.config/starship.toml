@@ -1,0 +1,15 @@
+add_newline = false
+
+[directory]
+truncation_length = 8
+truncation_symbol = '📁 '
+
+
+[battery]
+full_symbol = '🔋 '
+charging_symbol = '⚡️ '
+discharging_symbol = '💀 '
+
+[time]
+disabled = true
+# format = '[ 🌵 ]($style)'

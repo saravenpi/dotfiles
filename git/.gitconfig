@@ -1,0 +1,29 @@
+[pull]
+	rebase = false
+
+[core]
+	editor = nvim
+
+[user]
+	email = saravenpi@tuta.io
+	name = Saravenpi
+
+[alias]
+	fame = !python -m gitfame
+	graph = log --oneline --all --graph --decorate
+
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default
+
+[http]
+	version = HTTP/1.1
+	postBuffer = 157286400

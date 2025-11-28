@@ -1,0 +1,24 @@
+# Claude Code Configuration with Garden Integration
+
+# Garden Agent Tracking Hooks
+[hooks]
+# Session lifecycle hooks - triggers when Claude Code starts
+session_start = "~/.claude/hooks/claude-start-hook.sh 'Claude Code session started'"
+session_complete = "~/.claude/hooks/claude-complete-hook.sh 'Claude Code session completed'"
+
+# Command-specific hooks - triggers when specific commands are used
+command_start = "~/.claude/hooks/claude-start-hook.sh 'Command: {command}'"
+user_prompt_submit = "~/.claude/hooks/claude-task-hook.sh 'Processing user request' in_progress"
+
+# Task tracking hooks
+task_start = "~/.claude/hooks/claude-task-hook.sh \"{task_description}\" started"
+task_progress = "~/.claude/hooks/claude-progress-hook.sh {progress} \"{step_description}\""
+task_complete = "~/.claude/hooks/claude-task-hook.sh \"{task_description}\" completed"
+task_error = "~/.claude/hooks/claude-task-hook.sh \"{task_description}\" failed"
+
+# Garden-specific hooks - triggers when garden command is used
+garden_command = "~/.claude/hooks/claude-start-hook.sh 'Garden command executed'"
+
+# Optional: Enable debug logging
+[debug]
+hooks = true

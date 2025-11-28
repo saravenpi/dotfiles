@@ -1,0 +1,2 @@
+#!/bin/bash
+ifconfig | grep 'inet ' | awk '{print $2}' | head -2 | tail -1

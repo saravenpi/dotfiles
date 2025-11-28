@@ -1,0 +1,69 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Shell history
+.bash_history
+.zsh_history
+.fish_history
+
+# Editor temp files
+.netrwhist
+*.swp
+*.swo
+*~
+
+# App-specific
+/fish/.config/fish/completions/
+/fish/.config/fish/conf.d/
+/fish/.config/fish/functions/
+/fish/.config/fish/fish_variables
+/kity/.config/kitty/kitty-themes/
+/gtk-3.0/.config/gtk-3.0/bookmarks
+/fonts/.DS_Store
+/mybins/mybins/agesssh
+/vim/.vim/.netrwhist
+/mybins/mybins/work
+pokemon-colorscripts
+
+# Sensitive data - credentials, tokens, keys
+*.env
+*.env.*
+!*.env.example
+!*.env.sample
+.env.local
+.env.*.local
+*secret*
+*password*
+*.key
+*.pem
+*.p12
+*.pfx
+.auth_token
+.session
+credentials*
+!credentials.example
+
+# Logs and caches
+*.log
+logs/
+*.cache
+cache/
+
+# Claude configuration - ignore sensitive/personal data
+claude/.claude/projects/
+claude/.claude/statsig/
+claude/.claude/shell-snapshots/
+claude/.claude/todos/
+claude/.claude/history.jsonl
+claude/.claude/debug/
+claude/.claude/file-history/
+claude/.claude/.auth_token
+claude/.claude/.session
+claude/.claude/logs/
+
+# Kettle configs with sensitive data
+kettle/.config/kettle/**/.env
+kettle/.config/kettle/**/secrets/
+kettle/.config/kettle/**/*.log

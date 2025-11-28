@@ -1,0 +1,25 @@
+{
+  "name": "gopost",
+  "imported_files": [
+    "database/client.go",
+    "database/getAllUsers.go",
+    "database/getUserById.go",
+    "Dockerfile",
+    "Makefile",
+    "utils/jwt.go",
+    "models/user.go",
+    "kettle.json",
+    "routes/auth.go",
+    "routes/ping.go",
+    "main.go",
+    "packages.sh",
+    "init.sh",
+    "init_db.sql",
+    "README.md",
+    ".env",
+    "postgresql.sh",
+    "docker-compose.yml"
+  ],
+  "kettle_path": "/Users/yannthevenin/.config/kettle/gopost/kettle.json",
+  "init": []
+}
