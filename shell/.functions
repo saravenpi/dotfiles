@@ -1,0 +1,306 @@
+#!/bin/bash
+
+# goes to the saved project path
+gop() {
+	tmppath=$(cat ~/.project)
+	cd $tmppath
+	unset tmppath
+}
+
+# saves the current path for quick access
+setp() {
+	echo $(pwd) >~/.project
+}
+
+# quick cd with zoxide
+z() {
+	local args=("$@")
+	tmppath=$(zoxide query $args)
+	echo $tmppath
+	if [[ -z $tmppath ]]; then
+		echo "No such project"
+	else
+		cd $tmppath
+	fi
+	unset tmppath
+}
+
+# zoxide to the path and opens it with nvimgp
+grp() {
+	z $1
+	nvim .
+}
+
+# o : zoxide → egg → retour maison
+o() {
+    local origin="$PWD" # point de départ
+
+    if [[ $# -eq 0 || "$1" == "." ]]; then
+        # Aucune cible : reste ici
+        egg "$(basename "$origin")"
+    else
+        # zoxide vers la cible (alias, sous-chemin, etc.)
+        z "$@" || return
+        egg "$(basename "$PWD")"
+    fi
+
+    cd "$origin" # on remet les chaussons
+    unset origin
+}
+
+
+op() {
+  tmppath=$(cat ~/.project)
+	cd $tmppath
+  egg
+	unset tmppath
+}
+
+oe() {
+	cur=$(pwd)
+	z $1
+	epi $1
+	cd $cur
+	unset cur
+}
+
+gss() {
+	echo "Untracked files:"
+	git status --porcelain | grep '^??' | wc -l
+	echo "Staged files:"
+	git status --porcelain | grep '^[ MD]' | wc -l
+	echo "Lines of code:"
+	tokei --output yaml | yq '.Total.code'
+}
+
+gcs() {
+	git clone "git@github.com:$1.git"
+}
+
+s() {
+    # Check if we're already inside a tmux session
+    if [ -n "$TMUX" ]; then
+        # We're inside tmux, use switch-client instead of attach-session
+        TMUX_COMMAND="switch-client"
+    else
+        # We're not in tmux, use attach-session
+        TMUX_COMMAND="attach-session"
+    fi
+
+    if [ "$#" -eq 0 ]; then
+        # Get active tmux sessions sorted by last activity (most recent first)
+        active_sessions=$(tmux list-sessions -F "#{session_last_attached} #{session_name}" 2>/dev/null | sort -rn | awk '{print $2}')
+
+        # Use only active sessions
+        all_options="$active_sessions"
+
+        # Let the user choose a session using fzf (allow typing new names)
+        session=$(echo "$all_options" | fzf --prompt="Select or create tmux session: " --height=40% --border --print-query | tail -1)
+
+        # If no selection was made, exit
+        if [ -z "$session" ]; then
+            return 0
+        fi
+
+        # Clean the session name
+        session=$(echo "$session" | xargs)
+
+        # Check if it's an existing session
+        if tmux has-session -t "$session" 2>/dev/null; then
+            tmux $TMUX_COMMAND -t "$session"
+            return 0
+        fi
+
+        # If session doesn't exist, treat as new session name
+        # Try to get path from zoxide
+        project_path=$(zoxide query "$session" 2>/dev/null)
+
+        # If no exact match, try listing all and grep for partial matches
+        if [ -z "$project_path" ]; then
+            project_path=$(zoxide query --list | grep -i "$session" | head -1)
+        fi
+
+        # If still no match, check if it's a valid directory path or use current directory
+        if [ -z "$project_path" ]; then
+            # Check if session is a valid directory path
+            if [ -d "$session" ]; then
+                project_path=$(cd "$session" && pwd)
+                zoxide add "$project_path" 2>/dev/null
+            else
+                # Fallback to current directory
+                project_path="$(pwd)"
+            fi
+        fi
+
+        # Create new session with the determined path
+        # Ensure we have a valid directory
+        if [ ! -d "$project_path" ]; then
+            project_path="$(pwd)"
+        fi
+
+        # Create the new session
+        tmux new-session -d -s "$session" -c "$project_path"
+
+        # Apply the tmux layout with egg --current if egg.yml exists
+        if [ -f "$project_path/egg.yml" ]; then
+            tmux send-keys -t "$session" 'egg --current' Enter
+        fi
+
+        tmux $TMUX_COMMAND -t "$session"
+    else
+        # If session name is provided as argument
+        if tmux has-session -t "$1" 2>/dev/null; then
+            tmux $TMUX_COMMAND -t "$1"
+        else
+            # Create new session with zoxide lookup
+            project_path=$(zoxide query "$1" 2>/dev/null)
+
+            if [ -z "$project_path" ]; then
+                project_path=$(zoxide query --list | grep -i "$1" | head -1)
+            fi
+
+            if [ -z "$project_path" ]; then
+                if [ -d "$1" ]; then
+                    project_path=$(cd "$1" && pwd)
+                    zoxide add "$project_path" 2>/dev/null
+                else
+                    project_path="$(pwd)"
+                fi
+            fi
+
+            if [ ! -d "$project_path" ]; then
+                project_path="$(pwd)"
+            fi
+
+            tmux new-session -d -s "$1" -c "$project_path"
+
+            # Apply the tmux layout with egg --current if egg.yml exists
+            if [ -f "$project_path/egg.yml" ]; then
+                tmux send-keys -t "$1" 'egg --current' Enter
+            fi
+
+            tmux $TMUX_COMMAND -t "$1"
+        fi
+    fi
+}
+
+
+killport() {
+  if [ -z "$1" ]; then
+    echo "Usage: killport <port>"
+    return 1
+  fi
+
+  PID=$(lsof -ti tcp:$1)
+
+  if [ -z "$PID" ]; then
+    echo "🔍 No process found on port $1"
+  else
+    kill -9 $PID && echo "💥 Port $1 freeed (PID $PID killed)"
+  fi
+}
+
+
+tellme() {
+				curl -s -d "$1" "$NTFY_SH" > /dev/null && echo "📱 Notification sent successfully! ✨" || echo "❌ Failed to send notification"
+}
+
+clean_node_modules() {
+    local current_dir="${1:-$(pwd)}"
+
+    echo "🔍 Searching for root-level node_modules directories..."
+
+    # Find only root-level node_modules directories (exclude nested ones)
+    local node_modules_dirs=()
+    while IFS= read -r -d '' dir; do
+        # Check if this node_modules is not inside another node_modules
+        if [[ ! "$dir" =~ /node_modules/.*/node_modules$ ]]; then
+            node_modules_dirs+=("$dir")
+        fi
+    done < <(fd -t d -H '^node_modules$' "$current_dir" -0 2>/dev/null)
+
+    if [ ${#node_modules_dirs[@]} -eq 0 ]; then
+        echo "✅ No root-level node_modules directories found."
+        return 0
+    fi
+
+    echo "📦 Found ${#node_modules_dirs[@]} root-level node_modules directories:"
+    printf '%s\n' "${node_modules_dirs[@]}"
+    echo
+
+    # Calculate total size
+    local total_size=$(du -sh "${node_modules_dirs[@]}" 2>/dev/null | awk '{sum += $1} END {print sum "M"}' 2>/dev/null || echo "unknown")
+
+    # Use gum to confirm deletion
+    if gum confirm "🗑️  Delete all ${#node_modules_dirs[@]} root-level node_modules directories? (Total size: ~$total_size)"; then
+        echo "🧹 Cleaning up node_modules directories..."
+
+        for dir in "${node_modules_dirs[@]}"; do
+            echo "  Removing: $dir"
+            rip "$dir"
+        done
+
+        echo "✅ All root-level node_modules directories have been removed!"
+    else
+        echo "❌ Operation cancelled."
+        return 1
+    fi
+}
+
+setwallpaper() {
+    local all_spaces=false
+    local image_path=""
+    local max_spaces=10
+
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -a|--all-spaces)
+                all_spaces=true
+                shift
+                ;;
+            *)
+                image_path="$1"
+                shift
+                ;;
+        esac
+    done
+
+    if [ -z "$image_path" ]; then
+        echo "Usage: setwallpaper [-a|--all-spaces] <image_path>"
+        echo "  -a, --all-spaces    Set wallpaper across all spaces/workspaces"
+        return 1
+    fi
+
+    if [ ! -f "$image_path" ]; then
+        echo "Error: File '$image_path' not found"
+        return 1
+    fi
+
+    local abs_path=$(cd "$(dirname "$image_path")" && pwd)/$(basename "$image_path")
+
+    if [ "$all_spaces" = true ]; then
+        echo "Setting wallpaper across all spaces and screens..."
+
+        osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\"" 2>/dev/null
+        sleep 0.3
+
+        for i in $(seq 1 $max_spaces); do
+            osascript -e "tell application \"System Events\" to key code 124 using control down" 2>/dev/null
+            sleep 0.5
+
+            osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\"" 2>/dev/null
+            sleep 0.3
+        done
+
+        echo "✓ Wallpaper set across all spaces to: $abs_path"
+    else
+        osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\""
+
+        if [ $? -eq 0 ]; then
+            echo "✓ Wallpaper set to: $abs_path"
+        else
+            echo "✗ Failed to set wallpaper"
+            return 1
+        fi
+    fi
+}

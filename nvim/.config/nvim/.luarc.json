@@ -1,0 +1,18 @@
+{
+    "diagnostics.disable": [
+        "duplicate-index",
+        "duplicate-set-field",
+        "missing-fields"
+    ],
+    "diagnostics.globals": [
+        "vim",
+        "opts",
+        "LazyVim",
+        "pick",
+        "pick_recent_sessions",
+        "pick_recent_sessions_with_telescope",
+        "sort_session_files_by_date",
+        "recent_sessions",
+        "M"
+    ]
+}
