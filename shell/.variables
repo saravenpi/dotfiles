@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Export all skatos variables from default database
-eval "$(skatos export)"
 
 # Custom local variables
 export BRAIN="$HOME/Brain"
