@@ -1,0 +1,56 @@
+feeds:
+  Les Revues du Monde: https://www.youtube.com/feeds/videos.xml?channel_id=UCnf0fDz1vTYW-sl36wbVMbg
+  Underscore_: https://www.youtube.com/feeds/videos.xml?channel_id=UCWedHS9qKebauVIK2J7383g
+  Leo Duff: https://www.youtube.com/feeds/videos.xml?channel_id=UCNiauGTV7XhkOpUAIXod4xA
+  Feldup: https://www.youtube.com/feeds/videos.xml?channel_id=UCQVaKQcp4OxSg1eC6SF3NTw
+  Thinkerview: https://www.youtube.com/feeds/videos.xml?channel_id=UCQgWpmt02UtJkyO32HGUASQ
+  Mental Outlaw: https://rss.app/feed/E61pBKb5x9vpaOAb
+  Fireship: https://www.youtube.com/@Fireship
+  The Diary Of A CEO: https://www.youtube.com/@TheDiaryOfACEO
+  jvscholz: https://www.youtube.com/@jvscholz
+  james vinh scholz: https://www.youtube.com/@jamesvinhscholz
+  Le Dolmen: https://www.youtube.com/@ledolmen
+  Le Progres Lyon: https://www.leprogres.fr/edition-lyon-villeurbanne/rss
+  Le Progres Rhone: https://www.leprogres.fr/rhone/rss
+  Disclose: https://disclose.ngo/feed/
+  Le Canard Enchaine:
+    url: https://www.lecanardenchaine.fr/rss/index.xml
+    tags:
+      - news
+  France TV Info: https://www.francetvinfo.fr/titres.rss
+  France 24: https://www.france24.com/en/rss
+  Front Populaire: https://frontpopulaire.fr/rss
+  HuffPost FR: https://www.huffingtonpost.fr/feeds/index.xml
+  Nouvel Obs: https://www.nouvelobs.com/a-la-une/rss.xml
+  TechCrunch: https://feeds.feedburner.com/TechCrunch
+  Wired: https://www.wired.com/feed/rss
+  BBC World: https://feeds.bbci.co.uk/news/world/rss.xml
+  La Quadrature du Net: https://www.laquadrature.net/feed/
+  ThePrimeTime: https://www.youtube.com/@ThePrimeTimeagen
+  Defend Intelligence: https://www.youtube.com/@DefendIntelligence
+  PP World: https://www.youtube.com/@PPWorld
+  EGO: https://www.youtube.com/@ego_one
+  Theo - t3․gg: https://www.youtube.com/@t3dotgg
+  Dreams of Code: https://www.youtube.com/@dreamsofcode
+  Ben Vallack: https://www.youtube.com/@BenVallack
+  DistroTube: https://www.youtube.com/@DistroTube
+  Trouble Fait: https://www.youtube.com/@TroubleFait
+  Veronica Explains: https://www.youtube.com/@VeronicaExplains
+  Marques Brownlee: https://www.youtube.com/@mkbhd
+  Mickadoule: https://www.youtube.com/@mickadoule
+  Low Level: https://www.youtube.com/@LowLevelTV
+  TheAIGRID: https://www.youtube.com/@TheAiGrid
+  Syntax: https://www.youtube.com/channel/UCyU5wkjgQYGRB0hIHMwm2Sg
+  Benjamin Code: https://www.youtube.com/@BenjaminCode
+  Micode: https://www.youtube.com/@Micode
+  Tsoding Daily: https://www.youtube.com/@TsodingDaily
+  Eliott Meunier: https://www.youtube.com/@EliottMeunier
+  nobonoko: https://www.youtube.com/@nobonokomusic
+  Aissa: https://www.youtube.com/@aissalover
+
+invidious: true
+invidious_instance: inv.nadeko.net
+show_tooltips: false
+paywall_remover: true
+browser_command: calm
+hide_shorts: false

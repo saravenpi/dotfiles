@@ -1,0 +1,13 @@
+animation: true
+animation_type: agbe
+sidebar_position: left
+decorations: false
+window_corner_radius: 0.0
+default_folder: ~/Musa
+show_status_bar: false
+primary_color: '#FF8A00'
+custom_font: ~/Library/Fonts/GohuFont14NerdFontMono-Regular.ttf
+sidebar_width: 798.0
+ui_sounds_enabled: true
+ui_sounds_volume: 0.2002924
+startup_sound_enabled: true

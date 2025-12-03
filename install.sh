@@ -262,6 +262,7 @@ install_dotfiles() {
         "git kettle"
         "mybins containers"
         "claude"
+        "bat calm donut miam waves"
     )
 
     for package_group in "${stow_packages[@]}"; do
