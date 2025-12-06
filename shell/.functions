@@ -304,3 +304,39 @@ setwallpaper() {
         fi
     fi
 }
+
+disk() {
+    local CYAN='\033[0;36m'
+    local GREEN='\033[0;32m'
+    local YELLOW='\033[1;33m'
+    local RED='\033[0;31m'
+    local RESET='\033[0m'
+    local BOLD='\033[1m'
+
+    df -h | grep -E '^/dev/' | grep -v '/System/Volumes' | while read -r line; do
+        local disk=$(echo $line | awk '{print $1}')
+        local avail=$(echo $line | awk '{print $4}')
+        local mount=$(echo $line | awk '{print $9}')
+
+        local disk_name=$(basename "$disk")
+        if [ -n "$mount" ] && [ "$mount" != "/" ]; then
+            disk_name="$disk_name ($mount)"
+        fi
+
+        local size=$(echo $avail | sed 's/Gi/GB/g; s/Mi/MB/g; s/Ki/KB/g; s/Ti/TB/g')
+
+        local size_num=$(echo $size | sed 's/[^0-9.]//g')
+        local size_unit=$(echo $size | sed 's/[0-9.]//g')
+
+        local color=$GREEN
+        if [ "$size_unit" = "GB" ] && [ "$(echo "$size_num < 50" | bc -l 2>/dev/null || echo 0)" = "1" ]; then
+            color=$YELLOW
+        elif [ "$size_unit" = "GB" ] && [ "$(echo "$size_num < 20" | bc -l 2>/dev/null || echo 0)" = "1" ]; then
+            color=$RED
+        elif [ "$size_unit" = "MB" ]; then
+            color=$RED
+        fi
+
+        echo -e "💾 ${CYAN}${BOLD}${disk_name}${RESET}: ${color}${BOLD}${size}${RESET} left"
+    done
+}

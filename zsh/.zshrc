@@ -1,5 +1,6 @@
 [[ $- == *i* ]] || return
 
+. ~/.prompt
 . ~/.variables
 . ~/.aliases
 . ~/.functions

@@ -27,8 +27,6 @@ export PATH=/usr/local/lib/ruby/gems/2.7.0/bin:$PATH
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
-# Starship prompt
-eval "$(starship init zsh)"
 
 export PATH=$PATH:$(go env GOPATH)/bin
 
