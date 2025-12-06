@@ -94,3 +94,37 @@ Creates dream interpretations in the brain folder.
 - Dream file format: `YYYY-MM-DD-day.md`
 - Line length limit: 80 characters
 - Focus: Personal growth and self-reflection
+
+## Installed Applications
+
+### therm - Terminal Emulator
+
+**Installation:**
+```bash
+cd ~/Code/Perso/Saravenpi/Ether/therm
+./install.sh
+```
+
+**Locations:**
+- macOS App: `/Applications/Therm.app`
+- Command line: `~/.local/bin/therm`
+- Config: `~/.therm.yml`
+
+**Features:**
+- GPU-accelerated text rendering (glyphon + wgpu)
+- VTE parser for ANSI terminal emulation
+- Mellow Dark theme (matching kitty)
+- Full shell integration (zsh/bash)
+- Non-blocking PTY with async writes
+
+**Usage:**
+- Launch via Spotlight: `Cmd+Space` → "Therm"
+- Command line: `therm`
+- Config at `~/.therm.yml` (auto-generated)
+
+**Key Components:**
+- `src/pty.rs` - PTY handler with async write thread
+- `src/terminal.rs` - VTE parser and screen buffer
+- `src/renderer.rs` - GPU text rendering
+- `src/config.rs` - YAML configuration
+- `src/main.rs` - Event loop and input handling
