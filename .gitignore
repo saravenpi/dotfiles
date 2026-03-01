@@ -8,6 +8,9 @@
 .zsh_history
 .fish_history
 
+# Theme state
+.theme_mode
+
 # Editor temp files
 .netrwhist
 *.swp

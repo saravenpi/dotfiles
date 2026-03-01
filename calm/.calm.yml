@@ -1,5 +1,6 @@
 search_engine: https://start.duckduckgo.com/?q={}
 default_url: https://start.duckduckgo.com
+user_agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15
 privacy:
   hardware_spoofing: true
   screen_normalization: true
@@ -18,20 +19,21 @@ privacy:
   webgl_fingerprint_protection: true
   audio_fingerprint_protection: true
   font_enumeration_restriction: true
+  adblock_enabled: true
 ui:
   vim_mode: true
   debug: false
   sounds: false
   shortcuts:
-    new_tab: "Cmd+T"
-    close_tab: "Cmd+W"
-    reload: "Cmd+R"
-    focus_url: "Cmd+L"
-    toggle_downloads: "Cmd+J"
-    focus_sidebar: "Cmd+E"
-    find: "Cmd+F"
-    new_window: "Cmd+N"
-    toggle_split_view: "Cmd+Shift+S"
+    new_tab: Cmd+T
+    close_tab: Cmd+W
+    reload: Cmd+R
+    focus_url: Cmd+L
+    toggle_downloads: Cmd+J
+    focus_sidebar: Cmd+E
+    find: Cmd+F
+    new_window: Cmd+N
+    toggle_split_view: Cmd+Shift+S
 performance:
   lazy_tab_loading: true
   tab_suspension: true
@@ -39,5 +41,5 @@ performance:
   session_restore: true
   session_save_interval_seconds: 30
   max_memory_per_tab_mb: 512
-redirect_youtube_to_invidious: false
-invidious_instance: yewtu.be
+redirect_youtube_to_invidious: true
+invidious_instance: ''

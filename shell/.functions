@@ -1,15 +1,13 @@
 #!/bin/bash
 
-# goes to the saved project path
-gop() {
-	tmppath=$(cat ~/.project)
-	cd $tmppath
-	unset tmppath
-}
-
 # saves the current path for quick access
 setp() {
-	echo $(pwd) >~/.project
+    skatos set current_project "$(pwd)"
+}
+
+# goes to the saved project path
+gop() {
+    cd $(skatos get current_project)
 }
 
 # quick cd with zoxide
@@ -33,18 +31,16 @@ grp() {
 
 # o : zoxide → egg → retour maison
 o() {
-    local origin="$PWD" # point de départ
+    local origin="$PWD"
 
     if [[ $# -eq 0 || "$1" == "." ]]; then
-        # Aucune cible : reste ici
         egg "$(basename "$origin")"
     else
-        # zoxide vers la cible (alias, sous-chemin, etc.)
         z "$@" || return
         egg "$(basename "$PWD")"
     fi
 
-    cd "$origin" # on remet les chaussons
+    cd "$origin"
     unset origin
 }
 
@@ -78,81 +74,60 @@ gcs() {
 }
 
 s() {
-    # Check if we're already inside a tmux session
     if [ -n "$TMUX" ]; then
-        # We're inside tmux, use switch-client instead of attach-session
         TMUX_COMMAND="switch-client"
     else
-        # We're not in tmux, use attach-session
         TMUX_COMMAND="attach-session"
     fi
 
     if [ "$#" -eq 0 ]; then
-        # Get active tmux sessions sorted by last activity (most recent first)
         active_sessions=$(tmux list-sessions -F "#{session_last_attached} #{session_name}" 2>/dev/null | sort -rn | awk '{print $2}')
 
-        # Use only active sessions
         all_options="$active_sessions"
 
-        # Let the user choose a session using fzf (allow typing new names)
         session=$(echo "$all_options" | fzf --prompt="Select or create tmux session: " --height=40% --border --print-query | tail -1)
 
-        # If no selection was made, exit
         if [ -z "$session" ]; then
             return 0
         fi
 
-        # Clean the session name
         session=$(echo "$session" | xargs)
 
-        # Check if it's an existing session
         if tmux has-session -t "$session" 2>/dev/null; then
             tmux $TMUX_COMMAND -t "$session"
             return 0
         fi
 
-        # If session doesn't exist, treat as new session name
-        # Try to get path from zoxide
         project_path=$(zoxide query "$session" 2>/dev/null)
 
-        # If no exact match, try listing all and grep for partial matches
         if [ -z "$project_path" ]; then
             project_path=$(zoxide query --list | grep -i "$session" | head -1)
         fi
 
-        # If still no match, check if it's a valid directory path or use current directory
         if [ -z "$project_path" ]; then
-            # Check if session is a valid directory path
             if [ -d "$session" ]; then
                 project_path=$(cd "$session" && pwd)
                 zoxide add "$project_path" 2>/dev/null
             else
-                # Fallback to current directory
                 project_path="$(pwd)"
             fi
         fi
 
-        # Create new session with the determined path
-        # Ensure we have a valid directory
         if [ ! -d "$project_path" ]; then
             project_path="$(pwd)"
         fi
 
-        # Create the new session
         tmux new-session -d -s "$session" -c "$project_path"
 
-        # Apply the tmux layout with egg --current if egg.yml exists
         if [ -f "$project_path/egg.yml" ]; then
             tmux send-keys -t "$session" 'egg --current' Enter
         fi
 
         tmux $TMUX_COMMAND -t "$session"
     else
-        # If session name is provided as argument
         if tmux has-session -t "$1" 2>/dev/null; then
             tmux $TMUX_COMMAND -t "$1"
         else
-            # Create new session with zoxide lookup
             project_path=$(zoxide query "$1" 2>/dev/null)
 
             if [ -z "$project_path" ]; then
@@ -174,7 +149,6 @@ s() {
 
             tmux new-session -d -s "$1" -c "$project_path"
 
-            # Apply the tmux layout with egg --current if egg.yml exists
             if [ -f "$project_path/egg.yml" ]; then
                 tmux send-keys -t "$1" 'egg --current' Enter
             fi
@@ -210,10 +184,8 @@ clean_node_modules() {
 
     echo "🔍 Searching for root-level node_modules directories..."
 
-    # Find only root-level node_modules directories (exclude nested ones)
     local node_modules_dirs=()
     while IFS= read -r -d '' dir; do
-        # Check if this node_modules is not inside another node_modules
         if [[ ! "$dir" =~ /node_modules/.*/node_modules$ ]]; then
             node_modules_dirs+=("$dir")
         fi
@@ -228,10 +200,8 @@ clean_node_modules() {
     printf '%s\n' "${node_modules_dirs[@]}"
     echo
 
-    # Calculate total size
     local total_size=$(du -sh "${node_modules_dirs[@]}" 2>/dev/null | awk '{sum += $1} END {print sum "M"}' 2>/dev/null || echo "unknown")
 
-    # Use gum to confirm deletion
     if gum confirm "🗑️  Delete all ${#node_modules_dirs[@]} root-level node_modules directories? (Total size: ~$total_size)"; then
         echo "🧹 Cleaning up node_modules directories..."
 
@@ -340,3 +310,59 @@ disk() {
         echo -e "💾 ${CYAN}${BOLD}${disk_name}${RESET}: ${color}${BOLD}${size}${RESET} left"
     done
 }
+
+bnn() {
+    cd "$BRAIN"
+    local filename=$(echo "$@" | tr ' ' '_')
+    touch "Inbox/${filename}.md"
+    nvim "Inbox/${filename}.md"
+}
+
+toggle-theme() {
+    local current_theme=""
+    local new_theme=""
+
+    if grep -q "include.*themes/paper-dark.conf" ~/.dotfiles/kitty/.config/kitty/kitty.conf 2>/dev/null; then
+        current_theme="dark"
+        new_theme="light"
+    else
+        current_theme="light"
+        new_theme="dark"
+    fi
+
+    echo "🎨 Switching from $current_theme to $new_theme mode..."
+
+    if [ "$new_theme" = "dark" ]; then
+        sed -i '' 's|include.*themes/paper.*\.conf|include                 themes/paper-dark.conf|' ~/.dotfiles/kitty/.config/kitty/kitty.conf
+
+        sed -i '' 's|set -g @paper_theme ".*"|set -g @paper_theme "dark"|' ~/.dotfiles/tmux/.tmux.conf
+
+        export FZF_DEFAULT_OPTS="--color=fg:#e8dcc8,bg:#2a1f1a,hl:#d4923a,fg+:#f5eee0,bg+:#3d2d22,hl+:#d4923a,info:#7a9048,prompt:#c47f2c,pointer:#d4923a,marker:#8ca558,spinner:#5f8f76,header:#5a7f94"
+
+        echo "dark" > ~/.theme_mode
+    else
+        sed -i '' 's|include.*themes/paper.*\.conf|include                 themes/paper.conf|' ~/.dotfiles/kitty/.config/kitty/kitty.conf
+
+        sed -i '' 's|set -g @paper_theme ".*"|set -g @paper_theme "light"|' ~/.dotfiles/tmux/.tmux.conf
+
+        export FZF_DEFAULT_OPTS="--color=fg:#4a3728,bg:#faf6f0,hl:#c47f2c,fg+:#3a2818,bg+:#e8dcc8,hl+:#c47f2c,info:#6a7d3e,prompt:#b04c3f,pointer:#c47f2c,marker:#7a9048,spinner:#507964,header:#4d6c7d"
+
+        echo "light" > ~/.theme_mode
+    fi
+
+    if [ -n "$KITTY_PID" ]; then
+        kill -SIGUSR1 $KITTY_PID 2>/dev/null
+    fi
+
+    if [ -n "$TMUX" ]; then
+        tmux source-file ~/.tmux.conf 2>/dev/null
+    fi
+
+    for server in $(nvim --serverlist 2>/dev/null); do
+        nvim --server "$server" --remote-send "<Cmd>lua vim.opt.background='$new_theme'<CR><Cmd>colorscheme paper<CR>" 2>/dev/null || true
+    done
+
+    echo "✨ Theme switched to $new_theme mode!"
+    echo "💡 In nvim, run :colorscheme paper to apply theme change"
+}
+

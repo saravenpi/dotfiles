@@ -4,7 +4,6 @@ feeds:
   Leo Duff: https://www.youtube.com/feeds/videos.xml?channel_id=UCNiauGTV7XhkOpUAIXod4xA
   Feldup: https://www.youtube.com/feeds/videos.xml?channel_id=UCQVaKQcp4OxSg1eC6SF3NTw
   Thinkerview: https://www.youtube.com/feeds/videos.xml?channel_id=UCQgWpmt02UtJkyO32HGUASQ
-  Mental Outlaw: https://rss.app/feed/E61pBKb5x9vpaOAb
   Fireship: https://www.youtube.com/@Fireship
   The Diary Of A CEO: https://www.youtube.com/@TheDiaryOfACEO
   jvscholz: https://www.youtube.com/@jvscholz
@@ -47,10 +46,10 @@ feeds:
   Eliott Meunier: https://www.youtube.com/@EliottMeunier
   nobonoko: https://www.youtube.com/@nobonokomusic
   Aissa: https://www.youtube.com/@aissalover
-
+  Monerica - Newest and Sponsored Listings: https://monerica.com/rss/feed.xml
 invidious: true
 invidious_instance: inv.nadeko.net
 show_tooltips: false
 paywall_remover: true
-browser_command: calm
+browser_command: librewolf
 hide_shorts: false

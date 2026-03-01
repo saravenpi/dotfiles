@@ -1,0 +1,57 @@
+#!/usr/bin/env bun
+
+import { readFileSync } from 'fs';
+import { $ } from 'bun';
+import YAML from 'yaml';
+
+const HOSTS_FILE = '/etc/hosts';
+const CONFIG_FILE = `${process.env.HOME}/.blocked-hosts.yml`;
+const MARKER = '#website-blocker';
+
+async function main() {
+  const configContent = readFileSync(CONFIG_FILE, 'utf-8');
+  const config = YAML.parse(configContent);
+  const blockedHosts: string[] = config.hosts || [];
+
+  const hostsContent = readFileSync(HOSTS_FILE, 'utf-8');
+  const lines = hostsContent.split('\n');
+
+  const hasBlockedHosts = lines.some(line => line.includes(MARKER));
+
+  let newContent: string;
+
+  if (hasBlockedHosts) {
+    console.log('🔓 Unblocking hosts...');
+    const newLines = lines.filter(line => !line.includes(MARKER));
+    newContent = newLines.join('\n');
+
+    console.log('✅ Hosts unblocked:');
+    blockedHosts.forEach(host => console.log(`   - ${host}`));
+  } else {
+    console.log('🔒 Blocking hosts...');
+    const blockEntries = blockedHosts.flatMap(host => [
+      `0.0.0.0 ${host} ${MARKER}`,
+      `:: ${host} ${MARKER}`
+    ]);
+
+    newContent = hostsContent.trimEnd() + '\n' + blockEntries.join('\n') + '\n';
+
+    console.log('✅ Hosts blocked:');
+    blockedHosts.forEach(host => console.log(`   - ${host}`));
+  }
+
+  const proc = Bun.spawn(['sudo', 'tee', HOSTS_FILE], {
+    stdin: 'pipe',
+    stdout: 'ignore',
+  });
+
+  proc.stdin.write(newContent);
+  proc.stdin.end();
+  await proc.exited;
+
+  await $`sudo dscacheutil -flushcache`;
+  await $`sudo killall -HUP mDNSResponder`;
+  console.log('🔄 DNS cache flushed');
+}
+
+main().catch(console.error);
