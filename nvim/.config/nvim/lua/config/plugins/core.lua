@@ -1,25 +1,14 @@
 local M = {}
 
 M.specs = {
-	-- File management
 	{ src = "https://github.com/nvim-neo-tree/neo-tree.nvim" },
 	{ src = "https://github.com/rachartier/tiny-code-action.nvim" },
-
-	-- Pickers/Finders
 	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
-
-	-- Text manipulation
 	{ src = "https://github.com/echasnovski/mini.surround" },
 	{ src = "https://github.com/smjonas/inc-rename.nvim" },
-
-	-- Core dependencies
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/MunifTanjim/nui.nvim" },
-
-	-- Syntax and parsing
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-
-	-- Document preview
 	{ src = "https://github.com/chomosuke/typst-preview.nvim" },
 }
 

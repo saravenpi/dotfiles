@@ -16,9 +16,12 @@ vim.keymap.set("n", "<leader>e", ":Neotree toggle reveal<CR>", { desc = "Toggle 
 
 -- Formatting (Conform)
 vim.keymap.set("n", "<leader>cf", function()
-	require("conform").format({ async = true, lsp_format = "fallback" })
+    require("conform").format({ 
+        bufnr = vim.api.nvim_get_current_buf(),
+        async = true, 
+        lsp_format = "fallback" 
+    })
 end, { desc = "Format buffer" })
-
 -- LSP (Language Server Protocol) keymaps
 vim.keymap.set("n", "<leader>cr", function()
 	return ":IncRename " .. vim.fn.expand("<cword>")
@@ -110,3 +113,17 @@ vim.keymap.set("n", "<leader>$", "<cmd>BufferLineGoToBuffer -1<CR>", { desc = "G
 
 -- UI colorscheme picker
 vim.keymap.set("n", "<leader>uc", "<cmd>Telescope colorscheme<CR>", { desc = "Select colorscheme" })
+
+vim.api.nvim_create_user_command("ReloadTheme", function()
+	local theme_mode_file = vim.fn.expand("~/.theme_mode")
+	if vim.fn.filereadable(theme_mode_file) == 1 then
+		local theme = vim.fn.readfile(theme_mode_file)[1]
+		if theme == "dark" or theme == "light" then
+			vim.opt.background = theme
+			vim.cmd.colorscheme("paper")
+			print("🎨 Reloaded theme: " .. theme .. " mode")
+		end
+	end
+end, { desc = "Reload theme from ~/.theme_mode file" })
+
+vim.keymap.set("n", "<leader>ut", "<cmd>ReloadTheme<CR>", { desc = "Reload theme from file" })

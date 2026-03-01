@@ -1,0 +1,27 @@
+#!/bin/bash
+
+trap 'printf "\033[?25h"; exit' INT
+printf "\033[?25l"
+prev_output=""
+project_name=$(basename "$(pwd)")
+clear
+
+while true; do
+    raw_output=$(FORCE_COLOR=1 CLICOLOR_FORCE=1 railway deployment list 2>&1)
+    cleaned_output=$(printf '%s\n' "$raw_output" | sed '/Recent Deployments/d' | sed '/^$/d')
+    current_output="$cleaned_output"
+    timestamp=$(date "+%H:%M:%S")
+
+    if [ "$current_output" != "$prev_output" ]; then
+        clear
+        printf "\033[1;35m%s\033[0m\033[1m deployments\033[0m\n\n" "$project_name"
+        printf '%s\n' "$cleaned_output"
+        printf "\n\033[0;90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n"
+        printf "\0337"
+        printf "\033[0;36mLast sync: %s\033[0m" "$timestamp"
+        prev_output="$current_output"
+    else
+        printf "\0338\r\033[K\033[0;36mLast sync: %s\033[0m" "$timestamp"
+    fi
+    sleep 1
+done

@@ -257,10 +257,10 @@ install_dotfiles() {
     local stow_packages=(
         "fonts"
         "i3 dunst scripts picom polybar rofi aerospace"
-        "kitty tmux shell bash zsh starship ghostty"
+        "kitty tmux shell bash zsh ghostty"
         "nvim vim clang-format"
         "git kettle"
-        "mybins containers"
+        "mybins"
         "claude"
         "bat calm donut miam waves"
     )

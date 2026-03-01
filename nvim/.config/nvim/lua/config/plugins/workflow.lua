@@ -1,10 +1,7 @@
 local M = {}
 
 M.specs = {
-	-- Task runner
 	{ src = "https://github.com/stevearc/overseer.nvim" },
-
-	-- Tmux integration
 	{ src = "https://github.com/aserowy/tmux.nvim" },
 }
 

@@ -1,3 +1,11 @@
+local theme_mode_file = vim.fn.expand("~/.theme_mode")
+if vim.fn.filereadable(theme_mode_file) == 1 then
+	local theme = vim.fn.readfile(theme_mode_file)[1]
+	if theme == "dark" or theme == "light" then
+		vim.opt.background = theme
+	end
+end
+
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.signcolumn = "yes"

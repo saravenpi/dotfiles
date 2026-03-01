@@ -37,12 +37,12 @@ alias trel="treload"
 # quick navigation
 alias h='clear && cd $HOME'
 alias dots='cd $HOME/.dotfiles'
-alias goc='cd $HOME/Code/'
-alias gos='cd $HOME/Code/School'
-alias gob='cd $HOME/brain/'
-alias gon='cd $HOME/notes/ && nvim index.md'
+alias goc='cd $HOME/Projects/'
+alias gos='cd $HOME/School'
+alias gob='cd $BRAIN/'
 alias brain='cd "$BRAIN/" && nvim Home.md'
 alias b='cd "$BRAIN/" && nvim Home.md'
+alias bn='cd "$BRAIN/Inbox" && nvim -c "set filetype=markdown"'
 
 # quick config
 alias cnvim='cd $HOME/.config/nvim/ && nvim .'
@@ -72,8 +72,6 @@ alias gitup="git add . && git commit && git push"
 alias gituf='git add . && git commit -m "$(date +"%Y-%m)-%d %T")" && git push'
 
 # clang
-alias m="make"
-alias mc="make clean"
 alias mf="make fclean"
 alias mfc="make fclean"
 alias mr="make re"
@@ -83,10 +81,14 @@ alias vgf="valgrind --leak-check=full"
 alias cinit="kettle use c ."
 
 # tmux
-alias tl="tmux ls -f '#{session_name}'" # list sessions
-alias sl="tmux ls -f '#{session_name}'" # list sessions
-alias tll="tmux ls"                     # list sessions with details
-alias trs="tmux rename-session -t"      # remame tmux session
+# list sessions
+alias tl="tmux ls -f '#{session_name}'"
+# list sessions
+alias sl="tmux ls -f '#{session_name}'"
+# list sessions with details
+alias tll="tmux ls"
+# remame tmux session
+alias trs="tmux rename-session -t"
 
 # cli apps
 alias e="egg"
@@ -94,6 +96,10 @@ alias w="wisp"
 alias d="donut"
 alias p="purse i"
 alias v="vero"
+alias i="iamb -C ~/.config/"
+alias j="just"
+alias m="marcel"
+alias r="railway"
 
 # code
 alias n="nvim"
@@ -103,3 +109,5 @@ alias t="tmux"
 
 # fun
 alias starwars="telnet towel.blinkenlights.nl"
+
+alias links="nvim $HOME/Code/Portals/og.yml"

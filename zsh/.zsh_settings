@@ -1,7 +1,10 @@
 # history
 HISTCONTROL=ignoreboth
 
-# Auto Suggestions
+# default editor
+export EDITOR='nvim'
+
+# zsh auto-suggestions
 . ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # colored GCC warnings and errors

@@ -3,6 +3,7 @@ local M = {}
 M.specs = {
 	{ src = "https://github.com/sainnhe/gruvbox-material" },
 	{ src = "https://github.com/mellow-theme/mellow.nvim" },
+	{ src = "https://github.com/saravenpi/paper.nvim" },
 }
 
 M.setup = function()
@@ -20,8 +21,16 @@ M.setup = function()
 	vim.g.mellow_bold_functions = true
 	vim.g.mellow_transparent = true
 
+	require("paper").setup({
+		transparent = false,
+		italic_comments = true,
+		italic_keywords = true,
+		bold_functions = true,
+	})
+
+	vim.cmd.colorscheme("paper")
 	-- vim.cmd.colorscheme("gruvbox-material")
-	vim.cmd.colorscheme("mellow")
+	-- vim.cmd.colorscheme("mellow")
 end
 
 return M
