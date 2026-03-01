@@ -137,7 +137,7 @@
       "src": "https://github.com/stevearc/overseer.nvim"
     },
     "paper.nvim": {
-      "rev": "912a780f7606d32b4d158d204e1f406aed52efc5",
+      "rev": "5e8171e11dd3c96c3668efd3d5b7abbf609fc711",
       "src": "https://github.com/saravenpi/paper.nvim"
     },
     "pebble.nvim": {
