@@ -359,10 +359,10 @@ toggle-theme() {
     fi
 
     for server in $(nvim --serverlist 2>/dev/null); do
-        nvim --server "$server" --remote-send "<Cmd>lua vim.opt.background='$new_theme'<CR><Cmd>colorscheme paper<CR>" 2>/dev/null || true
+        nvim --server "$server" --remote-send "<Cmd>set background=$new_theme<CR><Cmd>colorscheme paper<CR>" 2>/dev/null || true
     done
 
     echo "✨ Theme switched to $new_theme mode!"
-    echo "💡 In nvim, run :colorscheme paper to apply theme change"
+    echo "💡 Nvim instances reloaded. New nvim windows will auto-detect theme from ~/.theme_mode"
 }
 
