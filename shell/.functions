@@ -1,37 +1,79 @@
 #!/bin/bash
 
-# saves the current path for quick access
+_has() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+_remove_path() {
+    if _has rip; then
+        rip "$1"
+    else
+        rm -rf -- "$1"
+    fi
+}
+
 setp() {
+    if ! _has skatos; then
+        echo "skatos not available"
+        return 1
+    fi
+
     skatos set current_project "$(pwd)"
 }
 
-# goes to the saved project path
 gop() {
-    cd $(skatos get current_project)
+    local dest
+
+    if ! _has skatos; then
+        echo "skatos not available"
+        return 1
+    fi
+
+    dest="$(skatos get current_project 2>/dev/null || true)"
+    if [ -z "$dest" ] || [ ! -d "$dest" ]; then
+        echo "No saved project"
+        return 1
+    fi
+
+    cd "$dest" || return
 }
 
-# quick cd with zoxide
 z() {
-	local args=("$@")
-	tmppath=$(zoxide query $args)
-	echo $tmppath
-	if [[ -z $tmppath ]]; then
-		echo "No such project"
-	else
-		cd $tmppath
-	fi
-	unset tmppath
+    local tmppath
+
+    if ! _has zoxide; then
+        echo "zoxide not available"
+        return 1
+    fi
+
+    tmppath="$(zoxide query -- "$@" 2>/dev/null || true)"
+    if [ -z "$tmppath" ]; then
+        echo "No such project"
+        return 1
+    fi
+
+    printf '%s\n' "$tmppath"
+    cd "$tmppath" || return
 }
 
-# zoxide to the path and opens it with nvimgp
 grp() {
-	z $1
-	nvim .
+    z "$@" || return
+
+    if ! _has nvim; then
+        echo "nvim not available"
+        return 1
+    fi
+
+    nvim .
 }
 
-# o : zoxide → egg → retour maison
 o() {
     local origin="$PWD"
+
+    if ! _has egg; then
+        echo "egg not available"
+        return 1
+    fi
 
     if [[ $# -eq 0 || "$1" == "." ]]; then
         egg "$(basename "$origin")"
@@ -40,187 +82,279 @@ o() {
         egg "$(basename "$PWD")"
     fi
 
-    cd "$origin"
-    unset origin
+    cd "$origin" || return
 }
 
-
 op() {
-  tmppath=$(cat ~/.project)
-	cd $tmppath
-  egg
-	unset tmppath
+    local tmppath
+
+    if ! _has egg; then
+        echo "egg not available"
+        return 1
+    fi
+
+    if [ ! -f "$HOME/.project" ]; then
+        echo "~/.project not found"
+        return 1
+    fi
+
+    tmppath="$(cat "$HOME/.project")"
+    [ -d "$tmppath" ] || {
+        echo "Saved project path is invalid"
+        return 1
+    }
+
+    cd "$tmppath" || return
+    egg
 }
 
 oe() {
-	cur=$(pwd)
-	z $1
-	epi $1
-	cd $cur
-	unset cur
+    local cur
+
+    if ! _has epi; then
+        echo "epi not available"
+        return 1
+    fi
+
+    cur="$(pwd)"
+    z "$@" || return
+    epi "$1"
+    cd "$cur" || return
 }
 
 gss() {
-	echo "Untracked files:"
-	git status --porcelain | grep '^??' | wc -l
-	echo "Staged files:"
-	git status --porcelain | grep '^[ MD]' | wc -l
-	echo "Lines of code:"
-	tokei --output yaml | yq '.Total.code'
+    if ! _has git; then
+        echo "git not available"
+        return 1
+    fi
+
+    echo "Untracked files:"
+    git status --porcelain | grep -c '^??'
+    echo "Staged files:"
+    git status --porcelain | grep -c '^[ MD]'
+
+    if _has tokei && _has yq; then
+        echo "Lines of code:"
+        tokei --output yaml | yq '.Total.code'
+    fi
 }
 
 gcs() {
-	git clone "git@github.com:$1.git"
+    if ! _has git; then
+        echo "git not available"
+        return 1
+    fi
+
+    if [ -z "$1" ]; then
+        echo "Usage: gcs <owner/repo>"
+        return 1
+    fi
+
+    git clone "git@github.com:$1.git"
 }
 
 s() {
+    local tmux_command session active_sessions all_options project_path
+
+    if ! _has tmux; then
+        echo "tmux not available"
+        return 1
+    fi
+
     if [ -n "$TMUX" ]; then
-        TMUX_COMMAND="switch-client"
+        tmux_command="switch-client"
     else
-        TMUX_COMMAND="attach-session"
+        tmux_command="attach-session"
     fi
 
     if [ "$#" -eq 0 ]; then
-        active_sessions=$(tmux list-sessions -F "#{session_last_attached} #{session_name}" 2>/dev/null | sort -rn | awk '{print $2}')
-
-        all_options="$active_sessions"
-
-        session=$(echo "$all_options" | fzf --prompt="Select or create tmux session: " --height=40% --border --print-query | tail -1)
-
-        if [ -z "$session" ]; then
-            return 0
+        if ! _has fzf; then
+            echo "fzf not available"
+            return 1
         fi
 
-        session=$(echo "$session" | xargs)
+        active_sessions="$(tmux list-sessions -F "#{session_last_attached} #{session_name}" 2>/dev/null | sort -rn | awk '{print $2}')"
+        all_options="$active_sessions"
+        session="$(printf '%s\n' "$all_options" | fzf --prompt="Select or create tmux session: " --height=40% --border --print-query | tail -1)"
+
+        [ -n "$session" ] || return 0
+        session="$(printf '%s\n' "$session" | xargs)"
 
         if tmux has-session -t "$session" 2>/dev/null; then
-            tmux $TMUX_COMMAND -t "$session"
+            tmux "$tmux_command" -t "$session"
             return 0
         fi
 
-        project_path=$(zoxide query "$session" 2>/dev/null)
-
-        if [ -z "$project_path" ]; then
-            project_path=$(zoxide query --list | grep -i "$session" | head -1)
+        if _has zoxide; then
+            project_path="$(zoxide query -- "$session" 2>/dev/null || true)"
+            [ -z "$project_path" ] && project_path="$(zoxide query --list 2>/dev/null | grep -i "$session" | head -1)"
         fi
 
         if [ -z "$project_path" ]; then
             if [ -d "$session" ]; then
-                project_path=$(cd "$session" && pwd)
-                zoxide add "$project_path" 2>/dev/null
+                project_path="$(cd "$session" && pwd)"
+                _has zoxide && zoxide add "$project_path" >/dev/null 2>&1
             else
-                project_path="$(pwd)"
+                project_path="$PWD"
             fi
         fi
 
-        if [ ! -d "$project_path" ]; then
-            project_path="$(pwd)"
-        fi
-
+        [ -d "$project_path" ] || project_path="$PWD"
         tmux new-session -d -s "$session" -c "$project_path"
 
-        if [ -f "$project_path/egg.yml" ]; then
+        if [ -f "$project_path/egg.yml" ] && _has egg; then
             tmux send-keys -t "$session" 'egg --current' Enter
         fi
 
-        tmux $TMUX_COMMAND -t "$session"
-    else
-        if tmux has-session -t "$1" 2>/dev/null; then
-            tmux $TMUX_COMMAND -t "$1"
-        else
-            project_path=$(zoxide query "$1" 2>/dev/null)
-
-            if [ -z "$project_path" ]; then
-                project_path=$(zoxide query --list | grep -i "$1" | head -1)
-            fi
-
-            if [ -z "$project_path" ]; then
-                if [ -d "$1" ]; then
-                    project_path=$(cd "$1" && pwd)
-                    zoxide add "$project_path" 2>/dev/null
-                else
-                    project_path="$(pwd)"
-                fi
-            fi
-
-            if [ ! -d "$project_path" ]; then
-                project_path="$(pwd)"
-            fi
-
-            tmux new-session -d -s "$1" -c "$project_path"
-
-            if [ -f "$project_path/egg.yml" ]; then
-                tmux send-keys -t "$1" 'egg --current' Enter
-            fi
-
-            tmux $TMUX_COMMAND -t "$1"
-        fi
-    fi
-}
-
-
-killport() {
-  if [ -z "$1" ]; then
-    echo "Usage: killport <port>"
-    return 1
-  fi
-
-  PID=$(lsof -ti tcp:$1)
-
-  if [ -z "$PID" ]; then
-    echo "🔍 No process found on port $1"
-  else
-    kill -9 $PID && echo "💥 Port $1 freeed (PID $PID killed)"
-  fi
-}
-
-
-tellme() {
-				curl -s -d "$1" "$NTFY_SH" > /dev/null && echo "📱 Notification sent successfully! ✨" || echo "❌ Failed to send notification"
-}
-
-clean_node_modules() {
-    local current_dir="${1:-$(pwd)}"
-
-    echo "🔍 Searching for root-level node_modules directories..."
-
-    local node_modules_dirs=()
-    while IFS= read -r -d '' dir; do
-        if [[ ! "$dir" =~ /node_modules/.*/node_modules$ ]]; then
-            node_modules_dirs+=("$dir")
-        fi
-    done < <(fd -t d -H '^node_modules$' "$current_dir" -0 2>/dev/null)
-
-    if [ ${#node_modules_dirs[@]} -eq 0 ]; then
-        echo "✅ No root-level node_modules directories found."
+        tmux "$tmux_command" -t "$session"
         return 0
     fi
 
-    echo "📦 Found ${#node_modules_dirs[@]} root-level node_modules directories:"
-    printf '%s\n' "${node_modules_dirs[@]}"
-    echo
+    if tmux has-session -t "$1" 2>/dev/null; then
+        tmux "$tmux_command" -t "$1"
+        return 0
+    fi
 
-    local total_size=$(du -sh "${node_modules_dirs[@]}" 2>/dev/null | awk '{sum += $1} END {print sum "M"}' 2>/dev/null || echo "unknown")
+    if _has zoxide; then
+        project_path="$(zoxide query -- "$1" 2>/dev/null || true)"
+        [ -z "$project_path" ] && project_path="$(zoxide query --list 2>/dev/null | grep -i "$1" | head -1)"
+    fi
 
-    if gum confirm "🗑️  Delete all ${#node_modules_dirs[@]} root-level node_modules directories? (Total size: ~$total_size)"; then
-        echo "🧹 Cleaning up node_modules directories..."
+    if [ -z "$project_path" ]; then
+        if [ -d "$1" ]; then
+            project_path="$(cd "$1" && pwd)"
+            _has zoxide && zoxide add "$project_path" >/dev/null 2>&1
+        else
+            project_path="$PWD"
+        fi
+    fi
 
-        for dir in "${node_modules_dirs[@]}"; do
-            echo "  Removing: $dir"
-            rip "$dir"
-        done
+    [ -d "$project_path" ] || project_path="$PWD"
+    tmux new-session -d -s "$1" -c "$project_path"
 
-        echo "✅ All root-level node_modules directories have been removed!"
-    else
-        echo "❌ Operation cancelled."
+    if [ -f "$project_path/egg.yml" ] && _has egg; then
+        tmux send-keys -t "$1" 'egg --current' Enter
+    fi
+
+    tmux "$tmux_command" -t "$1"
+}
+
+killport() {
+    local pids
+
+    if [ -z "$1" ]; then
+        echo "Usage: killport <port>"
         return 1
+    fi
+
+    if ! _has lsof; then
+        echo "lsof not available"
+        return 1
+    fi
+
+    pids="$(lsof -ti "tcp:$1" 2>/dev/null || true)"
+    if [ -z "$pids" ]; then
+        echo "No process found on port $1"
+        return 0
+    fi
+
+    if printf '%s\n' "$pids" | xargs kill -9; then
+        echo "Port $1 freed"
     fi
 }
 
+tellme() {
+    if [ -z "${NTFY_SH:-}" ]; then
+        echo "NTFY_SH is not set"
+        return 1
+    fi
+
+    if ! _has curl; then
+        echo "curl not available"
+        return 1
+    fi
+
+    curl -s -d "$1" "$NTFY_SH" >/dev/null && echo "Notification sent" || echo "Failed to send notification"
+}
+
+clean_node_modules() {
+    local current_dir node_modules_dirs total_size reply dir
+    current_dir="${1:-$(pwd)}"
+
+    echo "Searching for root-level node_modules directories..."
+
+    node_modules_dirs=()
+    while IFS= read -r -d '' dir; do
+        case "$dir" in
+            */node_modules/*/node_modules) continue ;;
+        esac
+
+        node_modules_dirs+=("$dir")
+    done < <(
+        if _has fd; then
+            fd -t d -H '^node_modules$' "$current_dir" -0 2>/dev/null
+        else
+            find "$current_dir" -type d -name node_modules -print0 2>/dev/null
+        fi
+    )
+
+    if [ ${#node_modules_dirs[@]} -eq 0 ]; then
+        echo "No root-level node_modules directories found."
+        return 0
+    fi
+
+    echo "Found ${#node_modules_dirs[@]} root-level node_modules directories:"
+    printf '%s\n' "${node_modules_dirs[@]}"
+    echo
+
+    total_size="$(du -sh "${node_modules_dirs[@]}" 2>/dev/null | awk '{print $1}' | paste -sd ', ' - 2>/dev/null || echo unknown)"
+
+    if _has gum; then
+        gum confirm "Delete all ${#node_modules_dirs[@]} root-level node_modules directories? (Sizes: $total_size)" || return 1
+    else
+        printf 'Delete all %s root-level node_modules directories? [y/N] ' "${#node_modules_dirs[@]}"
+        read -r reply
+        case "$reply" in
+            y|Y|yes|YES) ;;
+            *)
+                echo "Operation cancelled."
+                return 1
+                ;;
+        esac
+    fi
+
+    for dir in "${node_modules_dirs[@]}"; do
+        echo "Removing: $dir"
+        _remove_path "$dir"
+    done
+
+    echo "All root-level node_modules directories have been removed."
+}
+
+hc() {
+    if [ -n "${BASH_VERSION:-}" ]; then
+        history -c
+        history -w
+        return 0
+    fi
+
+    if [ -n "${ZSH_VERSION:-}" ]; then
+        if [ -n "${HISTFILE:-}" ]; then
+            : >| "$HISTFILE" 2>/dev/null || true
+            fc -p "$HISTFILE"
+        else
+            fc -p
+        fi
+
+        return 0
+    fi
+
+    echo "History clear is not configured for this shell"
+    return 1
+}
+
 setwallpaper() {
-    local all_spaces=false
-    local image_path=""
-    local max_spaces=10
+    local all_spaces=false image_path="" max_spaces=10 abs_path steps
 
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -237,42 +371,61 @@ setwallpaper() {
 
     if [ -z "$image_path" ]; then
         echo "Usage: setwallpaper [-a|--all-spaces] <image_path>"
-        echo "  -a, --all-spaces    Set wallpaper across all spaces/workspaces"
         return 1
     fi
 
     if [ ! -f "$image_path" ]; then
-        echo "Error: File '$image_path' not found"
+        echo "Error: file '$image_path' not found"
         return 1
     fi
 
-    local abs_path=$(cd "$(dirname "$image_path")" && pwd)/$(basename "$image_path")
+    abs_path="$(cd "$(dirname "$image_path")" && pwd)/$(basename "$image_path")"
 
-    if [ "$all_spaces" = true ]; then
-        echo "Setting wallpaper across all spaces and screens..."
+    case "$(uname -s)" in
+        Darwin)
+            if ! _has osascript; then
+                echo "osascript not available"
+                return 1
+            fi
 
-        osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\"" 2>/dev/null
-        sleep 0.3
+            if [ "$all_spaces" = true ]; then
+                osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\"" >/dev/null 2>&1
+                sleep 0.3
+                steps=0
+                while [ "$steps" -lt "$max_spaces" ]; do
+                    osascript -e 'tell application "System Events" to key code 124 using control down' >/dev/null 2>&1
+                    sleep 0.5
+                    osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\"" >/dev/null 2>&1
+                    sleep 0.3
+                    steps=$((steps + 1))
+                done
+                echo "Wallpaper set across macOS spaces: $abs_path"
+                return 0
+            fi
 
-        for i in $(seq 1 $max_spaces); do
-            osascript -e "tell application \"System Events\" to key code 124 using control down" 2>/dev/null
-            sleep 0.5
+            osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\"" >/dev/null 2>&1 && echo "Wallpaper set to: $abs_path"
+            ;;
+        Linux)
+            if _has gsettings; then
+                gsettings set org.gnome.desktop.background picture-uri "file://$abs_path" >/dev/null 2>&1 || true
+                gsettings set org.gnome.desktop.background picture-uri-dark "file://$abs_path" >/dev/null 2>&1 || true
+                echo "Wallpaper set with gsettings: $abs_path"
+                return 0
+            fi
 
-            osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\"" 2>/dev/null
-            sleep 0.3
-        done
+            if _has feh; then
+                feh --bg-fill "$abs_path"
+                return 0
+            fi
 
-        echo "✓ Wallpaper set across all spaces to: $abs_path"
-    else
-        osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$abs_path\""
-
-        if [ $? -eq 0 ]; then
-            echo "✓ Wallpaper set to: $abs_path"
-        else
-            echo "✗ Failed to set wallpaper"
+            echo "No supported wallpaper command found (tried gsettings and feh)"
             return 1
-        fi
-    fi
+            ;;
+        *)
+            echo "Wallpaper changes are not configured for this platform"
+            return 1
+            ;;
+    esac
 }
 
 disk() {
@@ -282,38 +435,48 @@ disk() {
     local RED='\033[0;31m'
     local RESET='\033[0m'
     local BOLD='\033[1m'
+    local disk avail mount disk_name size_num size_unit color whole
 
-    df -h | grep -E '^/dev/' | grep -v '/System/Volumes' | while read -r line; do
-        local disk=$(echo $line | awk '{print $1}')
-        local avail=$(echo $line | awk '{print $4}')
-        local mount=$(echo $line | awk '{print $9}')
+    df -hP | awk 'NR > 1 && $1 ~ /^\/dev\// && $6 !~ /^\/System\/Volumes/ {print $1 "|" $4 "|" $6}' | while IFS='|' read -r disk avail mount; do
+        disk_name="$(basename "$disk")"
+        [ -n "$mount" ] && [ "$mount" != "/" ] && disk_name="$disk_name ($mount)"
 
-        local disk_name=$(basename "$disk")
-        if [ -n "$mount" ] && [ "$mount" != "/" ]; then
-            disk_name="$disk_name ($mount)"
-        fi
+        size_num="${avail%%[!0-9.]*}"
+        size_unit="${avail#$size_num}"
+        color="$GREEN"
 
-        local size=$(echo $avail | sed 's/Gi/GB/g; s/Mi/MB/g; s/Ki/KB/g; s/Ti/TB/g')
+        case "$size_unit" in
+            G|GB|Gi)
+                whole="${size_num%.*}"
+                [ -z "$whole" ] && whole=0
+                [ "$whole" -lt 50 ] && color="$YELLOW"
+                [ "$whole" -lt 20 ] && color="$RED"
+                ;;
+            M|MB|Mi|K|KB|Ki)
+                color="$RED"
+                ;;
+        esac
 
-        local size_num=$(echo $size | sed 's/[^0-9.]//g')
-        local size_unit=$(echo $size | sed 's/[0-9.]//g')
-
-        local color=$GREEN
-        if [ "$size_unit" = "GB" ] && [ "$(echo "$size_num < 50" | bc -l 2>/dev/null || echo 0)" = "1" ]; then
-            color=$YELLOW
-        elif [ "$size_unit" = "GB" ] && [ "$(echo "$size_num < 20" | bc -l 2>/dev/null || echo 0)" = "1" ]; then
-            color=$RED
-        elif [ "$size_unit" = "MB" ]; then
-            color=$RED
-        fi
-
-        echo -e "💾 ${CYAN}${BOLD}${disk_name}${RESET}: ${color}${BOLD}${size}${RESET} left"
+        printf '%b\n' "${CYAN}${BOLD}${disk_name}${RESET}: ${color}${BOLD}${avail}${RESET} left"
     done
 }
 
 bnn() {
-    cd "$BRAIN"
-    local filename=$(echo "$@" | tr ' ' '_')
+    local filename
+
+    if [ ! -d "$BRAIN" ]; then
+        echo "BRAIN directory not found: $BRAIN"
+        return 1
+    fi
+
+    if ! _has nvim; then
+        echo "nvim not available"
+        return 1
+    fi
+
+    mkdir -p "$BRAIN/Inbox"
+    cd "$BRAIN" || return
+    filename="$(printf '%s' "$*" | tr ' ' '_')"
     touch "Inbox/${filename}.md"
     nvim "Inbox/${filename}.md"
 }

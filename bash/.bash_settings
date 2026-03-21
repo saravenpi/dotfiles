@@ -8,19 +8,24 @@ export EDITOR='nvim'
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# mybins path
+# local bins
 export MYBINS="$HOME/mybins"
-export PATH="$MYBINS:$PATH"
+[ -d "$MYBINS" ] && export PATH="$MYBINS:$PATH"
 
-export HOMEBREW_CASK_OPTS="--fontdir=~/.fonts"
+case "$(uname -s)" in
+    Darwin)
+        export HOMEBREW_CASK_OPTS="--fontdir=$HOME/.fonts"
+        [ -d "$HOME/Library/Android/sdk" ] && export ANDROID_HOME="$HOME/Library/Android/sdk"
+        ;;
+    Linux)
+        [ -d "$HOME/Android/Sdk" ] && export ANDROID_HOME="$HOME/Android/Sdk"
+        [ -z "${ANDROID_HOME:-}" ] && [ -d "$HOME/Android/sdk" ] && export ANDROID_HOME="$HOME/Android/sdk"
+        ;;
+esac
 
-# android path
-export ANDROID_HOME="$HOME/Library/Android/sdk"
-export PATH="$PATH:$ANDROID_HOME/platform-tools"
-
-# rust path
-export PATH="$HOME/.cargo/bin:$PATH"
+[ -n "${ANDROID_HOME:-}" ] && [ -d "$ANDROID_HOME/platform-tools" ] && export PATH="$PATH:$ANDROID_HOME/platform-tools"
+[ -d "$HOME/.cargo/bin" ] && export PATH="$HOME/.cargo/bin:$PATH"
+[ -d "$HOME/.local/share/bob/nvim-bin" ] && export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
 
 export MANPAGER="nvim +Man!"
 export TLDR_AUTO_UPDATE_DISABLED="true"
-export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"

@@ -1,113 +1,107 @@
 #!/bin/bash
 
-# rm alias
-alias rm="rip"
+if command -v rip >/dev/null 2>&1; then
+    alias rm="rip"
+fi
 
-# cat alias
-alias cat="bat"
+if command -v bat >/dev/null 2>&1; then
+    alias cat="bat"
+fi
 
-# ls aliases
-alias ls="eza --color=always --git --icons=always --no-user"
-alias tn="eza --tree --color=always --git --icons=always --no-user"
+if command -v eza >/dev/null 2>&1; then
+    alias ls="eza --color=always --git --icons=always --no-user"
+    alias tn="eza --tree --color=always --git --icons=always --no-user"
+elif command ls --color=auto . >/dev/null 2>&1; then
+    alias ls="ls --color=auto"
+    command -v tree >/dev/null 2>&1 && alias tn="tree -C"
+elif command ls -G . >/dev/null 2>&1; then
+    alias ls="ls -G"
+    command -v tree >/dev/null 2>&1 && alias tn="tree -C"
+fi
+
 alias ll="ls -lh"
 alias la="ls -ah"
 alias lal="ls -alh"
 alias lla="ls -alh"
 alias l="ls"
 
-# jobs
 alias f="fg"
-
-# file permissions
 alias ax="chmod +x"
 alias rx="chmod -x"
-
-# shell commands
 alias q="exit"
 alias :q="exit"
 alias c="clear"
-alias hc="history clear"
 alias breload='clear && source $HOME/.bashrc'
 alias brel="breload"
 alias zreload='clear && source $HOME/.zshrc'
 alias zrel="zreload"
-alias treload="tmux source-file ~/.tmux.conf"
-alias trel="treload"
-
-# quick navigation
 alias h='clear && cd $HOME'
 alias dots='cd $HOME/.dotfiles'
 alias goc='cd $HOME/Projects/'
 alias gos='cd $HOME/School'
-alias gob='cd $BRAIN/'
-alias brain='cd "$BRAIN/" && nvim Home.md'
-alias b='cd "$BRAIN/" && nvim Home.md'
-alias bn='cd "$BRAIN/Inbox" && nvim -c "set filetype=markdown"'
+alias gob='cd "$BRAIN"'
 
-# quick config
-alias cnvim='cd $HOME/.config/nvim/ && nvim .'
-alias cbash='cd $HOME && nvim .bashrc'
-alias czsh='cd $HOME && nvim .zshrc'
-alias caliases='cd $HOME && nvim .aliases'
-alias cfunctions='cd $HOME && nvim .functions'
-alias ctmux='cd $HOME && nvim .tmux.conf'
-alias ckitty='cd $HOME/.config/kitty/ && nvim kitty.conf'
-alias cterminal='cd $HOME/.config/kitty/ && nvim kitty.conf'
-alias cportals='cd $HOME/portals && nvim .'
-alias cclaude='cd $HOME/.claude && nvim .'
+if command -v nvim >/dev/null 2>&1; then
+    alias brain='cd "$BRAIN/" && nvim Home.md'
+    alias b='cd "$BRAIN/" && nvim Home.md'
+    alias bn='cd "$BRAIN/Inbox" && nvim -c "set filetype=markdown"'
+    alias cnvim='cd $HOME/.config/nvim/ && nvim .'
+    alias cbash='cd $HOME && nvim .bashrc'
+    alias czsh='cd $HOME && nvim .zshrc'
+    alias caliases='cd $HOME && nvim .aliases'
+    alias cfunctions='cd $HOME && nvim .functions'
+    alias ctmux='cd $HOME && nvim .tmux.conf'
+    alias ckitty='cd $HOME/.config/kitty/ && nvim kitty.conf'
+    alias cterminal='cd $HOME/.config/kitty/ && nvim kitty.conf'
+    alias cportals='cd $HOME/portals && nvim .'
+    alias cclaude='cd $HOME/.claude && nvim .'
+    alias n="nvim"
+    alias links="nvim $HOME/Code/Portals/og.yml"
+fi
 
-# git aliases
-alias gs="git status"
-alias gp="git push"
-alias ga="git add"
-alias gc="git clone"
-alias gd="git diff"
-alias gb="git branch"
-alias gba="git branch -a"
-alias gco="git checkout"
-alias gr="git remove"
-alias gitu="git add . && git commit"
-alias gitup="git add . && git commit && git push"
-alias gituf='git add . && git commit -m "$(date +"%Y-%m)-%d %T")" && git push'
+if command -v git >/dev/null 2>&1; then
+    alias gs="git status"
+    alias gp="git push"
+    alias ga="git add"
+    alias gc="git clone"
+    alias gd="git diff"
+    alias gb="git branch"
+    alias gba="git branch -a"
+    alias gco="git checkout"
+    alias gr="git rm"
+    alias gitu="git add . && git commit"
+    alias gitup="git add . && git commit && git push"
+    alias gituf='git add . && git commit -m "$(date +"%Y-%m-%d %T")" && git push'
+fi
 
-# clang
 alias mf="make fclean"
 alias mfc="make fclean"
 alias mr="make re"
 alias mre="mr"
-alias vg="valgrind"
-alias vgf="valgrind --leak-check=full"
-alias cinit="kettle use c ."
+command -v valgrind >/dev/null 2>&1 && alias vg="valgrind"
+command -v valgrind >/dev/null 2>&1 && alias vgf="valgrind --leak-check=full"
+command -v kettle >/dev/null 2>&1 && alias cinit="kettle use c ."
 
-# tmux
-# list sessions
-alias tl="tmux ls -f '#{session_name}'"
-# list sessions
-alias sl="tmux ls -f '#{session_name}'"
-# list sessions with details
-alias tll="tmux ls"
-# remame tmux session
-alias trs="tmux rename-session -t"
+if command -v tmux >/dev/null 2>&1; then
+    alias treload="tmux source-file ~/.tmux.conf"
+    alias trel="treload"
+    alias tl="tmux ls -f '#{session_name}'"
+    alias sl="tmux ls -f '#{session_name}'"
+    alias tll="tmux ls"
+    alias trs="tmux rename-session -t"
+    alias t="tmux"
+fi
 
-# cli apps
-alias e="egg"
-alias w="wisp"
-alias d="donut"
-alias p="purse i"
-alias v="vero"
-alias i="iamb -C ~/.config/"
-alias j="just"
-alias m="marcel"
-alias r="railway"
-alias csv="csvlens"
-
-# code
-alias n="nvim"
-alias cy="claude --dangerously-skip-permissions"
-alias k="knot"
-alias t="tmux"
-
-# fun
-alias starwars="telnet towel.blinkenlights.nl"
-
-alias links="nvim $HOME/Code/Portals/og.yml"
+command -v egg >/dev/null 2>&1 && alias e="egg"
+command -v wisp >/dev/null 2>&1 && alias w="wisp"
+command -v donut >/dev/null 2>&1 && alias d="donut"
+command -v purse >/dev/null 2>&1 && alias p="purse i"
+command -v vero >/dev/null 2>&1 && alias v="vero"
+command -v iamb >/dev/null 2>&1 && alias i="iamb -C ~/.config/"
+command -v just >/dev/null 2>&1 && alias j="just"
+command -v marcel >/dev/null 2>&1 && alias m="marcel"
+command -v railway >/dev/null 2>&1 && alias r="railway"
+command -v csvlens >/dev/null 2>&1 && alias csv="csvlens"
+command -v claude >/dev/null 2>&1 && alias cy="claude --dangerously-skip-permissions"
+command -v knot >/dev/null 2>&1 && alias k="knot"
+command -v telnet >/dev/null 2>&1 && alias starwars="telnet towel.blinkenlights.nl"
