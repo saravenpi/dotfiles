@@ -1,4 +1,26 @@
-# Test bash settings file
-export TEST_VAR="from_bash_settings"
-alias testcmd="echo \"from bash_settings\""
+# shellcheck shell=bash
+# history
+HISTCONTROL=ignoreboth
+
+# default editor
+export EDITOR='nvim'
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# mybins path
+export MYBINS="$HOME/mybins"
+export PATH="$MYBINS:$PATH"
+
+export HOMEBREW_CASK_OPTS="--fontdir=~/.fonts"
+
+# android path
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
+
+# rust path
+export PATH="$HOME/.cargo/bin:$PATH"
+
+export MANPAGER="nvim +Man!"
+export TLDR_AUTO_UPDATE_DISABLED="true"
 export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"

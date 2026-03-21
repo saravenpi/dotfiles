@@ -1,0 +1,37 @@
+# shellcheck shell=bash
+[ -s "$HOME/.fzf_theme" ] && . "$HOME/.fzf_theme"
+
+_update_fzf_from_tmux() {
+    if [ -n "$TMUX" ]; then
+        local tmux_fzf
+        tmux_fzf=$(tmux show-environment -g FZF_DEFAULT_OPTS 2>/dev/null | cut -d'=' -f2-)
+
+        if [ -n "$tmux_fzf" ] && [ "$tmux_fzf" != "$FZF_DEFAULT_OPTS" ]; then
+            export FZF_DEFAULT_OPTS="$tmux_fzf"
+        fi
+    fi
+}
+
+if [ -n "$TMUX" ]; then
+    case ";${PROMPT_COMMAND:-};" in
+        *";_update_fzf_from_tmux;"*) ;;
+        *)
+            if [ -n "${PROMPT_COMMAND:-}" ]; then
+                PROMPT_COMMAND="_update_fzf_from_tmux;$PROMPT_COMMAND"
+            else
+                PROMPT_COMMAND="_update_fzf_from_tmux"
+            fi
+            ;;
+    esac
+fi
+
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate bash)"
+fi
+
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash --no-cmd)"
+fi
+
+[ -s "$HOME/containers/.bash_aliases" ] && . "$HOME/containers/.bash_aliases"
+[ -s "$HOME/.bash_starship" ] && . "$HOME/.bash_starship"
