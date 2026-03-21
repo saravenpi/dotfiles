@@ -1,16 +1,25 @@
 [[ $- == *i* ]] || return
 
 # bash configuration
-. ~/.functions
-. ~/.variables
-. ~/.bash_settings
+[ -s "$HOME/.functions" ] && . ~/.functions
+[ -s "$HOME/.variables" ] && . ~/.variables
+[ -s "$HOME/.bash_settings" ] && . ~/.bash_settings
 
 # aliases
-. ~/.aliases
-. ~/containers/.bash_aliases
+[ -s "$HOME/.aliases" ] && . ~/.aliases
+[ -s "$HOME/containers/.bash_aliases" ] && . "$HOME/containers/.bash_aliases"
+
+export PATH="$PATH:$HOME/.local/bin"
+
+if command -v mise >/dev/null 2>&1; then
+    eval "$(mise activate bash)"
+fi
 
 # other programs
-. ~/.bash_starship
+[ -s "$HOME/.bash_starship" ] && . ~/.bash_starship
 
-welcome
-export PATH="$PATH:$HOME/.local/bin"
+command -v welcome >/dev/null 2>&1 && welcome
+
+if command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init bash --no-cmd)"
+fi

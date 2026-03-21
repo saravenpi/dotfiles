@@ -1,0 +1,106 @@
+#!/bin/bash
+
+current_theme=""
+new_theme=""
+
+if grep -q "include.*themes/paper-dark.conf" ~/.config/kitty/kitty.conf 2>/dev/null; then
+    current_theme="dark"
+    new_theme="light"
+else
+    current_theme="light"
+    new_theme="dark"
+fi
+
+echo "🎨 Switching from $current_theme to $new_theme mode..."
+
+if [ "$new_theme" = "dark" ]; then
+    sed -i '' 's|include.*themes/paper.*\.conf|include                 themes/paper-dark.conf|' ~/.config/kitty/kitty.conf
+
+    sed -i '' 's|set -g @paper_theme ".*"|set -g @paper_theme "dark"|' ~/.dotfiles/tmux/.tmux.conf
+
+    cat > ~/.fzf_theme << 'EOF'
+export FZF_DEFAULT_OPTS="--color=bg+:#3d2d22,bg:#2a1f1a,spinner:#d4923a,hl:#7a9048 --color=fg:#e8dcc8,header:#7a9048,info:#c47f2c,pointer:#d4923a --color=marker:#d4923a,fg+:#e8dcc8,prompt:#c47f2c,hl+:#8ca558 --color=border:#3d2d22,gutter:#2a1f1a --prompt='› ' --pointer='▶' --marker='✓' --layout=reverse --height=60%"
+EOF
+
+    echo "dark" > ~/.theme_mode
+else
+    sed -i '' 's|include.*themes/paper.*\.conf|include                 themes/paper.conf|' ~/.config/kitty/kitty.conf
+
+    sed -i '' 's|set -g @paper_theme ".*"|set -g @paper_theme "light"|' ~/.dotfiles/tmux/.tmux.conf
+
+    cat > ~/.fzf_theme << 'EOF'
+export FZF_DEFAULT_OPTS="--color=bg+:#e8dcc8,bg:#faf6f0,spinner:#c47f2c,hl:#6a7d3e --color=fg:#4a3728,header:#6a7d3e,info:#c47f2c,pointer:#c47f2c --color=marker:#c47f2c,fg+:#4a3728,prompt:#c47f2c,hl+:#7a9048 --color=border:#cdb8a0,gutter:#faf6f0 --prompt='› ' --pointer='▶' --marker='✓' --layout=reverse --height=60%"
+EOF
+
+    echo "light" > ~/.theme_mode
+fi
+
+apply_kitty_theme() {
+    local theme_file="$1"
+
+    while IFS='=' read -r key value; do
+        [[ "$key" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "$key" ]] && continue
+
+        key=$(echo "$key" | xargs)
+        value=$(echo "$value" | xargs)
+
+        case "$key" in
+            background)
+                if [ -n "$TMUX" ]; then
+                    printf '\033Ptmux;\033\033]11;%s\007\033\\' "$value"
+                else
+                    printf '\033]11;%s\007' "$value"
+                fi
+                ;;
+            foreground)
+                if [ -n "$TMUX" ]; then
+                    printf '\033Ptmux;\033\033]10;%s\007\033\\' "$value"
+                else
+                    printf '\033]10;%s\007' "$value"
+                fi
+                ;;
+            color*)
+                local num="${key#color}"
+                if [[ "$num" =~ ^[0-9]+$ ]]; then
+                    if [ -n "$TMUX" ]; then
+                        printf '\033Ptmux;\033\033]4;%s;%s\007\033\\' "$num" "$value"
+                    else
+                        printf '\033]4;%s;%s\007' "$num" "$value"
+                    fi
+                fi
+                ;;
+        esac
+    done < "$theme_file"
+}
+
+if [ "$new_theme" = "dark" ]; then
+    apply_kitty_theme ~/.config/kitty/themes/paper-dark.conf
+else
+    apply_kitty_theme ~/.config/kitty/themes/paper.conf
+fi
+
+if [ -n "$KITTY_PID" ]; then
+    kill -SIGUSR1 $KITTY_PID 2>/dev/null
+elif command -v pgrep >/dev/null 2>&1; then
+    ACTUAL_KITTY_PID=$(pgrep -x "kitty" | head -1)
+    [ -n "$ACTUAL_KITTY_PID" ] && kill -SIGUSR1 $ACTUAL_KITTY_PID 2>/dev/null
+fi
+
+echo "📡 Applied $new_theme theme colors"
+
+if [ -n "$TMUX" ]; then
+    tmux source-file ~/.tmux.conf 2>/dev/null
+fi
+
+for server in $(nvim --serverlist 2>/dev/null); do
+    nvim --server "$server" --remote-send "<Cmd>set background=$new_theme<CR><Cmd>colorscheme paper<CR>" 2>/dev/null || true
+done
+
+source ~/.fzf_theme
+
+if [ -n "$TMUX" ]; then
+    tmux setenv -g FZF_DEFAULT_OPTS "$FZF_DEFAULT_OPTS"
+fi
+
+echo "✨ Theme switched to $new_theme mode!"
