@@ -51,9 +51,8 @@ alias czsh='cd $HOME && nvim .zshrc'
 alias caliases='cd $HOME && nvim .aliases'
 alias cfunctions='cd $HOME && nvim .functions'
 alias ctmux='cd $HOME && nvim .tmux.conf'
-alias cghostty='cd $HOME/.config/ghostty/ && nvim config'
 alias ckitty='cd $HOME/.config/kitty/ && nvim kitty.conf'
-alias cterminal='cd $HOME/.config/ghostty/ && nvim config'
+alias cterminal='cd $HOME/.config/kitty/ && nvim kitty.conf'
 alias cportals='cd $HOME/portals && nvim .'
 alias cclaude='cd $HOME/.claude && nvim .'
 
@@ -100,6 +99,7 @@ alias i="iamb -C ~/.config/"
 alias j="just"
 alias m="marcel"
 alias r="railway"
+alias csv="csvlens"
 
 # code
 alias n="nvim"
