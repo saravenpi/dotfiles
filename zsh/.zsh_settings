@@ -4,24 +4,18 @@ HISTCONTROL=ignoreboth
 # default editor
 export EDITOR='nvim'
 
-# zsh auto-suggestions
-[ -s "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && . "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
-
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# local bin path
-export PATH=$PATH:$HOME/.local/bin
-
 # mybins path
 export MYBINS="$HOME/mybins"
-export PATH=$MYBINS:$PATH
+export PATH="$MYBINS:$PATH"
 
 export HOMEBREW_CASK_OPTS="--fontdir=~/.fonts"
 
 # android path
-export ANDROID_HOME=$HOME/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/platform-tools
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
 
 # rust path
 export PATH="$HOME/.cargo/bin:$PATH"
