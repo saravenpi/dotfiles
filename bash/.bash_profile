@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 export BASH_CONF="bash_profile"
 export PATH="$HOME/.local/bin:$PATH"
 [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"

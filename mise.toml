@@ -2,6 +2,6 @@
 [tasks.lint]
 description = "Run shell and zsh startup checks"
 run = [
-  "shellcheck -x install.sh bash/.bashrc bash/.bash_profile bash/.bash_settings shell/.functions shell/.aliases shell/.variables",
+  "shellcheck -x install.sh bash/.bashrc bash/.bash_profile bash/.bash_interactive bash/.bash_settings shell/.functions shell/.aliases shell/.variables",
   "zsh -n zsh/.zshrc zsh/.zprofile zsh/.zsh_settings zsh/.zsh_interactive",
 ]
