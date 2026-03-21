@@ -3,7 +3,7 @@ bindsym $mod+m exec --no-startup-id rofi -show run
 bindsym $mod+Shift+s exec --no-startup-id flameshot gui
 
 # start menu
-bindsym $mod+d exec /home/saravenpi/.config/polybar/scripts/launcher.sh
+bindsym $mod+d exec $HOME/.config/polybar/scripts/launcher.sh
 
 # start a terminal
 bindsym $mod+Return exec kitty
