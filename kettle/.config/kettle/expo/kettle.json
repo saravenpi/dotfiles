@@ -31,6 +31,6 @@
     "./package.json",
     "./tsconfig.json"
   ],
-  "kettle_path": "/Users/yannthevenin/.config/kettle/expo/kettle.json",
+  "kettle_path": "~/.config/kettle/expo/kettle.json",
   "init": []
 }

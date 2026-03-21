@@ -40,6 +40,6 @@
     "src/routes/login/+page.svelte",
     "src/routes/+layout.svelte"
   ],
-  "kettle_path": "/Users/yannthevenin/.config/kettle/svelte-pb-auth/kettle.json",
+  "kettle_path": "~/.config/kettle/svelte-pb-auth/kettle.json",
   "init": []
 }

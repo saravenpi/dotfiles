@@ -20,6 +20,6 @@
     "postgresql.sh",
     "docker-compose.yml"
   ],
-  "kettle_path": "/Users/yannthevenin/.config/kettle/gopost/kettle.json",
+  "kettle_path": "~/.config/kettle/gopost/kettle.json",
   "init": []
 }

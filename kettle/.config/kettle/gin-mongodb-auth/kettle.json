@@ -17,6 +17,6 @@
     "./main.go",
     "./start.sh"
   ],
-  "kettle_path": "/Users/yannthevenin/.config/kettle/gin-mongodb-auth/kettle.json",
+  "kettle_path": "~/.config/kettle/gin-mongodb-auth/kettle.json",
   "init": []
 }

@@ -15,6 +15,6 @@
     "./src/routes/checkout/route.ts",
     "./src/routes/checkout/controller.ts"
   ],
-  "kettle_path": "/Users/yannthevenin/.config/kettle/hono/kettle.json",
+  "kettle_path": "~/.config/kettle/hono/kettle.json",
   "init": []
 }
