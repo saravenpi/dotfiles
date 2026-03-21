@@ -53,6 +53,8 @@ zoxide = "latest"
 "npm:@yarnpkg/cli-dist" = "latest"
 "npm:gitmoji-cli" = "latest"
 "npm:pnpm" = "latest"
+"github:typst/typst" = "latest"
+"github:charmbracelet/vhs" = "latest"
 
 [settings]
 idiomatic_version_file_enable_tools = ["node", "python", "ruby", "go"]

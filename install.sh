@@ -320,6 +320,91 @@ install_mise_tools() {
     fi
 }
 
+install_tpm() {
+    local tpm_dir="$HOME/.tmux/plugins/tpm"
+
+    export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+    mkdir -p "$HOME/.tmux/plugins"
+
+    if [[ -d "$tpm_dir/.git" ]]; then
+        info "Updating TPM..."
+        if git -C "$tpm_dir" pull --ff-only >/dev/null 2>&1; then
+            success "Updated TPM"
+        else
+            warn "Could not update TPM"
+        fi
+    else
+        info "Installing TPM..."
+        if git clone https://github.com/tmux-plugins/tpm "$tpm_dir" >/dev/null 2>&1; then
+            success "Installed TPM"
+        else
+            warn "Failed to install TPM"
+            return 0
+        fi
+    fi
+
+    if ! command_exists tmux; then
+        warn "tmux not available yet, skipping TPM plugin sync"
+        return 0
+    fi
+
+    if [[ -x "$tpm_dir/bin/install_plugins" ]]; then
+        if "$tpm_dir/bin/install_plugins" >/dev/null 2>&1; then
+            success "Installed tmux plugins"
+        else
+            warn "TPM is installed, but tmux plugins could not be synced automatically"
+        fi
+    fi
+}
+
+ensure_vhs_runtime() {
+    local mise_config="$HOME/.config/mise/config.toml"
+    local platform
+
+    platform="$(uname -s)"
+    export PATH="$HOME/.local/bin:$PATH"
+
+    if [[ -x /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -x /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
+
+    if [[ ! -f "$mise_config" ]] || ! grep -Eq '(^vhs\s*=|charmbracelet/vhs)' "$mise_config"; then
+        return 0
+    fi
+
+    if ! command_exists ffmpeg; then
+        warn "VHS is configured, but ffmpeg is missing"
+    fi
+
+    if command_exists ttyd; then
+        success "VHS runtime dependency ttyd is available"
+        return 0
+    fi
+
+    case "$platform" in
+        Darwin)
+            if command_exists brew; then
+                info "Installing ttyd for VHS with Homebrew..."
+                if brew install ttyd; then
+                    success "Installed ttyd for VHS"
+                    return 0
+                fi
+            fi
+            warn "VHS requires ttyd on macOS; install it with Homebrew or MacPorts"
+            ;;
+        Linux)
+            warn "VHS requires ttyd on Linux; install it with your distro package manager or from github.com/tsl0922/ttyd/releases"
+            ;;
+        *)
+            warn "VHS requires ttyd; install it manually on this platform"
+            ;;
+    esac
+
+    return 0
+}
+
 install_neovim_nightly() {
     local mise_bin=""
     local bob_bin=""
@@ -418,6 +503,8 @@ main() {
     install_dotfiles || { error "Dotfiles installation failed"; exit 1; }
     bootstrap_mise
     install_mise_tools
+    install_tpm
+    ensure_vhs_runtime
     install_neovim_nightly
 
     show_summary
