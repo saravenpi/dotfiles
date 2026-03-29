@@ -38,4 +38,5 @@ curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh 
 - Some configs are Linux-specific (`i3`, `polybar`, `rofi`, `picom`, `dunst`)
 - Some configs are macOS-specific (`aerospace`)
 - Repo-local `mise.toml` is only for dotfiles tasks; system tools live in `mise/.config/mise/config.toml`
+- Use `mec` from [`mybins/mybins/mec`](/Users/fangafunk/.dotfiles/mybins/mybins/mec) to manage repo-backed system tools: `mec add uv@latest`, `mec add --os macos cocoapods@latest`, `mec sync`, `mec update`
 - `vhs` also needs `ttyd` and `ffmpeg`; the installer handles this where possible and warns otherwise

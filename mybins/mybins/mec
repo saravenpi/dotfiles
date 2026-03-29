@@ -1,0 +1,413 @@
+#!/bin/sh
+//usr/bin/env sh -c 'f=$(mktemp /tmp/mec.XXXXXX) || exit 1; f="$f.go"; tail -n +3 "$0" > "$f" || exit 1; trap '\''rm -f "$f"'\'' EXIT; GO111MODULE=off exec go run "$f" "$@"' "$0" "$@" ; exit $?
+package main
+
+// mec stands for Mise Extended Config.
+
+import (
+	"errors"
+	"flag"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
+)
+
+const usageText = `Usage: mec <command> [args...]
+
+Commands:
+  help                         Show this help
+  path                         Print the repo mise config path
+  edit                         Open the repo mise config
+  list [args...]               Show configured tools from the repo config
+  sync [args...]               Install tools from the repo config
+  add [flags] <tool[@version]>...
+                               Add tool(s) to the repo config and install them
+  remove <tool>...             Remove tool(s) from the repo config
+  update [args...]             Bump tool versions in the repo config
+  reinstall [args...]          Force-reinstall all configured tools
+
+Add flags:
+  --os macos,linux,windows     Restrict a tool entry to one or more operating systems
+  --no-install                 Skip running mise install after editing the config
+
+Examples:
+  mec add uv@latest
+  mec add --os macos cocoapods@latest mas@latest
+  mec add npm:@openai/codex@latest
+  mec remove node
+  mec sync
+  mec update --dry-run`
+
+type app struct {
+	dotfilesDir string
+	configPath  string
+	updatePath  string
+	reinstall   string
+}
+
+func main() {
+	a, err := newApp()
+	if err != nil {
+		fatal(err)
+	}
+
+	if len(os.Args) < 2 {
+		fmt.Println(usageText)
+		return
+	}
+
+	cmd := os.Args[1]
+	args := os.Args[2:]
+
+	switch cmd {
+	case "help", "-h", "--help":
+		fmt.Println(usageText)
+	case "path":
+		fmt.Println(a.configPath)
+	case "edit", "e":
+		fatal(a.edit())
+	case "list", "ls":
+		fatal(a.runMise([]string{"ls", "--global", "--current"}, args...))
+	case "sync", "install", "i":
+		fatal(a.runMise([]string{"install", "--yes"}, args...))
+	case "add":
+		fatal(a.add(args))
+	case "remove", "rm":
+		fatal(a.remove(args))
+	case "update", "upgrade", "u":
+		fatal(a.runScript(a.updatePath, args...))
+	case "reinstall", "r":
+		fatal(a.runScript(a.reinstall, args...))
+	default:
+		fatal(fmt.Errorf("unknown command %q", cmd))
+	}
+}
+
+func newApp() (*app, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+
+	dotfilesDir := os.Getenv("DOTFILES_DIR")
+	if dotfilesDir == "" {
+		dotfilesDir = filepath.Join(home, ".dotfiles")
+	}
+
+	configPath := filepath.Join(dotfilesDir, "mise", ".config", "mise", "config.toml")
+	if _, err := os.Stat(configPath); err != nil {
+		return nil, fmt.Errorf("mise config not found: %s", configPath)
+	}
+
+	return &app{
+		dotfilesDir: dotfilesDir,
+		configPath:  configPath,
+		updatePath:  filepath.Join(dotfilesDir, "scripts", ".mise-update-system-packages.sh"),
+		reinstall:   filepath.Join(dotfilesDir, "scripts", ".mise-reinstall-system-packages.sh"),
+	}, nil
+}
+
+func (a *app) edit() error {
+	editor := os.Getenv("VISUAL")
+	if editor == "" {
+		editor = os.Getenv("EDITOR")
+	}
+
+	switch {
+	case editor != "":
+		fields := strings.Fields(editor)
+		if len(fields) == 0 {
+			return fmt.Errorf("editor is empty")
+		}
+		return runCommand(fields[0], append(fields[1:], a.configPath)...)
+	case lookPath("nvim") == nil:
+		return runCommand("nvim", a.configPath)
+	case lookPath("vim") == nil:
+		return runCommand("vim", a.configPath)
+	default:
+		fmt.Println(a.configPath)
+		return nil
+	}
+}
+
+func (a *app) add(args []string) error {
+	fs := flag.NewFlagSet("add", flag.ContinueOnError)
+	fs.SetOutput(os.Stderr)
+
+	var osArg string
+	var noInstall bool
+
+	fs.StringVar(&osArg, "os", "", "")
+	fs.BoolVar(&noInstall, "no-install", false, "")
+
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
+
+	specs := fs.Args()
+	if len(specs) == 0 {
+		return errors.New("usage: mec add [--os macos,linux,windows] [--no-install] <tool[@version]>...")
+	}
+
+	oses, err := parseOSList(osArg)
+	if err != nil {
+		return err
+	}
+
+	lines, err := readLines(a.configPath)
+	if err != nil {
+		return err
+	}
+
+	for _, spec := range specs {
+		tool, version := splitToolSpec(spec)
+		lines, err = upsertTool(lines, tool, formatToolLine(tool, version, oses))
+		if err != nil {
+			return err
+		}
+		fmt.Printf("added %s to %s\n", tool, a.configPath)
+	}
+
+	if err := writeLines(a.configPath, lines); err != nil {
+		return err
+	}
+
+	if noInstall {
+		return nil
+	}
+
+	return a.runMise([]string{"install", "--yes"})
+}
+
+func (a *app) remove(args []string) error {
+	if len(args) == 0 {
+		return errors.New("usage: mec remove <tool>...")
+	}
+
+	lines, err := readLines(a.configPath)
+	if err != nil {
+		return err
+	}
+
+	for _, arg := range args {
+		next, removed, err := deleteTool(lines, arg)
+		if err != nil {
+			return err
+		}
+		if !removed {
+			return fmt.Errorf("tool not found in config: %s", arg)
+		}
+		lines = next
+		fmt.Printf("removed %s from %s\n", arg, a.configPath)
+	}
+
+	return writeLines(a.configPath, lines)
+}
+
+func (a *app) runMise(base []string, extra ...string) error {
+	if err := lookPath("mise"); err != nil {
+		return errors.New("mise not available")
+	}
+
+	args := append(append([]string{}, base...), extra...)
+	cmd := exec.Command("mise", args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Dir = os.TempDir()
+	cmd.Env = append(os.Environ(),
+		"MISE_GLOBAL_CONFIG_FILE="+a.configPath,
+		"MISE_LOCKFILE=0",
+	)
+	return cmd.Run()
+}
+
+func (a *app) runScript(path string, args ...string) error {
+	cmd := exec.Command(path, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	cmd.Env = os.Environ()
+	cmd.Dir = a.dotfilesDir
+	return cmd.Run()
+}
+
+func readLines(path string) ([]string, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	text := strings.ReplaceAll(string(data), "\r\n", "\n")
+	text = strings.TrimRight(text, "\n")
+	return strings.Split(text, "\n"), nil
+}
+
+func writeLines(path string, lines []string) error {
+	content := strings.Join(lines, "\n") + "\n"
+	return os.WriteFile(path, []byte(content), 0o644)
+}
+
+func upsertTool(lines []string, tool, entry string) ([]string, error) {
+	start, end, err := toolsSection(lines)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := start; i < end; i++ {
+		if toolName(lines[i]) == tool {
+			lines[i] = entry
+			return lines, nil
+		}
+	}
+
+	out := append([]string{}, lines[:end]...)
+	out = append(out, entry)
+	out = append(out, lines[end:]...)
+	return out, nil
+}
+
+func deleteTool(lines []string, tool string) ([]string, bool, error) {
+	start, end, err := toolsSection(lines)
+	if err != nil {
+		return nil, false, err
+	}
+
+	for i := start; i < end; i++ {
+		if toolName(lines[i]) == tool {
+			out := append([]string{}, lines[:i]...)
+			out = append(out, lines[i+1:]...)
+			return out, true, nil
+		}
+	}
+
+	return lines, false, nil
+}
+
+func toolsSection(lines []string) (int, int, error) {
+	start := -1
+	for i, line := range lines {
+		if strings.TrimSpace(line) == "[tools]" {
+			start = i + 1
+			break
+		}
+	}
+	if start == -1 {
+		return 0, 0, errors.New("missing [tools] section")
+	}
+
+	end := len(lines)
+	for i := start; i < len(lines); i++ {
+		trimmed := strings.TrimSpace(lines[i])
+		if strings.HasPrefix(trimmed, "[") && strings.HasSuffix(trimmed, "]") {
+			end = i
+			break
+		}
+	}
+
+	return start, end, nil
+}
+
+func toolName(line string) string {
+	trimmed := strings.TrimSpace(line)
+	if trimmed == "" || strings.HasPrefix(trimmed, "#") || !strings.Contains(trimmed, "=") {
+		return ""
+	}
+
+	left := strings.TrimSpace(strings.SplitN(trimmed, "=", 2)[0])
+	if strings.HasPrefix(left, "\"") && strings.HasSuffix(left, "\"") && len(left) >= 2 {
+		return strings.Trim(left, "\"")
+	}
+	return left
+}
+
+func splitToolSpec(spec string) (string, string) {
+	idx := strings.LastIndex(spec, "@")
+	if idx > 0 {
+		return spec[:idx], spec[idx+1:]
+	}
+	return spec, "latest"
+}
+
+func formatToolLine(tool, version string, oses []string) string {
+	key := tool
+	if needsQuotes(tool) {
+		key = `"` + strings.ReplaceAll(tool, `"`, `\"`) + `"`
+	}
+	if len(oses) == 0 {
+		return fmt.Sprintf("%s = %q", key, version)
+	}
+	quoted := make([]string, 0, len(oses))
+	for _, osName := range oses {
+		quoted = append(quoted, fmt.Sprintf("%q", osName))
+	}
+	return fmt.Sprintf("%s = { version = %q, os = [%s] }", key, version, strings.Join(quoted, ", "))
+}
+
+func parseOSList(raw string) ([]string, error) {
+	if raw == "" {
+		return nil, nil
+	}
+
+	parts := strings.Split(raw, ",")
+	seen := map[string]bool{}
+	oses := make([]string, 0, len(parts))
+
+	for _, part := range parts {
+		osName := strings.TrimSpace(strings.ToLower(part))
+		switch osName {
+		case "macos", "linux", "windows":
+		default:
+			return nil, fmt.Errorf("invalid os %q, expected macos, linux, or windows", osName)
+		}
+		if !seen[osName] {
+			seen[osName] = true
+			oses = append(oses, osName)
+		}
+	}
+
+	return oses, nil
+}
+
+func needsQuotes(tool string) bool {
+	for _, r := range tool {
+		if r == '-' || r == '_' || (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+func runCommand(name string, args ...string) error {
+	cmd := exec.Command(name, args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin = os.Stdin
+	return cmd.Run()
+}
+
+func lookPath(name string) error {
+	_, err := exec.LookPath(name)
+	return err
+}
+
+func fatal(err error) {
+	if err == nil {
+		return
+	}
+	if errors.Is(err, flag.ErrHelp) {
+		os.Exit(2)
+	}
+	var exitErr *exec.ExitError
+	if errors.As(err, &exitErr) {
+		os.Exit(exitErr.ExitCode())
+	}
+	fmt.Fprintln(os.Stderr, "mec:", err)
+	if runtime.GOOS == "windows" {
+		os.Exit(1)
+	}
+	os.Exit(1)
+}
