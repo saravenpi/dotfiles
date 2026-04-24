@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -euo pipefail
+
+host="${1:-ruche}"
+auth_key="${TAILSCALE_AUTHKEY:-${2:-}}"
+login_server="${TAILSCALE_LOGIN_SERVER:-${3:-}}"
+
+ssh "$host" 'bash -s' -- "$auth_key" "$login_server" <<'EOF'
+set -euo pipefail
+
+auth_key="${1:-}"
+login_server="${2:-}"
+
+if ! command -v curl >/dev/null 2>&1; then
+  sudo apt-get update
+  sudo apt-get install -y curl
+fi
+
+if ! command -v tailscale >/dev/null 2>&1; then
+  curl -fsSL https://tailscale.com/install.sh | sh
+fi
+
+sudo systemctl enable --now tailscaled
+sudo systemctl is-active --quiet tailscaled
+sudo tailscale version
+
+if [ -n "$auth_key" ]; then
+  if [ -n "$login_server" ]; then
+    sudo tailscale up --login-server="$login_server" --authkey="$auth_key"
+  else
+    sudo tailscale up --authkey="$auth_key"
+  fi
+elif [ -n "$login_server" ]; then
+  sudo tailscale login --login-server="$login_server"
+fi
+EOF
