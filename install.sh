@@ -142,9 +142,8 @@ create_backup() {
     mkdir -p "$BACKUP_DIR/.config"
 
     local files_to_backup=(
-        ".bashrc" ".bash_aliases" ".bash_functions" ".emacs" ".tmux.conf"
-        ".clang-format" ".gitconfig" ".battery-warning.sh" ".currentapp.sh"
-        ".desktop.sh" ".menu.sh" ".openchatgpt.sh" ".aerospace.toml"
+        ".bashrc" ".bash_aliases" ".bash_functions" ".tmux.conf"
+        ".clang-format"
     )
 
     local dirs_to_backup=(
@@ -152,8 +151,7 @@ create_backup() {
     )
 
     local config_dirs_to_backup=(
-        "dunst" "fish" "gtk-3.0" "home-manager" "hyprland" "i3" "kettle"
-        "kitty" "lazygit" "mise" "nixpkgs" "nvim" "picom" "polybar" "rofi"
+        "kitty" "nvim"
     )
 
     local backup_count=0
@@ -232,13 +230,9 @@ install_dotfiles() {
     # Handle stow packages
     local stow_packages=(
         "fonts"
-        "i3 dunst scripts picom polybar rofi aerospace"
         "kitty tmux shell bash zsh"
-        "nvim vim clang-format"
-        "git kettle mise"
-        "mybins"
-        "claude"
-        "bat calm donut miam waves"
+        "nvim vim"
+        "agents scripts"
     )
 
     for package_group in "${stow_packages[@]}"; do
@@ -260,70 +254,9 @@ install_dotfiles() {
     success "Dotfiles configuration completed"
 }
 
-bootstrap_mise() {
-    local mise_bin=""
-
-    export PATH="$HOME/.local/bin:$PATH"
-
-    if [[ -x /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -x /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-
-    if command_exists mise; then
-        return 0
-    fi
-
-    if ! command_exists curl; then
-        warn "curl not available, skipping mise bootstrap"
-        return 0
-    fi
-
-    info "Installing mise..."
-
-    if curl -fsSL https://mise.run | sh; then
-        success "Installed mise to ~/.local/bin"
-        return 0
-    fi
-
-    warn "mise bootstrap failed; install it manually and rerun 'mise install'"
-    return 0
-}
-
-install_mise_tools() {
-    local mise_bin=""
-
-    export PATH="$HOME/.local/bin:$PATH"
-
-    if [[ -x /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -x /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-
-    if command_exists mise; then
-        mise_bin="$(command -v mise)"
-    fi
-
-    if [[ -z "$mise_bin" ]] || [[ ! -f "$HOME/.config/mise/config.toml" ]]; then
-        warn "mise not available, skipping tool installation"
-        return 0
-    fi
-
-    info "Installing system tools from mise config..."
-
-    if (cd "$HOME" && "$mise_bin" install); then
-        success "Installed mise-managed tools"
-    else
-        warn "mise tool installation failed; run 'mise install' later"
-    fi
-}
-
 install_tpm() {
     local tpm_dir="$HOME/.tmux/plugins/tpm"
 
-    export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
     mkdir -p "$HOME/.tmux/plugins"
 
     if [[ -d "$tpm_dir/.git" ]]; then
@@ -357,96 +290,6 @@ install_tpm() {
     fi
 }
 
-ensure_vhs_runtime() {
-    local mise_config="$HOME/.config/mise/config.toml"
-    local platform
-
-    platform="$(uname -s)"
-    export PATH="$HOME/.local/bin:$PATH"
-
-    if [[ -x /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -x /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-
-    if [[ ! -f "$mise_config" ]] || ! grep -Eq '(^vhs\s*=|charmbracelet/vhs)' "$mise_config"; then
-        return 0
-    fi
-
-    if ! command_exists ffmpeg; then
-        warn "VHS is configured, but ffmpeg is missing"
-    fi
-
-    if command_exists ttyd; then
-        success "VHS runtime dependency ttyd is available"
-        return 0
-    fi
-
-    case "$platform" in
-        Darwin)
-            if command_exists brew; then
-                info "Installing ttyd for VHS with Homebrew..."
-                if brew install ttyd; then
-                    success "Installed ttyd for VHS"
-                    return 0
-                fi
-            fi
-            warn "VHS requires ttyd on macOS; install it with Homebrew or MacPorts"
-            ;;
-        Linux)
-            warn "VHS requires ttyd on Linux; install it with your distro package manager or from github.com/tsl0922/ttyd/releases"
-            ;;
-        *)
-            warn "VHS requires ttyd; install it manually on this platform"
-            ;;
-    esac
-
-    return 0
-}
-
-install_neovim_nightly() {
-    local mise_bin=""
-    local bob_bin=""
-
-    export PATH="$HOME/.local/bin:$PATH"
-    export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
-
-    if [[ -x /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -x /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
-
-    if command_exists bob; then
-        bob_bin="$(command -v bob)"
-    fi
-
-    if command_exists mise; then
-        mise_bin="$(command -v mise)"
-    fi
-
-    info "Installing latest Neovim nightly with bob..."
-
-    if [[ -n "$bob_bin" ]]; then
-        if "$bob_bin" install nightly && "$bob_bin" use nightly; then
-            success "Configured bob-managed Neovim nightly"
-            return 0
-        fi
-    elif [[ -n "$mise_bin" ]]; then
-        if (cd "$HOME" && "$mise_bin" exec bob -- bob install nightly && "$mise_bin" exec bob -- bob use nightly); then
-            success "Configured bob-managed Neovim nightly"
-            return 0
-        fi
-    else
-        warn "bob not available, skipping Neovim nightly installation"
-        return 0
-    fi
-
-    warn "bob failed to install or switch Neovim nightly"
-    return 0
-}
-
 # Show installation summary
 show_summary() {
     echo -e "\n${GREEN}Dotfiles installation completed successfully!${NC}\n"
@@ -459,9 +302,6 @@ show_summary() {
     echo -e "  ${CYAN}1.${NC} Restart your terminal or run: ${YELLOW}source ~/.bashrc${NC} (or ~/.zshrc)"
     echo -e "  ${CYAN}2.${NC} Install optional GUI apps as needed"
     echo -e "  ${CYAN}3.${NC} See README for program installation links"
-
-    echo -e "\n${WHITE}Optional programs documentation:${NC}"
-    echo -e "  ${BLUE}https://github.com/saravenpi/dotfiles#optional-programs${NC}"
 
     echo -e "\n${WHITE}Report issues at:${NC}"
     echo -e "  ${BLUE}https://github.com/saravenpi/dotfiles/issues${NC}"
@@ -501,11 +341,7 @@ main() {
     create_backup || { error "Backup creation failed"; exit 1; }
     clone_dotfiles || { error "Repository cloning failed"; exit 1; }
     install_dotfiles || { error "Dotfiles installation failed"; exit 1; }
-    bootstrap_mise
-    install_mise_tools
     install_tpm
-    ensure_vhs_runtime
-    install_neovim_nightly
 
     show_summary
 

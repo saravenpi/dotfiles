@@ -38,9 +38,30 @@ alias zrel="zreload"
 alias h='clear && cd $HOME'
 alias dots='cd $HOME/.dotfiles'
 alias goc='cd $HOME/Projects/'
+alias gof='cd $HOME/Code/Facile/'
 alias gos='cd $HOME/School'
 alias gob='cd "$BRAIN"'
 
+# Journal (j)
+command -v j >/dev/null 2>&1 && alias ja="j a"
+command -v j >/dev/null 2>&1 && alias jadd="j add"
+command -v j >/dev/null 2>&1 && alias jr="j r"
+command -v j >/dev/null 2>&1 && alias jdream="j dream"
+command -v j >/dev/null 2>&1 && alias jt="j t"
+command -v j >/dev/null 2>&1 && alias jtoday="j today"
+command -v j >/dev/null 2>&1 && alias jy="j y"
+command -v j >/dev/null 2>&1 && alias jyesterday="j yesterday"
+command -v j >/dev/null 2>&1 && alias jtm="j tm"
+command -v j >/dev/null 2>&1 && alias jtomorrow="j tomorrow"
+command -v j >/dev/null 2>&1 && alias jl="j l"
+command -v j >/dev/null 2>&1 && alias jlist="j list"
+command -v j >/dev/null 2>&1 && alias jrecent="j recent"
+command -v j >/dev/null 2>&1 && alias js="j s"
+command -v j >/dev/null 2>&1 && alias jsearch="j search"
+command -v j >/dev/null 2>&1 && alias jh="j help"
+command -v j >/dev/null 2>&1 && alias jhelp="j help"
+
+# Editing
 if command -v nvim >/dev/null 2>&1; then
     alias brain='cd "$BRAIN/" && nvim Home.md'
     alias b='cd "$BRAIN/" && nvim Home.md'
@@ -48,6 +69,7 @@ if command -v nvim >/dev/null 2>&1; then
     alias cnvim='cd $HOME/.config/nvim/ && nvim .'
     alias cbash='cd $HOME && nvim .bashrc'
     alias czsh='cd $HOME && nvim .zshrc'
+    alias cfish='cd $HOME && nvim .config/fish/config.fish'
     alias caliases='cd $HOME && nvim .aliases'
     alias cfunctions='cd $HOME && nvim .functions'
     alias ctmux='cd $HOME && nvim .tmux.conf'
@@ -55,10 +77,13 @@ if command -v nvim >/dev/null 2>&1; then
     alias cterminal='cd $HOME/.config/kitty/ && nvim kitty.conf'
     alias cportals='cd $HOME/portals && nvim .'
     alias cclaude='cd $HOME/.claude && nvim .'
+    alias ckori='nvim $HOME/.kori.yml'
+    alias ck='nvim $HOME/.kori.yml'
     alias n="nvim"
     alias links="nvim $HOME/Code/Portals/og.yml"
 fi
 
+# Git
 if command -v git >/dev/null 2>&1; then
     alias gs="git status"
     alias gp="git push"
@@ -74,6 +99,7 @@ if command -v git >/dev/null 2>&1; then
     alias gituf='git add . && git commit -m "$(date +"%Y-%m-%d %T")" && git push'
 fi
 
+# Build & check
 alias mf="make fclean"
 alias mfc="make fclean"
 alias mr="make re"
@@ -82,6 +108,8 @@ command -v valgrind >/dev/null 2>&1 && alias vg="valgrind"
 command -v valgrind >/dev/null 2>&1 && alias vgf="valgrind --leak-check=full"
 command -v kettle >/dev/null 2>&1 && alias cinit="kettle use c ."
 
+# Tmux
+command -v tmux >/dev/null 2>&1 && alias ta="tmux attach"
 if command -v tmux >/dev/null 2>&1; then
     alias treload="tmux source-file ~/.tmux.conf"
     alias trel="treload"
@@ -89,19 +117,46 @@ if command -v tmux >/dev/null 2>&1; then
     alias sl="tmux ls -f '#{session_name}'"
     alias tll="tmux ls"
     alias trs="tmux rename-session -t"
-    alias t="tmux"
 fi
 
+# Tools
 command -v egg >/dev/null 2>&1 && alias e="egg"
-command -v wisp >/dev/null 2>&1 && alias w="wisp"
 command -v donut >/dev/null 2>&1 && alias d="donut"
 command -v purse >/dev/null 2>&1 && alias p="purse i"
 command -v vero >/dev/null 2>&1 && alias v="vero"
-command -v iamb >/dev/null 2>&1 && alias i="iamb -C ~/.config/"
-command -v just >/dev/null 2>&1 && alias j="just"
-command -v marcel >/dev/null 2>&1 && alias m="marcel"
-command -v railway >/dev/null 2>&1 && alias r="railway"
-command -v csvlens >/dev/null 2>&1 && alias csv="csvlens"
-command -v claude >/dev/null 2>&1 && alias cy="claude --dangerously-skip-permissions"
 command -v knot >/dev/null 2>&1 && alias k="knot"
+command -v marcel >/dev/null 2>&1 && alias m="marcel"
+command -v marcel >/dev/null 2>&1 && alias ma="marcel"
+command -v iamb >/dev/null 2>&1 && alias i="iamb"
+command -v w3m >/dev/null 2>&1 && alias w="w3m"
+command -v mise >/dev/null 2>&1 && alias mi="mise"
+command -v linear >/dev/null 2>&1 && alias li="linear"
+command -v railway >/dev/null 2>&1 && alias r="railway"
+command -v rg >/dev/null 2>&1 && alias rg="rg --smart-case"
+command -v csvlens >/dev/null 2>&1 && alias csv="csvlens"
 command -v telnet >/dev/null 2>&1 && alias starwars="telnet towel.blinkenlights.nl"
+command -v zathura >/dev/null 2>&1 && alias za="zathura"
+
+# AI agents
+command -v agy >/dev/null 2>&1 && alias ay="agy --dangerously-skip-permissions"
+command -v claude >/dev/null 2>&1 && alias cy="claude --dangerously-skip-permissions"
+command -v codex >/dev/null 2>&1 && alias coy="codex --dangerously-bypass-approvals-and-sandbox"
+command -v kori >/dev/null 2>&1 && alias a="kori"
+command -v kori >/dev/null 2>&1 && alias k="kori"
+
+# cercle
+command -v cercle >/dev/null 2>&1 && export CERCLE_AGENT="${CERCLE_AGENT:-yann}"
+command -v cercle >/dev/null 2>&1 && alias ct="cercle thread list"
+command -v cercle >/dev/null 2>&1 && alias ctr="cercle thread read"
+command -v cercle >/dev/null 2>&1 && alias cm="cercle message read"
+command -v cercle >/dev/null 2>&1 && alias cpost="cercle message post"
+command -v cercle >/dev/null 2>&1 && alias cin="cercle inbox read"
+command -v cercle >/dev/null 2>&1 && alias cmark="cercle inbox mark-read"
+
+# filet
+command -v filet >/dev/null 2>&1 && alias f="filet check . "
+command -v filet >/dev/null 2>&1 && alias fc="filet check ."
+command -v filet >/dev/null 2>&1 && alias fr="filet roast ."
+
+command -v hunk >/dev/null 2>&1 && alias hd="hunk diff"
+command -v boite >/dev/null 2>&1 && alias bp="boite run pingu"

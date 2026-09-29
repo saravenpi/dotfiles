@@ -233,7 +233,7 @@ s() {
     tmux new-session -d -s "$1" -c "$project_path"
 
     if [ -f "$project_path/egg.yml" ] && _has egg; then
-        tmux send-keys -t "$1" 'egg --current' Enter
+        tmux send-keys -t "$session" 'egg --current' Enter
     fi
 
     tmux "$tmux_command" -t "$1"
@@ -284,7 +284,7 @@ clean_node_modules() {
     echo "Searching for root-level node_modules directories..."
 
     node_modules_dirs=()
-    while IFS= read -r -d '' dir; do
+    while IFS='|' read -r dir; do
         case "$dir" in
             */node_modules/*/node_modules) continue ;;
         esac
@@ -310,10 +310,11 @@ clean_node_modules() {
     total_size="$(du -sh "${node_modules_dirs[@]}" 2>/dev/null | awk '{print $1}' | paste -sd ', ' - 2>/dev/null || echo unknown)"
 
     if _has gum; then
-        gum confirm "Delete all ${#node_modules_dirs[@]} root-level node_modules directories? (Sizes: $total_size)" || return 1
+        gum confirm --default "Delete all ${#node_modules_dirs[@]} root-level node_modules directories? (Sizes: $total_size)" || return 1
     else
-        printf 'Delete all %s root-level node_modules directories? [y/N] ' "${#node_modules_dirs[@]}"
+        printf 'Delete all %s root-level node_modules directories? [Y/n] ' "${#node_modules_dirs[@]}"
         read -r reply
+        reply="${reply:-y}"
         case "$reply" in
             y|Y|yes|YES) ;;
             *)
@@ -459,6 +460,30 @@ disk() {
 
         printf '%b\n' "${CYAN}${BOLD}${disk_name}${RESET}: ${color}${BOLD}${avail}${RESET} left"
     done
+}
+
+t() {
+    if ! _has tmux; then
+        echo "tmux not available"
+        return 1
+    fi
+
+    if [ $# -gt 0 ]; then
+        tmux "$@"
+        return
+    fi
+
+    if tmux has-session 2>/dev/null; then
+        tmux attach
+        return
+    fi
+
+    if _has gum; then
+        gum spin --spinner dot --title "Starting tmux..." -- tmux new-session -d -s main
+    else
+        tmux new-session -d -s main 2>/dev/null
+    fi
+    tmux attach
 }
 
 bnn() {
