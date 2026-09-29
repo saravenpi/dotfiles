@@ -19,24 +19,8 @@ curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh 
 1. Backs up conflicting files to `~/.config/config.old.<timestamp>/`
 2. Clones the repo to `~/.dotfiles`
 3. Stows the config into `$HOME`
-4. Bootstraps [mise](https://mise.jdx.dev/) if needed
-5. Installs global CLI tools from `~/.config/mise/config.toml`
-6. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
-7. Installs [bob](https://github.com/MordechaiHadad/bob) and switches Neovim to `nightly`
-8. Ensures `vhs` runtime dependencies are available when possible
-
-## Tooling
-
-- Runtime and CLI tools: `mise`
-- Neovim version management: `bob`
-- Shells: `zsh`, `bash`
-- Terminal/editor setup: `kitty`, `tmux`, `nvim`
-- Tmux plugins: `tpm`
+4. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
 
 ## Notes
 
-- Some configs are Linux-specific (`i3`, `polybar`, `rofi`, `picom`, `dunst`)
-- Some configs are macOS-specific (`aerospace`)
-- Repo-local `mise.toml` is only for dotfiles tasks; system tools live in `mise/.config/mise/config.toml`
-- Use `mec` from [`mybins/mybins/mec`](/Users/fangafunk/.dotfiles/mybins/mybins/mec) to manage repo-backed system tools: `mec add uv@latest`, `mec add --os macos cocoapods@latest`, `mec sync`, `mec update`
-- `vhs` also needs `ttyd` and `ffmpeg`; the installer handles this where possible and warns otherwise
+- Some configs are Linux-specific (`rofi`)
