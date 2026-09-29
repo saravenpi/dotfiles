@@ -232,7 +232,7 @@ install_dotfiles() {
         "fonts"
         "kitty tmux shell bash zsh"
         "nvim vim"
-        "agents scripts"
+        "scripts"
     )
 
     for package_group in "${stow_packages[@]}"; do
