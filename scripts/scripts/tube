@@ -1,0 +1,281 @@
+#!/usr/bin/env bash
+# tube — fetch a YouTube transcript as plain text.
+# Primary: yt-dlp (rides the nightly fix pipeline).
+# Fallback: a queue of third-party transcript sites/APIs, so one blocked
+# IP or rate limit never kills the fetch.
+set -uo pipefail
+
+VERSION="2.0.0"
+
+usage() {
+  cat <<EOF
+tube ${VERSION} — YouTube transcript on stdout
+
+usage: tube [options] <url|video-id>
+  -l, --lang <code>        preferred caption language (default: en; ytdlp/kome only)
+  -o, --out <file>         write to file instead of stdout
+  -j, --json               emit {video_id, title, text} JSON on stdout
+  -t, --timestamps         keep [MM:SS] markers inline (ytdlp only)
+  -c, --cookies <file>     cookies.txt (Netscape) for yt-dlp;
+                           default: ~/.config/tube/cookies.txt, else ~/.config/ytsub/cookies.txt,
+                           else YTSUB_COOKIES / TUBE_COOKIES
+  -p, --providers <list>   comma-separated provider order (default: ytdlp,ytt,kome,supadata,custom)
+                           providers: ytdlp kome supadata ytt custom
+  -P, --proxy <url>        proxy for yt-dlp (socks5/http); default: TUBE_PROXY, or
+                           auto: socks5://localhost:1080 if lucy's ssh forward is alive
+  -n, --no-update          never auto-update yt-dlp
+  -h, --help               this text
+
+env:
+  TUBE_PROXY               proxy for yt-dlp only (e.g. socks5://localhost:1080 via ssh -D on lucy);
+                           kome/ytt/supadata stay direct on purpose: they are the fallback when the
+                           proxy box is asleep, so they must not depend on it
+  TUBE_SUPADATA_KEY        api key for supadata.ai (free tier: supadata.ai)
+  TUBE_PROVIDERS           default provider order
+  custom providers: drop executables in ~/.config/tube/providers.d/
+    each gets \$VIDEO_ID and \$VIDEO_URL; print transcript text on stdout; nonzero exit = skip
+EOF
+}
+
+LANG_PREF="en"
+OUT=""
+JSON=0
+TS=0
+NO_UPDATE=0
+PROVIDERS="${TUBE_PROVIDERS:-ytdlp,kome,supadata,ytt,custom}"
+
+default_cookies() {
+  if [[ -n "${TUBE_COOKIES:-}" ]]; then echo "$TUBE_COOKIES"
+  elif [[ -n "${YTSUB_COOKIES:-}" ]]; then echo "$YTSUB_COOKIES"
+  elif [[ -f "$HOME/.config/tube/cookies.txt" ]]; then echo "$HOME/.config/tube/cookies.txt"
+  elif [[ -f "$HOME/.config/ytsub/cookies.txt" ]]; then echo "$HOME/.config/ytsub/cookies.txt"
+  fi
+}
+COOKIES="$(default_cookies)"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -l|--lang) LANG_PREF="$2"; shift 2 ;;
+    -o|--out) OUT="$2"; shift 2 ;;
+    -j|--json) JSON=1; shift ;;
+    -t|--timestamps) TS=1; shift ;;
+    -p|--providers) PROVIDERS="$2"; shift 2 ;;
+    -P|--proxy) TUBE_PROXY="$2"; shift 2 ;;
+    -n|--no-update) NO_UPDATE=1; shift ;;
+    -c|--cookies) COOKIES="$2"; shift 2 ;;
+    -h|--help) usage; exit 0 ;;
+    -*) echo "tube: unknown option $1" >&2; usage >&2; exit 2 ;;
+    *) URL="$1"; shift ;;
+  esac
+done
+
+[[ -z "${URL:-}" ]] && { usage >&2; exit 2; }
+
+die() { echo "tube: $*" >&2; exit "${2:-1}"; }
+note() { echo "tube: $*" >&2; }
+
+VID=$(echo "$URL" | grep -oE '(v=|youtu\.be/|shorts/|embed/)?[A-Za-z0-9_-]{11}' | grep -oE '[A-Za-z0-9_-]{11}$' | tail -1)
+[[ -n "$VID" ]] || die "could not parse a video id from: $URL" 2
+VIDEO_URL="https://www.youtube.com/watch?v=$VID"
+VIDEO_ID="$VID"
+
+# ---------------------------------------------------------------- ytdlp
+
+command -v yt-dlp >/dev/null && HAS_YTDLP=1 || HAS_YTDLP=0
+
+JS_ARGS=()
+if [[ -z "${TUBE_PROXY:-}" ]] && nc -z localhost 2222 2>/dev/null; then
+  if ! nc -z localhost 1080 2>/dev/null; then
+    note "lucy forward detected, starting proxy"
+    "$HOME/scripts/tube-proxy" >/dev/null 2>&1 || true
+  fi
+  if nc -z localhost 1080 2>/dev/null; then
+    export TUBE_PROXY=socks5://localhost:1080
+  fi
+fi
+if [[ -n "${TUBE_PROXY:-}" ]]; then
+  JS_ARGS+=(--proxy "$TUBE_PROXY")
+fi
+if command -v deno >/dev/null && deno --version >/dev/null 2>&1; then
+  JS_ARGS+=(--js-runtimes deno)
+elif command -v bun >/dev/null && bun --version >/dev/null 2>&1; then
+  JS_ARGS+=(--js-runtimes bun)
+else
+  BUNBIN=$(mise which bun 2>/dev/null || true)
+  [[ -x "$BUNBIN" ]] && JS_ARGS+=(--js-runtimes "bun:$BUNBIN")
+fi
+
+VTT=""
+LAST_TMP=""
+
+ytdlp_fetch() {
+  local tmp
+  tmp=$(mktemp -d) || return 1
+  local langs=("$LANG_PREF" "$LANG_PREF".* "fr" "en" "any")
+  local lang cookie_args=() f found=0
+  [[ -n "$COOKIES" && -f "$COOKIES" ]] && cookie_args=(--cookies "$COOKIES")
+  for lang in "${langs[@]}"; do
+    [[ "$lang" == "any" ]] && lang=""
+  if yt-dlp "${JS_ARGS[@]}" "${cookie_args[@]}" --skip-download \
+        --write-auto-sub --write-sub \
+        --sub-langs "${lang:-.*}" --sub-format vtt/srv3/best \
+        -o "$tmp/video" "$VIDEO_URL" >>"$tmp/log" 2>&1; then
+      f=$(ls "$tmp"/video*.vtt "$tmp"/video*.srv3 2>/dev/null | head -1)
+      if [[ -n "$f" ]]; then VTT="$f"; found=1; break; fi
+    fi
+    rm -f "$tmp"/video*
+  done
+  if [[ $found -eq 0 ]]; then
+    grep -m1 "ERROR" "$tmp/log" | head -1 >&2
+    rm -rf "$tmp"
+    return 1
+  fi
+  LAST_TMP="$tmp"
+  return 0
+}
+
+clean_vtt() {
+  awk '
+    /^WEBVTT/ { next }
+    /^(Kind|Language|NOTE|STYLE)::/ { next }
+    /^Kind: / { next }
+    /^Language: / { next }
+    /^[0-9][0-9]:[0-9][0-9]:/ { ts=($0 ~ /-->/) ? sprintf("[%s]", substr($0,4,8)) : ts; if ($0 ~ /-->/) next }
+    /^[0-9]+$/ { next }
+    /^\s*$/ { next }
+    {
+      line=$0
+      gsub(/<[^>]*>/, "", line)
+      gsub(/&nbsp;/, " ", line)
+      gsub(/\r/, "", line)
+      if (line == prev) next
+      if (TS && ts != pts) printf "[%s] ", substr(ts,2,8)
+      pts=ts
+      print line
+      prev=line
+    }
+  ' TS=$TS "$VTT"
+}
+
+p_ytdlp() {
+  [[ $HAS_YTDLP -eq 1 ]] || return 1
+  ytdlp_fetch || return 1
+  CLEANED=$(clean_vtt)
+  rm -rf "$LAST_TMP"
+  [[ -n "$CLEANED" ]]
+}
+
+# ---------------------------------------------------------------- ytt (youtubetranscript.com, plain XML over curl)
+
+p_ytt() {
+  local xml
+  xml=$(curl -s --max-time 45 "https://youtubetranscript.com/?server_vid2=$VID" \
+        -A "Mozilla/5.0 (X11; Linux x86_64) Firefox/128.0") || return 1
+  echo "$xml" | grep -q "blocking us" && return 1
+  CLEANED=$(printf '%s' "$xml" | python3 -c "
+import html, re, sys
+xml = sys.stdin.read()
+texts = re.findall(r'<text[^>]*>(.*?)</text>', xml, re.S)
+if not texts: sys.exit(1)
+out = ' '.join(html.unescape(t).strip() for t in texts)
+print(re.sub(r'\s+', ' ', out))
+")
+  [[ -n "$CLEANED" ]]
+}
+
+# ---------------------------------------------------------------- kome (kome.ai, headless form fill via moli)
+
+p_kome() {
+  CLEANED=$(curl -s --max-time 90 -X POST "https://kome.ai/api/transcript" \
+    -H "content-type: application/json" \
+    -d "{\"video_id\":\"$VIDEO_URL\",\"format\":true}" | python3 -c "
+import json, sys
+try:
+    d = json.load(sys.stdin)
+    t = d.get('transcript', '')
+except Exception:
+    sys.exit(1)
+print(t.strip())
+")
+  [[ -n "$CLEANED" ]]
+}
+
+# ---------------------------------------------------------------- supadata (api key, free tier)
+
+p_supadata() {
+  [[ -n "${TUBE_SUPADATA_KEY:-}" ]] || return 1
+  CLEANED=$(curl -s --max-time 60 \
+    -H "x-api-key: $TUBE_SUPADATA_KEY" \
+    "https://api.supadata.ai/v1/youtube/transcript?videoId=$VID&text=true" | python3 -c "
+import json, sys
+try:
+    d = json.load(sys.stdin)
+except Exception:
+    sys.exit(1)
+text = d.get('text') or (d.get('content') if isinstance(d.get('content'), str) else None)
+if not text:
+    for c in d.get('content', []):
+        text = (text or '') + ' ' + str(c.get('text', ''))
+print(text.strip() if text else '', end='')
+sys.exit(0 if text else 1)
+")
+  [[ -n "$CLEANED" ]]
+}
+
+# ---------------------------------------------------------------- custom provider scripts
+
+p_custom() {
+  local dir="$HOME/.config/tube/providers.d"
+  [[ -d "$dir" ]] || return 1
+  local f
+  for f in "$dir"/*; do
+    [[ -x "$f" ]] || continue
+    note "trying custom provider: $(basename "$f")"
+    if CLEANED=$("$f"); then
+      [[ -n "$CLEANED" ]] && return 0
+    fi
+  done
+  return 1
+}
+
+# ---------------------------------------------------------------- run the queue
+
+IFS=',' read -r -a QUEUE <<< "$PROVIDERS"
+CLEANED=""
+winner=""
+
+for p in "${QUEUE[@]}"; do
+  p="${p// /}"
+  [[ -n "$p" ]] || continue
+  fn="p_$p"
+  if ! declare -f "$fn" >/dev/null; then
+    note "unknown provider: $p (skipping)"
+    continue
+  fi
+  note "provider $p ..."
+  if "$fn"; then
+    winner="$p"
+    break
+  fi
+  CLEANED=""
+done
+
+[[ -n "$CLEANED" ]] || die "no provider produced a transcript. Options: set TUBE_SUPADATA_KEY (supadata.ai free tier), add ~/.config/tube/providers.d/*.sh, or run from an IP YouTube trusts" 1
+note "success via: $winner"
+
+if [[ $JSON -eq 1 ]]; then
+  TITLE=""
+  if [[ $HAS_YTDLP -eq 1 ]]; then
+    TITLE=$(yt-dlp "${JS_ARGS[@]}" --skip-download --print "%(title)s" --no-download "$VIDEO_URL" 2>/dev/null | head -1)
+  fi
+  [[ -z "$TITLE" ]] && TITLE="youtube-$VID"
+  python3 -c '
+import json, sys
+print(json.dumps({"video_id": sys.argv[1], "title": sys.argv[2], "provider": sys.argv[3], "text": sys.argv[4]}))
+' "$VID" "$TITLE" "$winner" "$CLEANED"
+elif [[ -n "$OUT" ]]; then
+  printf '%s\n' "$CLEANED" > "$OUT"
+  note "wrote $(wc -w <<<"$CLEANED") words to $OUT"
+else
+  printf '%s\n' "$CLEANED"
+fi

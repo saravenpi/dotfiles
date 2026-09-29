@@ -1,0 +1,76 @@
+#!/bin/zsh
+emulate -L zsh
+setopt no_unset pipe_fail
+
+source_pane="${1:-${TMUX_PANE:-}}"
+tmp_dir="${TMPDIR:-/tmp}"
+error_file="$(mktemp "$tmp_dir/tmux-move-pane-menu.err.XXXXXX")"
+
+cleanup() {
+  rm -f "$error_file"
+}
+
+trap cleanup EXIT
+
+if [[ -z "$source_pane" ]]; then
+  tmux display-message "move-pane-menu: missing source pane"
+  exit 1
+fi
+
+if ! command -v fzf >/dev/null 2>&1; then
+  tmux display-message "move-pane-menu: fzf not found"
+  exit 1
+fi
+
+if [[ -f "$HOME/.fzf_theme" ]]; then
+  source "$HOME/.fzf_theme"
+fi
+
+pane_info="$(tmux display-message -p -t "$source_pane" '#{session_id}	#{window_id}')"
+source_session_id="${pane_info%%$'\t'*}"
+source_window_id="${pane_info#*$'\t'}"
+
+windows=("${(@f)$(tmux list-windows -t "$source_session_id" -F '#{window_id}	#{window_index}: #{window_name}' | awk -F '\t' -v current="$source_window_id" '$1 != current { print $0 }')}")
+
+windows=("new	New" "${windows[@]}")
+
+selection="$(
+  printf '%s\n' "${windows[@]}" |
+    fzf \
+      --delimiter=$'\t' \
+      --with-nth=2 \
+      --nth=2 \
+      --no-sort \
+      --layout=reverse \
+      --no-border \
+      --height=100% \
+      --prompt='Move pane > '
+)" || exit 0
+
+if [[ -z "$selection" ]]; then
+  exit 0
+fi
+
+target_window_id="${selection%%$'\t'*}"
+target_label="${selection#*$'\t'}"
+
+if [[ "$target_window_id" == "new" ]]; then
+  if ! tmux break-pane -s "$source_pane" 2>"$error_file"; then
+    error_message="$(<"$error_file")"
+    tmux display-message "move-pane-menu: ${error_message:-break-pane failed}"
+    exit 1
+  fi
+
+else
+  target_pane="$(tmux list-panes -t "$target_window_id" -F '#{pane_active} #{pane_id}' | awk '$1=="1"{print $2}')"
+  target_ref="$(tmux list-windows -t "$source_session_id" -F '#{window_id} #{session_name}:#{window_index}' | awk -v wid="$target_window_id" '$1==wid{print $2}')"
+
+  if ! tmux join-pane -h -s "$source_pane" -t "$target_pane" 2>"$error_file"; then
+    error_message="$(<"$error_file")"
+    tmux display-message "move-pane-menu: ${error_message:-join-pane failed}"
+    exit 1
+  fi
+
+  tmux select-pane -t "$source_pane" >/dev/null 2>&1 || true
+  tmux switch-client -t "$target_ref" >/dev/null 2>&1 || tmux select-window -t "$target_window_id" >/dev/null 2>&1 || true
+fi
