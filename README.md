@@ -20,7 +20,3 @@ curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh 
 2. Clones the repo to `~/.dotfiles`
 3. Stows the config into `$HOME`
 4. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
-
-## Notes
-
-- Some configs are Linux-specific (`rofi`)
