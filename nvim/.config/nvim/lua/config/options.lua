@@ -11,20 +11,24 @@ vim.opt.relativenumber = true
 vim.opt.signcolumn = "yes"
 vim.opt.termguicolors = true
 vim.opt.wrap = false
--- Tab and indentation settings
-vim.opt.tabstop = 4 -- Number of spaces a tab counts for
-vim.opt.shiftwidth = 4 -- Number of spaces for each indentation level
-vim.opt.softtabstop = 4 -- Number of spaces tab key inserts/removes
-vim.opt.expandtab = true -- Convert tabs to spaces
-vim.opt.smartindent = true -- Smart auto-indenting
-vim.opt.autoindent = true -- Copy indent from current line when starting new line
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
+vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.autoindent = true
 vim.opt.swapfile = false
 vim.opt.winborder = "rounded"
 vim.opt.clipboard = "unnamedplus"
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.colorcolumn = '80'
-vim.g.mapleader = " "
+vim.opt.colorcolumn = "80"
+
+vim.api.nvim_create_autocmd("VimLeave", {
+	callback = function()
+		vim.opt.guicursor = "a:underline"
+	end,
+})
 
 vim.diagnostic.config({
 	virtual_text = {
