@@ -4,7 +4,7 @@ vim.keymap.set("n", "<leader>qq", ":quit<CR>")
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y')
 vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d')
 
-vim.api.nvim_set_keymap("n", "<leader>pu", ":lua vim.pack.update()<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>pu", ":Lazy update<CR>", { noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>f", "<cmd>Telescope find_files<CR>")
 vim.keymap.set("n", "<leader><leader>", "<cmd>Telescope find_files<CR>")
@@ -77,6 +77,7 @@ vim.keymap.set("n", "<leader>oq", "<cmd>OverseerQuickAction<CR>", { desc = "Clos
 vim.keymap.set("n", "<leader>cn", function()
 	require("nvim-navbuddy").open()
 end, { desc = "Open Navbuddy" })
+vim.keymap.set("n", "<leader>cs", "<cmd>Outline<CR>", { desc = "Toggle outline" })
 
 -- Flash (jump/search)
 vim.keymap.set({ "n", "x", "o" }, "s", function()

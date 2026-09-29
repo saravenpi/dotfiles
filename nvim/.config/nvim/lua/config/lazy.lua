@@ -1,3 +1,7 @@
+-- Bootstrap lazy.nvim and configure the plugin manager.
+-- This module is required first from init.lua so that lazy is available
+-- before any plugin config runs.
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
@@ -14,7 +18,16 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Set the leader before loading lazy so that plugin keymaps are correct.
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
-return require("lazy")
+require("lazy").setup({
+	spec = {
+		{ import = "config.plugins" },
+	},
+	-- Don't notify on every startup that a plugin is up to date.
+	checker = { enabled = true, notify = false },
+	-- Don't prompt to update when a plugin has an update on startup.
+	change_detection = { notify = false },
+})

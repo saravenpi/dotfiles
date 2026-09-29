@@ -1,18 +1,14 @@
-local M = {}
+return {
+	{ url = "https://github.com/SmiteshP/nvim-navbuddy", dependencies = { "SmiteshP/nvim-navic" } },
+	{ url = "https://github.com/SmiteshP/nvim-navic" },
+	{ url = "https://github.com/hedyhli/outline.nvim" },
+	{ url = "https://github.com/folke/flash.nvim", config = function()
+		require("nvim-navbuddy").setup({
+			window = { border = "rounded" },
+			lsp = { auto_attach = true },
+		})
 
-M.specs = {
-	{ src = "https://github.com/SmiteshP/nvim-navbuddy" },
-	{ src = "https://github.com/SmiteshP/nvim-navic" },
-	{ src = "https://github.com/folke/flash.nvim" },
+		require("outline").setup({})
+		require("flash").setup({})
+	end },
 }
-
-M.setup = function()
-	require("nvim-navbuddy").setup({
-		window = { border = "rounded" },
-		lsp = { auto_attach = true },
-	})
-
-	require("flash").setup({})
-end
-
-return M

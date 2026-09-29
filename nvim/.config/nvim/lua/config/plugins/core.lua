@@ -1,144 +1,89 @@
-local M = {}
-
-M.specs = {
-	{ src = "https://github.com/nvim-neo-tree/neo-tree.nvim" },
-	{ src = "https://github.com/rachartier/tiny-code-action.nvim" },
-	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
-	{ src = "https://github.com/echasnovski/mini.surround" },
-	{ src = "https://github.com/smjonas/inc-rename.nvim" },
-	{ src = "https://github.com/nvim-lua/plenary.nvim" },
-	{ src = "https://github.com/MunifTanjim/nui.nvim" },
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-	{ src = "https://github.com/chomosuke/typst-preview.nvim" },
-}
-
-M.setup = function()
-	require("telescope").setup({
-		defaults = {
-			mappings = {
-				i = {
-					["<C-j>"] = "move_selection_next",
-					["<C-k>"] = "move_selection_previous",
+return {
+	{ url = "https://github.com/nvim-neo-tree/neo-tree.nvim", dependencies = { "nvim-lua/plenary.nvim", "MunifTanjim/nui.nvim", "echasnovski/mini.icons" } },
+	{ url = "https://github.com/rachartier/tiny-code-action.nvim", config = function()
+		require("tiny-code-action").setup({
+			picker = {
+				"buffer",
+				opts = {
+					hotkeys = true,
+					hotkeys_mode = "text_diff_based",
+					auto_preview = true,
+					auto_accept = false,
+					position = "cursor",
+					winborder = "rounded",
+					custom_keys = {
+						{ key = "m", pattern = "Fill match arms" },
+						{ key = "r", pattern = "Rename.*" },
+					},
+					signs = {
+						quickfix = { "", { link = "DiagnosticWarning" } },
+						others = { "", { link = "DiagnosticWarning" } },
+						refactor = { "", { link = "DiagnosticInfo" } },
+						["refactor.move"] = { "󰪹", { link = "DiagnosticInfo" } },
+						["refactor.extract"] = { "󰂭", { link = "DiagnosticError" } },
+						["source.organizeImports"] = { "", { link = "DiagnosticWarning" } },
+						["source.fixAll"] = { "󰃢", { link = "DiagnosticError" } },
+						["source"] = { "", { link = "DiagnosticError" } },
+						["rename"] = { "󰑕", { link = "DiagnosticWarning" } },
+						["codeAction"] = { "", { link = "DiagnosticWarning" } },
+					},
 				},
 			},
-			layout_config = {
-				center = {
-					height = 0.4,
-					preview_cutoff = 40,
-					prompt_position = "top",
-					width = 0.5,
+		})
+	end },
+	{ url = "https://github.com/nvim-telescope/telescope.nvim", dependencies = { "nvim-lua/plenary.nvim" }, config = function()
+		require("telescope").setup({
+			defaults = {
+				mappings = {
+					i = {
+						["<C-j>"] = "move_selection_next",
+						["<C-k>"] = "move_selection_previous",
+					},
 				},
+				layout_config = {
+					center = {
+						height = 0.4,
+						preview_cutoff = 40,
+						prompt_position = "top",
+						width = 0.5,
+					},
+				},
+				layout_strategy = "center",
+				sorting_strategy = "ascending",
 			},
-			layout_strategy = "center",
-			sorting_strategy = "ascending",
-		},
-	})
+		})
+	end },
+	{ url = "https://github.com/echasnovski/mini.surround", config = function()
+		require("mini.surround").setup({})
+	end },
+	{ url = "https://github.com/smjonas/inc-rename.nvim", config = function()
+		require("inc_rename").setup()
+	end },
+	{ url = "https://github.com/nvim-lua/plenary.nvim" },
+	{ url = "https://github.com/MunifTanjim/nui.nvim" },
+	{ url = "https://github.com/nvim-treesitter/nvim-treesitter", config = function()
+		require("nvim-treesitter").setup({
+			install_dir = vim.fn.stdpath("data") .. "/site",
+		})
 
-	-- Lazy setup neo-tree only when first called
-	vim.api.nvim_create_autocmd("VimEnter", {
-		callback = function()
-			vim.defer_fn(function()
-				local ok, neotree = pcall(require, "neo-tree")
-				if ok then
-					neotree.setup({
-						close_if_last_window = false,
-						enable_git_status = true,
-						enable_diagnostics = true,
-						default_component_configs = {
-							icon = {
-								provider = function(icon, node)
-									if node.type == "file" or node.type == "terminal" then
-										local success, mini_icons = pcall(require, "mini.icons")
-										if success then
-											local name = node.type == "terminal" and "terminal" or node.name
-											local devicon, hl = mini_icons.get("file", name)
-											icon.text = devicon or "📄"
-											icon.highlight = hl
-										end
-									end
-								end,
-							},
-						},
-						filesystem = {
-							follow_current_file = {
-								enabled = true,
-								leave_dirs_open = false,
-							},
-							use_libuv_file_watcher = true,
-						},
-						source_selector = {
-							winbar = false,
-						},
-						event_handlers = {
-							{
-								event = "file_open_requested",
-								handler = function()
-									require("neo-tree.command").execute({ action = "close" })
-								end,
-							},
-						},
-					})
-				end
-			end, 50) -- Small delay after startup
-		end,
-		once = true,
-	})
-
-	require("nvim-treesitter.configs").setup({
-		ensure_installed = {
-			-- Core only - others will install on-demand
+		require("nvim-treesitter").install({
 			"lua",
 			"vim",
 			"vimdoc",
 			"query",
-		},
-		auto_install = true, -- Install parsers on-demand when opening files
-		highlight = {
-			enable = true,
-			disable = function(lang, buf)
-				-- Disable for large files
-				local max_filesize = 100 * 1024 -- 100 KB
-				local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-				if ok and stats and stats.size > max_filesize then
-					return true
+		})
+
+		vim.api.nvim_create_autocmd("FileType", {
+			callback = function(args)
+				local buf = args.buf
+				local ft = vim.bo[buf].filetype
+				local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+				if ok and stats and stats.size > 100 * 1024 then
+					return
 				end
+				pcall(vim.treesitter.start, buf, ft)
 			end,
-		},
-	})
-
-	require("mini.surround").setup({})
-
-	require("tiny-code-action").setup({
-		picker = {
-			"buffer",
-			opts = {
-				hotkeys = true, -- Enable hotkeys for quick selection of actions
-				hotkeys_mode = "text_diff_based", -- Modes for generating hotkeys
-				auto_preview = true, -- Enable or disable automatic preview
-				auto_accept = false, -- Automatically accept the selected action
-				position = "cursor", -- Position of the picker window
-				winborder = "rounded",
-				custom_keys = {
-					{ key = "m", pattern = "Fill match arms" },
-					{ key = "r", pattern = "Rename.*" }, -- Lua pattern matching
-				},
-				signs = {
-					quickfix = { "", { link = "DiagnosticWarning" } },
-					others = { "", { link = "DiagnosticWarning" } },
-					refactor = { "", { link = "DiagnosticInfo" } },
-					["refactor.move"] = { "󰪹", { link = "DiagnosticInfo" } },
-					["refactor.extract"] = { "", { link = "DiagnosticError" } },
-					["source.organizeImports"] = { "", { link = "DiagnosticWarning" } },
-					["source.fixAll"] = { "󰃢", { link = "DiagnosticError" } },
-					["source"] = { "", { link = "DiagnosticError" } },
-					["rename"] = { "󰑕", { link = "DiagnosticWarning" } },
-					["codeAction"] = { "", { link = "DiagnosticWarning" } },
-				},
-			},
-		},
-	})
-
-	require("inc_rename").setup()
-end
-
-return M
+		})
+	end },
+	{ url = "https://github.com/chomosuke/typst-preview.nvim" },
+}

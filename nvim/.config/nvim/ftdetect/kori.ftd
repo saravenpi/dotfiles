@@ -1,0 +1,2 @@
+# Detect kori configuration files
+au BufNewFile,BufRead *.kori set filetype=kori
