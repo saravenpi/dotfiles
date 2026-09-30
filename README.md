@@ -13,8 +13,22 @@ No `stow` package needed.
 
 `tmux-yank` needs a clipboard helper (`wl-clipboard` on Wayland, `xclip`/`xsel`
 on X11), which most distributions ship by default. If none is found the
-installer warns and prints the install command; it never modifies system
-packages itself.
+installer warns about the requirement; it never modifies system packages itself.
+
+The installer also sets up [mise](https://mise.jdx.dev): it installs the mise
+binary into `~/.local/bin`, then runs `mise install` to fetch every tool declared
+in `~/.config/mise/config.toml`. That covers `starship` (the prompt loaded by
+`~/.bash_starship`) alongside the language runtimes and CLIs. When mise cannot be
+set up, the installer falls back to [Starship](https://starship.rs)'s official
+install script, again into `~/.local/bin`. Neither step needs elevated
+privileges: the shell settings add `~/.local/bin` to `PATH`.
+
+The prompt itself is configured by `~/.config/starship.toml`, linked from the
+`starship` package with a minimal starter config you can grow.
+
+Tool installation is the slowest part of the install and needs network access.
+Re-run `mise install` later to pick up any tools that failed or were added to the
+config since.
 
 ## Install
 
@@ -47,7 +61,13 @@ git submodule update --init --recursive
 4. Links every package into `$HOME` with `tido` (conflicts are moved aside,
    never deleted)
 5. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
-6. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
+6. Installs [mise](https://mise.jdx.dev) into `~/.local/bin` when missing
+7. Installs every tool declared in `~/.config/mise/config.toml` (node, bun,
+   go, ruby, python, `starship`, ...) with `mise install`. This is the slow
+   step: mise downloads runtimes and CLIs, so a partial failure only warns
+8. Installs [Starship](https://starship.rs) into `~/.local/bin` as a fallback;
+   skipped when mise already provided it
+9. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
    for you)
 
 ## Packages
@@ -61,6 +81,7 @@ git submodule update --init --recursive
 | `nvim`    | `~/.config/nvim`                              |
 | `vim`     | `~/.vim`                                      |
 | `mise`    | `~/.config/mise`                              |
+| `starship`| `~/.config/starship.toml`                      |
 | `tmux`    | `~/.tmux.conf`                                |
 | `fonts`   | `~/.fonts`                                    |
 | `scripts` | `~/scripts` (includes `tido`, added to `PATH`)|
@@ -85,11 +106,11 @@ Before `~/scripts` is on `PATH`, run it in place:
 `tido` folds a package directory into a single symlink when the target path does
 not exist yet, descends into directories that already exist, and moves any real
 file in the way into a backup instead of overwriting it. A directory that
-several packages contribute to (such as `~/.config`, shared by `kitty`, `nvim`
-and `mise`) is always kept as a real directory, with one symlink per package
-inside it. Links are always written as absolute paths, and a relative link left
-behind by GNU stow is rewritten the next time `tido` runs. It is safe to run
-repeatedly.
+several packages contribute to (such as `~/.config`, shared by `kitty`, `nvim`,
+`mise` and `starship`) is always kept as a real directory, with one symlink per
+package inside it. Links are always written as absolute paths, and a relative
+link left behind by GNU stow is rewritten the next time `tido` runs. It is safe
+to run repeatedly.
 
 ## Submodules
 
