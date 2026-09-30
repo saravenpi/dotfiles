@@ -1,5 +1,2 @@
 #!/bin/bash
-
-# Custom local variables
-export BRAIN="$HOME/Brain"
 command -v tiroir >/dev/null 2>&1 && eval "$(tiroir export)"
