@@ -377,7 +377,9 @@ install_mise_tools() {
         # Put the freshly installed shims on PATH so the rest of this script
         # can use the tools without a shell restart.
         eval "$("$mise" activate bash --shims 2>/dev/null || true)"
-        bob install latest
+        if command_exists bob; then
+            bob install latest
+        fi
     else
         warn "Some mise tools could not be installed; run 'mise install' later"
     fi
