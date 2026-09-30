@@ -332,17 +332,8 @@ main() {
     # Check dependencies
     check_dependencies
 
-    # Ask for confirmation before proceeding
-    echo -e "\n${YELLOW}This script will backup your current config and install new dotfiles.${NC}"
+    echo -e "\n${YELLOW}Installing dotfiles...${NC}"
     echo -e "${WHITE}Backup location: $BACKUP_DIR${NC}"
-
-    # In non-interactive mode, proceed automatically
-    if [[ "${NONINTERACTIVE:-}" == "1" ]] || [[ "${CI:-}" == "true" ]]; then
-        info "Non-interactive mode: proceeding with installation"
-    elif ! prompt_user "Do you want to proceed with the installation?" "y"; then
-        info "Installation cancelled by user"
-        exit 0
-    fi
 
     # Run installation steps
     create_backup || { error "Backup creation failed"; exit 1; }
