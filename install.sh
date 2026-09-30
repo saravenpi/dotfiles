@@ -42,7 +42,7 @@ BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 readonly BACKUP_DIR
 readonly DOTFILES_LINK="$HOME/.dotfiles"
 readonly DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-readonly PACKAGES=(fonts kitty nvim shell bash zsh tmux vim mise scripts)
+readonly PACKAGES=(fonts nvim shell bash zsh tmux vim mise scripts)
 
 SOURCE_DIR=""
 
@@ -221,7 +221,7 @@ create_backup() {
     )
 
     local config_dirs_to_backup=(
-        "kitty" "nvim" "mise"
+        "nvim" "mise"
     )
 
     local backup_count=0

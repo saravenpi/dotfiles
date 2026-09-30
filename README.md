@@ -21,8 +21,9 @@ in `~/.config/mise/config.toml` — the language runtimes and CLIs. When mise
 cannot be set up, the installer simply warns and moves on. The mise install
 needs no elevated privileges: the shell settings add `~/.local/bin` to `PATH`.
 
-The prompt is a small custom script: zsh loads `~/.prompt` and bash builds the
-same prompt inline in `~/.bash_interactive`.
+The prompt is a small custom script shared by both shells: `shell/.prompt` is
+linked to `~/.prompt` and sourced by `~/.zshrc` and `~/.bashrc` alike, so bash
+and zsh show the same prompt.
 
 Tool installation is the slowest part of the install and needs network access.
 Re-run `mise install` later to pick up any tools that failed or were added to the
@@ -71,9 +72,7 @@ git submodule update --init --recursive
 | Package   | Installs                                      |
 | --------- | --------------------------------------------- |
 | `bash`    | `~/.bashrc`, `~/.bash_profile`, `~/.bash_*`   |
-| `zsh`     | `~/.zshrc`, `~/.zprofile`, `~/.zsh_*`, `~/.prompt` |
-| `shell`   | `~/.aliases`, `~/.functions`, `~/.variables`  |
-| `kitty`   | `~/.config/kitty`                             |
+| `shell`   | `~/.aliases`, `~/.functions`, `~/.variables`, `~/.prompt` |
 | `nvim`    | `~/.config/nvim`                              |
 | `vim`     | `~/.vim`                                      |
 | `mise`    | `~/.config/mise`                              |
@@ -88,7 +87,7 @@ linked `tido` runs from anywhere.
 
 ```sh
 tido                       # link every package into $HOME
-tido kitty nvim            # link only these packages
+tido nvim tmux             # link only these packages
 tido list                  # dry run: show what would change
 tido unlink nvim           # remove the links created for a package
 tido --target DIR          # link into DIR instead of $HOME
@@ -101,7 +100,7 @@ Before `~/scripts` is on `PATH`, run it in place:
 `tido` folds a package directory into a single symlink when the target path does
 not exist yet, descends into directories that already exist, and moves any real
 file in the way into a backup instead of overwriting it. A directory that
-several packages contribute to (such as `~/.config`, shared by `kitty`, `nvim`
+several packages contribute to (such as `~/.config`, shared by `nvim`
 and `mise`) is always kept as a real directory, with one symlink per
 package inside it. Links are always written as absolute paths, and a relative
 link left behind by GNU stow is rewritten the next time `tido` runs. It is safe
