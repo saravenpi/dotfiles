@@ -183,6 +183,23 @@ clone_dotfiles() {
     fi
 }
 
+# Remove existing target files for a stow package so stow can install
+# fresh. Files are already backed up by create_backup. Only removes
+# regular files, never directories, so unrelated data is preserved.
+clear_existing_targets() {
+    local pkg="$1"
+    local pkg_dir="$DOTFILES_DIR/$pkg"
+
+    [[ -d "$pkg_dir" ]] || return 0
+
+    while IFS= read -r -d '' file; do
+        local target="$HOME/$file"
+        if [[ -f "$target" ]] && [[ ! -L "$target" ]]; then
+            rm -f "$target"
+        fi
+    done < <(cd "$pkg_dir" && find . -type f -print0 2>/dev/null)
+}
+
 # Install dotfiles with stow
 install_dotfiles() {
     info "Installing dotfiles configuration..."
@@ -192,8 +209,6 @@ install_dotfiles() {
         return 1
     }
 
-    info "Installing configuration with stow..."
-
     # Handle stow packages
     local stow_packages=(
         "fonts"
@@ -202,16 +217,26 @@ install_dotfiles() {
         "scripts"
     )
 
+    # Clear existing target files so stow can install fresh.
+    # They are already backed up by create_backup, so this is safe.
+    # Without this, stow refuses to overwrite regular files and
+    # every package gets skipped.
+    info "Clearing existing target files (already backed up)..."
+    local all_packages=(fonts kitty tmux shell bash zsh nvim vim scripts)
+    local pkg
+    for pkg in "${all_packages[@]}"; do
+        clear_existing_targets "$pkg"
+    done
+
+    info "Installing configuration with stow..."
+
     for package_group in "${stow_packages[@]}"; do
         # First, try to restow (update) existing packages
         if stow --restow $package_group 2>/dev/null; then
-            success "Updated: $package_group"
+            success "Installed: $package_group"
         # If restow fails, try normal stow
         elif stow $package_group 2>/dev/null; then
             success "Installed: $package_group"
-        # If both fail, try adopt mode as last resort
-        elif stow --adopt $package_group 2>/dev/null; then
-            success "Merged: $package_group"
         else
             # Only warn if it truly failed
             warn "Skipped: $package_group (manual intervention may be needed)"
