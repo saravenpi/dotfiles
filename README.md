@@ -10,9 +10,10 @@ dependency-free replacement for GNU Stow.
 
 No `stow` package needed.
 
-The installer also installs a clipboard helper (`wl-clipboard` on Wayland,
-`xclip`/`xsel` on X11) for `tmux-yank`; pass `--no-deps` to skip system
-package installs.
+`tmux-yank` needs a clipboard helper (`wl-clipboard` on Wayland, `xclip`/`xsel`
+on X11), which most distributions ship by default. If none is found the
+installer warns and prints the install command; it never modifies system
+packages itself.
 
 ## Install
 
@@ -40,7 +41,8 @@ git submodule update --init --recursive
 4. Links every package into `$HOME` with `./stow.sh` (conflicts are moved
    aside, never deleted)
 5. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
-6. Installs a clipboard helper for `tmux-yank` (unless `--no-deps` is passed)
+6. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
+   for you)
 
 ## Packages
 
