@@ -42,7 +42,7 @@ BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 readonly BACKUP_DIR
 readonly DOTFILES_LINK="$HOME/.dotfiles"
 readonly DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-readonly PACKAGES=(fonts kitty nvim shell bash zsh tmux vim mise scripts)
+readonly PACKAGES=(fonts kitty nvim shell bash zsh tmux vim mise starship scripts)
 
 SOURCE_DIR=""
 
@@ -221,7 +221,7 @@ create_backup() {
     )
 
     local config_dirs_to_backup=(
-        "kitty" "nvim" "mise"
+        "kitty" "nvim" "mise" "starship"
     )
 
     local backup_count=0
@@ -320,6 +320,95 @@ install_tpm() {
     fi
 }
 
+# Locate the mise binary: on PATH, or in ~/.local/bin (where the installer
+# drops it) before the shell has been reloaded and picked up the new PATH.
+mise_bin() {
+    if command_exists mise; then
+        command -v mise
+    elif [[ -x "$HOME/.local/bin/mise" ]]; then
+        printf '%s\n' "$HOME/.local/bin/mise"
+    fi
+}
+
+# Install mise, the tool manager that owns ~/.config/mise/config.toml. The
+# binary goes into ~/.local/bin, which the shell settings add to PATH.
+install_mise() {
+    if [[ -n "$(mise_bin)" ]]; then
+        info "mise is already installed"
+        return 0
+    fi
+
+    if ! command_exists curl; then
+        warn "curl not available, skipping mise install"
+        return 0
+    fi
+
+    mkdir -p -- "$HOME/.local/bin"
+
+    info "Installing mise..."
+    if curl -fsSL https://mise.run | MISE_INSTALL_PATH="$HOME/.local/bin/mise" sh >/dev/null 2>&1; then
+        success "Installed mise into $HOME/.local/bin"
+    else
+        warn "Failed to install mise"
+    fi
+}
+
+# Install every tool declared in the mise config (node, bun, go, ruby, starship,
+# ...). This is by far the slowest step: mise downloads language runtimes and
+# CLIs. It is skipped with a warning when mise or the config is missing, and a
+# partial failure is not fatal.
+install_mise_tools() {
+    local mise
+    mise="$(mise_bin)"
+
+    if [[ -z "$mise" ]]; then
+        warn "mise not available, skipping tool installation"
+        return 0
+    fi
+
+    if [[ ! -f "$HOME/.config/mise/config.toml" ]]; then
+        warn "No mise config at ~/.config/mise/config.toml, skipping tool installation"
+        return 0
+    fi
+
+    info "Installing mise tools (this can take a while)..."
+    if "$mise" install >/dev/null 2>&1; then
+        success "Installed mise tools"
+        # Put the freshly installed shims on PATH so the rest of this script
+        # (notably install_starship) sees the tools without a shell restart.
+        eval "$("$mise" activate bash --shims 2>/dev/null || true)"
+    else
+        warn "Some mise tools could not be installed; run 'mise install' later"
+    fi
+}
+
+# Install Starship, the prompt loaded by ~/.bash_starship. When mise is set up,
+# its config already declares starship and install_mise_tools provides it, so
+# this is a fallback. It uses the official installer with the binary placed in
+# ~/.local/bin (which the shell settings add to PATH) so no elevated privileges
+# are needed.
+install_starship() {
+    if command_exists starship; then
+        info "Starship is already installed"
+        return 0
+    fi
+
+    if ! command_exists curl; then
+        warn "curl not available, skipping Starship install"
+        return 0
+    fi
+
+    local bin_dir="$HOME/.local/bin"
+    mkdir -p -- "$bin_dir"
+
+    info "Installing Starship..."
+    if curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$bin_dir" >/dev/null 2>&1; then
+        success "Installed Starship into $bin_dir"
+    else
+        warn "Failed to install Starship"
+    fi
+}
+
 # Show installation summary
 show_summary() {
     echo -e "\n${GREEN}Dotfiles installation completed successfully!${NC}\n"
@@ -355,49 +444,19 @@ show_summary() {
     fi
 }
 
-# tmux-yank needs a clipboard helper. Distributions almost always ship one, so
-# this only checks for it and tells the user what to install when it is missing -
-# it never touches the system package manager.
-install_clipboard_tool() {
-    if command_exists pbcopy || command_exists wl-copy \
-        || command_exists xclip || command_exists xsel; then
-        success "Clipboard helper available for tmux-yank"
-        return 0
-    fi
-
-    local pkg
-    if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
-        pkg="wl-clipboard"
-    else
-        pkg="xclip"
-    fi
-
-    warn "No clipboard helper found; tmux-yank needs '$pkg'"
-    local hint="install it with your package manager"
-    if command_exists apt-get; then
-        hint="sudo apt install $pkg"
-    elif command_exists dnf; then
-        hint="sudo dnf install $pkg"
-    elif command_exists yum; then
-        hint="sudo yum install $pkg"
-    elif command_exists pacman; then
-        hint="sudo pacman -S $pkg"
-    elif command_exists zypper; then
-        hint="sudo zypper install $pkg"
-    elif command_exists apk; then
-        hint="sudo apk add $pkg"
-    elif command_exists brew; then
-        hint="brew install $pkg"
-    fi
-    echo -e "      ${WHITE}Run: $hint${NC}"
-}
-
 # Main installation flow
 main() {
     show_banner
 
     check_dependencies
-    install_clipboard_tool
+
+    # tmux-yank needs a clipboard helper. Distributions almost always ship one,
+    # so this only warns about the requirement - the installer never touches the
+    # system package manager.
+    if ! command_exists pbcopy && ! command_exists wl-copy \
+        && ! command_exists xclip && ! command_exists xsel; then
+        warn "tmux-yank needs a clipboard helper (wl-clipboard on Wayland, xclip or xsel on X11)"
+    fi
 
     resolve_source
     init_submodules
@@ -408,6 +467,9 @@ main() {
     create_backup
     install_dotfiles || { error "Dotfiles installation failed"; exit 1; }
     install_tpm
+    install_mise
+    install_mise_tools
+    install_starship
 
     show_summary
 
