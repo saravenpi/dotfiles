@@ -72,7 +72,7 @@ show_banner() {
     echo -e "${NC}"
     echo -e "${WHITE}=======================================${NC}"
     echo -e "${WHITE}    Dotfiles Configuration Installer${NC}"
-    echo -e "${WHITE}         by @saravenpi${NC}"
+    echo -e "${WHITE}    by @saravenpi${NC}"
     echo -e "${WHITE}=======================================${NC}\n"
 }
 
