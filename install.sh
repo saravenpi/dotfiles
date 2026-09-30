@@ -2,10 +2,10 @@
 #
 # Dotfiles installer.
 #
-# Clones (or reuses) the dotfiles repository and symlinks every package into
-# $HOME using ./stow.sh, a dependency-free replacement for GNU Stow.
-# Conflicting files are moved into a timestamped backup directory; nothing is
-# deleted during the install.
+# Reuses (or clones) the dotfiles repository and symlinks every package into
+# $HOME using ./scripts/scripts/tido (installed as `tido`), a dependency-free
+# replacement for GNU Stow. Conflicting files are moved into a timestamped
+# backup directory; nothing is deleted during the install.
 
 # Detect if running from pipe/curl and save to temp file for proper execution.
 # When piped (curl | bash) BASH_SOURCE is empty, so the script cannot locate
@@ -99,42 +99,41 @@ check_dependencies() {
     success "All dependencies are installed"
 }
 
-# Work out where the dotfiles live. Running from a checkout never clones over
-# it; running from a pipe clones into ~/.dotfiles.
+# Work out where the dotfiles live.
+#
+# A real checkout at ~/.dotfiles is the source of truth: it is used and updated
+# in place, and it is never replaced by a symlink. An earlier installer did
+# exactly that, moving the user's clone aside and leaving ~/.dotfiles a link.
 resolve_source() {
     local script_dir
     script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 
-    # 1. A local checkout is authoritative - never touch it with git clone/pull.
-    if [[ -f "$script_dir/stow.sh" && -d "$script_dir/nvim" ]]; then
-        SOURCE_DIR="$script_dir"
-        info "Using local checkout: $SOURCE_DIR"
-        ensure_dotfiles_link
+    # 1. A real checkout at ~/.dotfiles - the canonical location.
+    if [[ -d "$DOTFILES_LINK/.git" && ! -L "$DOTFILES_LINK" ]]; then
+        SOURCE_DIR="$DOTFILES_LINK"
+        info "Using checkout: $SOURCE_DIR"
+        update_repo
         return 0
     fi
 
-    # 2. ~/.dotfiles already linked to a checkout.
+    # 2. ~/.dotfiles is a symlink to a checkout (made by an older installer).
+    #    Keep working from it, but never create one again.
     if [[ -L "$DOTFILES_LINK" ]]; then
         local resolved
         resolved="$(readlink -f -- "$DOTFILES_LINK" 2>/dev/null || true)"
         if [[ -n "$resolved" && -d "$resolved" ]]; then
             SOURCE_DIR="$resolved"
-            info "Using linked checkout: $DOTFILES_LINK -> $SOURCE_DIR"
+            warn "$DOTFILES_LINK is a symlink to $SOURCE_DIR; a real clone is preferred"
             return 0
         fi
         warn "Removing dangling symlink: $DOTFILES_LINK"
         rm -- "$DOTFILES_LINK"
     fi
 
-    # 3. ~/.dotfiles is already a clone - update it in place.
-    if [[ -d "$DOTFILES_LINK/.git" ]]; then
-        SOURCE_DIR="$DOTFILES_LINK"
-        info "Updating existing repository at $SOURCE_DIR"
-        if git -C "$SOURCE_DIR" pull --ff-only >/dev/null 2>&1; then
-            success "Repository updated"
-        else
-            warn "Could not update the repository, using the local copy as-is"
-        fi
+    # 3. Running from a local checkout never clones over it.
+    if [[ -f "$script_dir/install.sh" && -d "$script_dir/scripts" ]]; then
+        SOURCE_DIR="$script_dir"
+        info "Using local checkout: $SOURCE_DIR"
         return 0
     fi
 
@@ -155,24 +154,17 @@ resolve_source() {
     fi
 }
 
-# Keep ~/.dotfiles pointing at the checkout that is actually linked into $HOME,
-# so there is always a stable path to the repository and stow.sh can be re-run
-# from anywhere.
-ensure_dotfiles_link() {
-    [[ "$SOURCE_DIR" == "$DOTFILES_LINK" ]] && return 0
+# Fast-forward an existing checkout. A failed update is not fatal: the local
+# copy is still usable.
+update_repo() {
+    git -C "$SOURCE_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
 
-    if [[ -L "$DOTFILES_LINK" ]]; then
-        if [[ "$(readlink -f -- "$DOTFILES_LINK" 2>/dev/null || true)" == "$SOURCE_DIR" ]]; then
-            return 0
-        fi
-        rm -- "$DOTFILES_LINK"
-    elif [[ -e "$DOTFILES_LINK" ]]; then
-        mkdir -p -- "$BACKUP_DIR"
-        mv -- "$DOTFILES_LINK" "$BACKUP_DIR/.dotfiles-pre-existing"
+    info "Updating repository..."
+    if git -C "$SOURCE_DIR" pull --ff-only >/dev/null 2>&1; then
+        success "Repository updated"
+    else
+        warn "Could not update the repository, using the local copy as-is"
     fi
-
-    ln -s -- "$SOURCE_DIR" "$DOTFILES_LINK"
-    success "Linked $DOTFILES_LINK -> $SOURCE_DIR"
 }
 
 # Materialize git submodules. The zsh-autosuggestions plugin lives in one, so
@@ -193,7 +185,7 @@ init_submodules() {
 }
 
 # Copy one existing item into the backup directory. Symlinks are skipped: they
-# are recreated by stow.sh and the link itself carries no data.
+# are recreated by tido and the link itself carries no data.
 backup_item() {
     local src="$1"
     local dest="$2"
@@ -263,12 +255,12 @@ create_backup() {
     fi
 }
 
-# Install dotfiles with stow.sh
+# Install dotfiles with tido
 install_dotfiles() {
-    local stow_script="$SOURCE_DIR/stow.sh"
+    local tido_script="$SOURCE_DIR/scripts/scripts/tido"
 
-    if [[ ! -f "$stow_script" ]]; then
-        error "stow.sh not found in $SOURCE_DIR"
+    if [[ ! -f "$tido_script" ]]; then
+        error "tido not found in $SOURCE_DIR"
         return 1
     fi
 
@@ -283,8 +275,8 @@ install_dotfiles() {
         return 1
     fi
 
-    info "Linking dotfiles with stow.sh..."
-    if bash -- "$stow_script" link --target "$HOME" --backup "$BACKUP_DIR" "${existing_packages[@]}"; then
+    info "Linking dotfiles with tido..."
+    if bash -- "$tido_script" link --target "$HOME" --backup "$BACKUP_DIR" "${existing_packages[@]}"; then
         success "Dotfiles configuration completed"
     else
         error "Dotfiles linking failed"
@@ -338,9 +330,9 @@ show_summary() {
     echo -e "  ${CYAN}-${NC} Install time: $(date)"
 
     echo -e "\n${WHITE}Managing the symlinks:${NC}"
-    echo -e "  ${CYAN}-${NC} Re-link everything:  ${YELLOW}${SOURCE_DIR}/stow.sh${NC}"
-    echo -e "  ${CYAN}-${NC} Preview changes:     ${YELLOW}${SOURCE_DIR}/stow.sh list${NC}"
-    echo -e "  ${CYAN}-${NC} Remove a package:    ${YELLOW}${SOURCE_DIR}/stow.sh unlink nvim${NC}"
+    echo -e "  ${CYAN}-${NC} Re-link everything:  ${YELLOW}tido${NC}"
+    echo -e "  ${CYAN}-${NC} Preview changes:     ${YELLOW}tido list${NC}"
+    echo -e "  ${CYAN}-${NC} Remove a package:    ${YELLOW}tido unlink nvim${NC}"
 
     echo -e "\n${WHITE}Next Steps:${NC}"
     echo -e "  ${CYAN}1.${NC} Restart your terminal or run: ${YELLOW}source ~/.bashrc${NC} (or ~/.zshrc)"
