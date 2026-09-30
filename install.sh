@@ -7,9 +7,10 @@
 # Conflicting files are moved into a timestamped backup directory; nothing is
 # deleted during the install.
 
-# Detect if running from pipe/curl and save to temp file for proper execution
-# When piped (curl | bash), stdin is the pipe, not the terminal. Re-execute with
-# stdin connected to the real terminal so the confirmation prompt actually asks.
+# Detect if running from pipe/curl and save to temp file for proper execution.
+# When piped (curl | bash) BASH_SOURCE is empty, so the script cannot locate
+# itself; re-running from a real file keeps source detection working and frees
+# stdin from the piped script.
 if [ ! -t 0 ] && [ -z "${BASH_SOURCE[0]:-}" ]; then
     TEMP_SCRIPT="$(mktemp /tmp/dotfiles-install-XXXXXX.sh)"
     cat > "$TEMP_SCRIPT"
@@ -37,7 +38,8 @@ readonly WHITE='\033[1;37m'
 readonly NC='\033[0m' # No Color
 
 # Global variables
-readonly BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
+BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
+readonly BACKUP_DIR
 readonly DOTFILES_LINK="$HOME/.dotfiles"
 readonly DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
 readonly PACKAGES=(fonts kitty nvim shell bash zsh tmux vim mise scripts)
@@ -84,11 +86,8 @@ check_dependencies() {
     info "Checking dependencies..."
 
     local missing_deps=()
-    local dep
 
-    for dep in git; do
-        command_exists "$dep" || missing_deps+=("$dep")
-    done
+    command_exists git || missing_deps+=("git")
 
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         error "Missing required dependencies: ${missing_deps[*]}"
@@ -157,7 +156,8 @@ resolve_source() {
 }
 
 # Keep ~/.dotfiles pointing at the checkout that is actually linked into $HOME,
-# so relative symlinks (e.g. ~/.fonts -> .dotfiles/fonts/.fonts) keep working.
+# so there is always a stable path to the repository and stow.sh can be re-run
+# from anywhere.
 ensure_dotfiles_link() {
     [[ "$SOURCE_DIR" == "$DOTFILES_LINK" ]] && return 0
 
@@ -355,6 +355,7 @@ show_summary() {
     if command_exists welcome; then
         welcome
     elif [[ -f "$HOME/.functions" ]]; then
+        # shellcheck source=/dev/null
         source "$HOME/.functions" 2>/dev/null || true
         if command_exists welcome; then
             welcome
