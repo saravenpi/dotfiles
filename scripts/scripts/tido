@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 #
-# stow.sh - dependency-free replacement for GNU Stow.
+# tido - dotfiles linker; a dependency-free replacement for GNU Stow.
+#
+# Installed as part of the scripts package (scripts/scripts/tido -> ~/scripts/tido)
+# and reachable as `tido` from anywhere. The repository root is found by walking
+# up from this script's own resolved path, so it works whether it is invoked as
+# <repo>/scripts/scripts/tido, through the ~/scripts symlink, or from PATH.
 #
 # Links the contents of each package directory into a target directory
 # (default: $HOME). Packages are the non-hidden directories at the root of
@@ -13,27 +18,52 @@
 # created, and nothing is ever deleted silently.
 #
 # Usage:
-#   ./stow.sh [link]   [options] [package...]   create/refresh symlinks
-#   ./stow.sh unlink   [options] [package...]   remove links made by this repo
-#   ./stow.sh list     [options] [package...]   dry run, change nothing
+#   tido [link]   [options] [package...]   create/refresh symlinks
+#   tido unlink   [options] [package...]   remove links made by this repo
+#   tido list     [options] [package...]   dry run, change nothing
 #
 # Options:
 #   -t, --target DIR   directory to link into (default: $HOME)
 #   -b, --backup DIR   where conflicting files are moved
-#                      (default: <target>/.stow-backups/<timestamp>)
+#                      (default: <target>/.tido-backups/<timestamp>)
 #       --no-backup    refuse to touch conflicting files instead
 #   -v, --verbose      also print the source of each link
 #   -h, --help         show this help
 #
 # Examples:
-#   ./stow.sh                       # link every package into $HOME
-#   ./stow.sh kitty nvim            # link only these packages
-#   ./stow.sh list                  # show what would happen
-#   ./stow.sh unlink nvim           # remove the nvim symlinks
+#   tido                            # link every package into $HOME
+#   tido kitty nvim                 # link only these packages
+#   tido list                       # show what would happen
+#   tido unlink nvim                # remove the nvim symlinks
 #
 set -euo pipefail
 
-SRC_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+# Resolve this script's real path (following the ~/scripts symlink, if any),
+# then walk up until the repository root - the directory holding install.sh and
+# this script's own package path - is found.
+self_path() {
+    realpath -m -- "${BASH_SOURCE[0]}" 2>/dev/null && return 0
+    printf '%s/%s\n' \
+        "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)" \
+        "$(basename -- "${BASH_SOURCE[0]}")"
+}
+
+find_repo_root() {
+    local dir="$1"
+    while [[ -n "$dir" && "$dir" != "/" && "$dir" != "." ]]; do
+        if [[ -f "$dir/install.sh" && -f "$dir/scripts/scripts/tido" ]]; then
+            printf '%s\n' "$dir"
+            return 0
+        fi
+        dir="$(dirname -- "$dir")"
+    done
+    return 1
+}
+
+SRC_DIR="$(find_repo_root "$(dirname -- "$(self_path)")")" || {
+    printf 'tido: cannot locate the dotfiles repository around %s\n' "${BASH_SOURCE[0]}" >&2
+    exit 1
+}
 
 TARGET="${HOME:-}"
 ACTION="link"
@@ -197,10 +227,21 @@ link_entry() {
     local src="$1" rel="$2" dst
     dst="$TARGET/$rel"
 
-    # Already one of our symlinks: nothing to do.
+    # Already one of our symlinks. A relative link (GNU stow writes those) or
+    # one that reaches the source through another symlink is fragile, so it is
+    # rewritten to point straight at the source.
     if [[ -L "$dst" ]]; then
         if [[ "$(link_destination "$dst")" == "$(resolve "$src")" ]]; then
-            [[ "$VERBOSE" -eq 1 ]] && ok "ok: $rel"
+            if [[ "$(readlink -- "$dst")" == "$(resolve "$src")" ]]; then
+                [[ "$VERBOSE" -eq 1 ]] && ok "ok: $rel"
+                return 0
+            fi
+            if [[ "$DRY_RUN" -eq 1 ]]; then
+                ok "would make absolute: $rel"
+            else
+                rm -- "$dst"
+                create_link "$src" "$rel"
+            fi
             return 0
         fi
 
@@ -233,10 +274,12 @@ link_entry() {
         if [[ -e "$dst" && ! -d "$dst" ]]; then
             backup_path "$dst" "$rel" || { conflicts=$((conflicts + 1)); return 0; }
         fi
-        if [[ "$DRY_RUN" -eq 1 ]]; then
-            info "would create directory: $rel"
-        else
-            mkdir -p -- "$dst"
+        if [[ ! -d "$dst" ]]; then
+            if [[ "$DRY_RUN" -eq 1 ]]; then
+                info "would create directory: $rel"
+            else
+                mkdir -p -- "$dst"
+            fi
         fi
         local child
         while IFS= read -r child; do
@@ -245,17 +288,11 @@ link_entry() {
         return 0
     fi
 
-    # A real directory.
+    # A real directory in the target: descend into it and link each entry. An
+    # existing directory is never removed to be replaced by a symlink: that
+    # would hide whatever else already lives there.
     if [[ -d "$dst" ]]; then
         if [[ -d "$src" ]]; then
-            # Empty directory where a whole package subtree belongs: fold it
-            # into a single symlink. This is what broke previous installs.
-            if [[ "$(ls -A -- "$dst" 2>/dev/null)" == "" ]] && ! is_shared_dir "$rel"; then
-                [[ "$DRY_RUN" -eq 0 ]] && rmdir -- "$dst"
-                create_link "$src" "$rel"
-                return 0
-            fi
-
             local child
             while IFS= read -r child; do
                 link_entry "$child" "$rel/$(basename -- "$child")"
@@ -330,7 +367,7 @@ done
 [[ -d "$SRC_DIR" ]] || die "cannot find the dotfiles directory"
 
 if [[ -z "$BACKUP_DIR" ]]; then
-    BACKUP_DIR="$TARGET/.stow-backups/$(timestamp)"
+    BACKUP_DIR="$TARGET/.tido-backups/$(timestamp)"
 fi
 
 # Default to every package (non-hidden directory) in the repository.
