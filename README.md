@@ -63,10 +63,12 @@ git submodule update --init --recursive
 ./stow.sh -b DIR           # keep conflicting files here
 ```
 
-`stow.sh` folds a package directory into a single symlink when the target does
-not exist yet, descends into directories that already exist, and moves any
-real file in the way into a backup instead of overwriting it. It is safe to run
-repeatedly.
+`stow.sh` folds a package directory into a single symlink when the target path
+does not exist yet, descends into directories that already exist, and moves any
+real file in the way into a backup instead of overwriting it. A directory that
+several packages contribute to (such as `~/.config`, shared by `kitty`, `nvim`
+and `mise`) is always kept as a real directory, with one symlink per package
+inside it. It is safe to run repeatedly.
 
 ## Submodules
 
@@ -87,6 +89,6 @@ re-run `./stow.sh`. Backup directories are safe to delete once the install
 looks right.
 
 The installer points `~/.dotfiles` at the checkout that is actually linked into
-`$HOME`, so relative symlinks (such as `~/.fonts` and `~/scripts`) keep
-working when the repository lives somewhere else, for example
-`~/Code/dotfiles`.
+`$HOME`, giving a stable path to the repository even when it lives somewhere
+else, for example `~/Code/dotfiles`. `stow.sh` writes absolute symlinks, so the
+links into `$HOME` point straight at the checkout.

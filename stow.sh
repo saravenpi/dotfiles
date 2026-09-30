@@ -48,6 +48,10 @@ backed_up=0
 removed=0
 conflicts=0
 
+# Newline-separated relative directory paths contributed by more than one
+# package (kept as a string so the script still runs on bash 3.2 / macOS).
+SHARED_DIRS=""
+
 if [[ -t 1 ]]; then
     C_RED=$'\033[0;31m'; C_GREEN=$'\033[0;32m'; C_YELLOW=$'\033[1;33m'
     C_BLUE=$'\033[0;34m'; C_NC=$'\033[0m'
@@ -62,7 +66,8 @@ err()  { printf '%s\n' "${C_RED}  x${C_NC} $*" >&2; }
 die()  { err "$*"; exit 1; }
 
 usage() {
-    sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    # Print the leading comment block (everything before the first code line).
+    awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "${BASH_SOURCE[0]}"
 }
 
 # ---------- helpers ---------------------------------------------------------
@@ -82,6 +87,35 @@ is_inside_repo() {
         "$SRC_DIR"/*) return 0 ;;
         *) return 1 ;;
     esac
+}
+
+# A directory is "shared" when more than one package contributes content under
+# the same relative path (for example .config, owned by kitty, nvim and mise).
+# Shared directories must be real directories: folding one package's copy into
+# a symlink would shadow every other package using that path.
+is_shared_dir() {
+    [[ -n "$SHARED_DIRS" ]] || return 1
+    printf '%s\n' "$SHARED_DIRS" | grep -Fxq -- "$1"
+}
+
+# Precompute the shared directory list for the selected packages.
+collect_shared_dirs() {
+    SHARED_DIRS="$(
+        while IFS= read -r pkg; do
+            [[ -n "$pkg" ]] || continue
+            while IFS= read -r path; do
+                local rel anc
+                rel="${path#"$SRC_DIR/$pkg/"}"
+                anc="$(dirname -- "$rel")"
+                while [[ -n "$anc" && "$anc" != "." ]]; do
+                    printf '%s\t%s\n' "$pkg" "$anc"
+                    anc="$(dirname -- "$anc")"
+                done
+            done < <(find "$SRC_DIR/$pkg" -mindepth 1 2>/dev/null)
+        done <<< "$1"
+    )"
+    # Unique package/dir pairs, then keep the dirs claimed by two or more.
+    SHARED_DIRS="$(printf '%s\n' "$SHARED_DIRS" | sort -u | cut -f2 | sort | uniq -d)"
 }
 
 # Every entry of a directory, hidden files included, as NUL-free lines
@@ -142,6 +176,21 @@ create_link() {
     fi
 }
 
+# Replace a directory symlink that an earlier package created by folding
+# (e.g. ~/.config -> kitty/.config) with a real directory of symlinks, so a
+# later package can share the same parent path instead of clobbering it.
+unfold_directory() {
+    local link="$1" rel="$2" old_dest child
+    old_dest="$(link_destination "$link")"
+
+    rm -- "$link"
+    mkdir -p -- "$link"
+    info "unfolded shared directory: $rel"
+    while IFS= read -r child; do
+        ln -s -- "$(resolve "$child")" "$link/$(basename -- "$child")"
+    done < <(entries "$old_dest")
+}
+
 # ---------- link / unlink ---------------------------------------------------
 
 link_entry() {
@@ -154,10 +203,45 @@ link_entry() {
             [[ "$VERBOSE" -eq 1 ]] && ok "ok: $rel"
             return 0
         fi
+
+        # A folded directory from an earlier package that shares this path
+        # (~/.config is contributed by kitty, nvim and mise). Unfold it into a
+        # real directory of symlinks so this package is added alongside the
+        # first one instead of replacing it.
+        if [[ -d "$src" && -d "$(link_destination "$dst")" ]] && is_inside_repo "$dst"; then
+            if [[ "$DRY_RUN" -eq 1 ]]; then
+                ok "would unfold shared directory: $rel"
+            else
+                unfold_directory "$dst" "$rel"
+            fi
+            local child
+            while IFS= read -r child; do
+                link_entry "$child" "$rel/$(basename -- "$child")"
+            done < <(entries "$src")
+            return 0
+        fi
+
         warn "replacing stale symlink: $rel -> $(readlink -- "$dst")"
-        backup_path "$dst" "$rel" || conflicts=$((conflicts + 1))
-        [[ "$DO_BACKUP" -eq 0 && "$DRY_RUN" -eq 0 ]] && return 0
+        backup_path "$dst" "$rel" || { conflicts=$((conflicts + 1)); return 0; }
         create_link "$src" "$rel"
+        return 0
+    fi
+
+    # A shared directory must stay a real directory so every package gets its
+    # own link inside it instead of one folded symlink shadowing the rest.
+    if [[ -d "$src" ]] && is_shared_dir "$rel"; then
+        if [[ -e "$dst" && ! -d "$dst" ]]; then
+            backup_path "$dst" "$rel" || { conflicts=$((conflicts + 1)); return 0; }
+        fi
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            info "would create directory: $rel"
+        else
+            mkdir -p -- "$dst"
+        fi
+        local child
+        while IFS= read -r child; do
+            link_entry "$child" "$rel/$(basename -- "$child")"
+        done < <(entries "$src")
         return 0
     fi
 
@@ -166,7 +250,7 @@ link_entry() {
         if [[ -d "$src" ]]; then
             # Empty directory where a whole package subtree belongs: fold it
             # into a single symlink. This is what broke previous installs.
-            if [[ "$(ls -A -- "$dst" 2>/dev/null)" == "" ]]; then
+            if [[ "$(ls -A -- "$dst" 2>/dev/null)" == "" ]] && ! is_shared_dir "$rel"; then
                 [[ "$DRY_RUN" -eq 0 ]] && rmdir -- "$dst"
                 create_link "$src" "$rel"
                 return 0
@@ -179,14 +263,14 @@ link_entry() {
             return 0
         fi
 
-        backup_path "$dst" "$rel" || conflicts=$((conflicts + 1))
+        backup_path "$dst" "$rel" || { conflicts=$((conflicts + 1)); return 0; }
         create_link "$src" "$rel"
         return 0
     fi
 
     # A real file (or any other object) is in the way.
     if [[ -e "$dst" ]]; then
-        backup_path "$dst" "$rel" || conflicts=$((conflicts + 1))
+        backup_path "$dst" "$rel" || { conflicts=$((conflicts + 1)); return 0; }
         create_link "$src" "$rel"
         return 0
     fi
@@ -273,6 +357,7 @@ collect_packages() {
 
 packages="$(collect_packages)"
 [[ -n "$packages" ]] || die "no packages found in $SRC_DIR"
+collect_shared_dirs "$packages"
 
 case "$ACTION" in
     link)
