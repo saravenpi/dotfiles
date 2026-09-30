@@ -15,7 +15,9 @@ gh = "latest"
 glow = "latest"
 gum = "latest"
 imagemagick = "latest"
+lua = "5.1"
 lua-language-server = "latest"
+stylua = "latest"
 mas = { version = "latest", os = ["macos"] }
 meson = "latest"
 pipx = "latest"
@@ -23,7 +25,6 @@ ripgrep = "latest"
 rust = "1.98.1"
 shellcheck = "latest"
 shfmt = "latest"
-stylua = "latest"
 tmux = "latest"
 tokei = "latest"
 yq = "latest"
@@ -36,4 +37,4 @@ zoxide = "latest"
 "github:charmbracelet/vhs" = "latest"
 
 [settings]
-idiomatic_version_file_enable_tools = ["node", "python", "ruby", "go"]
+idiomatic_version_file_enable_tools = ["node", "python", "ruby"]
