@@ -175,6 +175,23 @@ ensure_dotfiles_link() {
     success "Linked $DOTFILES_LINK -> $SOURCE_DIR"
 }
 
+# Materialize git submodules. The zsh-autosuggestions plugin lives in one, so
+# a fresh clone would otherwise be missing it.
+init_submodules() {
+    [[ -f "$SOURCE_DIR/.gitmodules" ]] || return 0
+
+    if ! git -C "$SOURCE_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        return 0
+    fi
+
+    info "Initializing submodules..."
+    if git -C "$SOURCE_DIR" submodule update --init --recursive >/dev/null 2>&1; then
+        success "Submodules ready"
+    else
+        warn "Could not initialize submodules"
+    fi
+}
+
 # Copy one existing item into the backup directory. Symlinks are skipped: they
 # are recreated by stow.sh and the link itself carries no data.
 backup_item() {
@@ -352,6 +369,7 @@ main() {
     check_dependencies
 
     resolve_source
+    init_submodules
 
     echo -e "\n${YELLOW}Installing dotfiles...${NC}"
     echo -e "${WHITE}Backup location: $BACKUP_DIR${NC}"

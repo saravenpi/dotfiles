@@ -22,10 +22,19 @@ never re-clones over it.
 ## What The Installer Does
 
 1. Picks a source checkout: a local clone if you are in one, otherwise `~/.dotfiles`
-2. Backs up conflicting files to `~/.config/config.old.<timestamp>/`
-3. Links every package into `$HOME` with `./stow.sh` (conflicts are moved
+2. Initializes git submodules (the zsh-autosuggestions plugin lives in one)
+3. Backs up conflicting files to `~/.config/config.old.<timestamp>/`
+4. Links every package into `$HOME` with `./stow.sh` (conflicts are moved
    aside, never deleted)
-4. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
+5. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
+
+## Submodules
+
+`zsh/.zsh/zsh-autosuggestions` is a git submodule. After a manual clone, run:
+
+```sh
+git submodule update --init --recursive && ./stow.sh
+```
 
 ## Packages
 
