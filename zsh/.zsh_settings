@@ -7,11 +7,7 @@ export EDITOR='nvim'
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# local bins
-export MYBINS="$HOME/mybins"
-[ -d "$MYBINS" ] && export PATH="$MYBINS:$PATH"
-
-# personal scripts (home of tido)
+# personal scripts
 [ -d "$HOME/scripts" ] && export PATH="$HOME/scripts:$PATH"
 
 case "$(uname -s)" in
@@ -31,4 +27,4 @@ esac
 
 export MANPAGER="nvim +Man!"
 export TLDR_AUTO_UPDATE_DISABLED="true"
-export PATH="/home/yann/.bun/bin:$PATH"
+export PATH="$HOME/.bun/bin:$PATH"
