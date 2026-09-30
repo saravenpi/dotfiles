@@ -42,7 +42,7 @@ BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 readonly BACKUP_DIR
 readonly DOTFILES_LINK="$HOME/.dotfiles"
 readonly DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-readonly PACKAGES=(fonts kitty nvim shell bash zsh tmux vim mise starship scripts)
+readonly PACKAGES=(fonts kitty nvim shell bash zsh tmux vim mise scripts)
 
 SOURCE_DIR=""
 
@@ -212,7 +212,7 @@ create_backup() {
 
     local files_to_backup=(
         ".bashrc" ".bash_profile" ".bash_settings" ".bash_interactive"
-        ".bash_starship" ".zprofile" ".zshrc" ".zsh_interactive"
+        ".prompt" ".zprofile" ".zshrc" ".zsh_interactive"
         ".zsh_settings" ".aliases" ".functions" ".variables" ".tmux.conf"
     )
 
@@ -221,7 +221,7 @@ create_backup() {
     )
 
     local config_dirs_to_backup=(
-        "kitty" "nvim" "mise" "starship"
+        "kitty" "nvim" "mise"
     )
 
     local backup_count=0
@@ -353,8 +353,8 @@ install_mise() {
     fi
 }
 
-# Install every tool declared in the mise config (node, bun, go, ruby, starship,
-# ...). This is by far the slowest step: mise downloads language runtimes and
+# Install every tool declared in the mise config (node, bun, go, ruby, ...).
+# This is by far the slowest step: mise downloads language runtimes and
 # CLIs. It is skipped with a warning when mise or the config is missing, and a
 # partial failure is not fatal.
 install_mise_tools() {
@@ -375,37 +375,10 @@ install_mise_tools() {
     if "$mise" install >/dev/null 2>&1; then
         success "Installed mise tools"
         # Put the freshly installed shims on PATH so the rest of this script
-        # (notably install_starship) sees the tools without a shell restart.
+        # can use the tools without a shell restart.
         eval "$("$mise" activate bash --shims 2>/dev/null || true)"
     else
         warn "Some mise tools could not be installed; run 'mise install' later"
-    fi
-}
-
-# Install Starship, the prompt loaded by ~/.bash_starship. When mise is set up,
-# its config already declares starship and install_mise_tools provides it, so
-# this is a fallback. It uses the official installer with the binary placed in
-# ~/.local/bin (which the shell settings add to PATH) so no elevated privileges
-# are needed.
-install_starship() {
-    if command_exists starship; then
-        info "Starship is already installed"
-        return 0
-    fi
-
-    if ! command_exists curl; then
-        warn "curl not available, skipping Starship install"
-        return 0
-    fi
-
-    local bin_dir="$HOME/.local/bin"
-    mkdir -p -- "$bin_dir"
-
-    info "Installing Starship..."
-    if curl -fsSL https://starship.rs/install.sh | sh -s -- --yes --bin-dir "$bin_dir" >/dev/null 2>&1; then
-        success "Installed Starship into $bin_dir"
-    else
-        warn "Failed to install Starship"
     fi
 }
 
@@ -469,7 +442,6 @@ main() {
     install_tpm
     install_mise
     install_mise_tools
-    install_starship
 
     show_summary
 
