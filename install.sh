@@ -78,7 +78,7 @@ prompt_user() {
 
     while true; do
         echo -e "\n${CYAN}$message${NC}"
-        echo -e "${WHITE}[y/N]${NC} (default: $default): "
+        echo -n -e "${WHITE}[y/N]${NC} (default: $default): "
         read -r response
 
         # Use default if empty
