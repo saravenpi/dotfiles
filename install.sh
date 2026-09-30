@@ -193,6 +193,8 @@ clear_existing_targets() {
     [[ -d "$pkg_dir" ]] || return 0
 
     while IFS= read -r -d '' file; do
+        # strip leading ./ from package-relative path
+        file="${file#./}"
         local target="$HOME/$file"
         if [[ -f "$target" ]] && [[ ! -L "$target" ]]; then
             rm -f "$target"
