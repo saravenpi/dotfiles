@@ -23,7 +23,8 @@
 /fish/.config/fish/conf.d/
 /fish/.config/fish/functions/
 /fish/.config/fish/fish_variables
-/kity/.config/kitty/kitty-themes/
+# Freebuff agent state
+/.freebuff/
 /gtk-3.0/.config/gtk-3.0/bookmarks
 /fonts/.DS_Store
 /mybins/mybins/agesssh

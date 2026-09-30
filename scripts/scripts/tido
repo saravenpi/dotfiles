@@ -9,9 +9,9 @@
 #
 # Links the contents of each package directory into a target directory
 # (default: $HOME). Packages are the non-hidden directories at the root of
-# this repository (fonts, kitty, nvim, shell, bash, zsh, tmux, vim, mise,
+# this repository (fonts, nvim, shell, bash, zsh, tmux, vim, mise,
 # scripts); each path inside a package mirrors a path under the target, so
-# kitty/.config/kitty/kitty.conf becomes ~/.config/kitty/kitty.conf.
+# nvim/.config/nvim/init.lua becomes ~/.config/nvim/init.lua.
 #
 # Unlike stow, conflicts never break the run: a real file or directory in
 # the way is moved into a timestamped backup directory before the symlink is
@@ -32,7 +32,7 @@
 #
 # Examples:
 #   tido                            # link every package into $HOME
-#   tido kitty nvim                 # link only these packages
+#   tido nvim tmux                  # link only these packages
 #   tido list                       # show what would happen
 #   tido unlink nvim                # remove the nvim symlinks
 #
@@ -120,7 +120,7 @@ is_inside_repo() {
 }
 
 # A directory is "shared" when more than one package contributes content under
-# the same relative path (for example .config, owned by kitty, nvim and mise).
+# the same relative path (for example .config, owned by nvim and mise).
 # Shared directories must be real directories: folding one package's copy into
 # a symlink would shadow every other package using that path.
 is_shared_dir() {
@@ -207,7 +207,7 @@ create_link() {
 }
 
 # Replace a directory symlink that an earlier package created by folding
-# (e.g. ~/.config -> kitty/.config) with a real directory of symlinks, so a
+# (e.g. ~/.config -> nvim/.config) with a real directory of symlinks, so a
 # later package can share the same parent path instead of clobbering it.
 unfold_directory() {
     local link="$1" rel="$2" old_dest child
@@ -246,7 +246,7 @@ link_entry() {
         fi
 
         # A folded directory from an earlier package that shares this path
-        # (~/.config is contributed by kitty, nvim and mise). Unfold it into a
+        # (~/.config is contributed by nvim and mise). Unfold it into a
         # real directory of symlinks so this package is added alongside the
         # first one instead of replacing it.
         if [[ -d "$src" && -d "$(link_destination "$dst")" ]] && is_inside_repo "$dst"; then

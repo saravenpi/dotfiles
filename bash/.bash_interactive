@@ -34,23 +34,3 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 [ -s "$HOME/containers/.bash_aliases" ] && . "$HOME/containers/.bash_aliases"
-
-# Minimal prompt with git branch (mirrors ~/.prompt for zsh).
-__prompt_git_branch() {
-    local branch
-    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) || branch=""
-    PS1='\[\e[35m\]ruche \[\e[36m\]\w\[\e[0m\] '
-    [ -n "$branch" ] && PS1+="\[\e[32m\]($branch)\[\e[0m\] "
-    PS1+="\n\[\e[32m\]>\[\e[0m\] "
-}
-
-case ";${PROMPT_COMMAND:-};" in
-    *";__prompt_git_branch;"*) ;;
-    *)
-        if [ -n "${PROMPT_COMMAND:-}" ]; then
-            PROMPT_COMMAND="${PROMPT_COMMAND};__prompt_git_branch"
-        else
-            PROMPT_COMMAND="__prompt_git_branch"
-        fi
-        ;;
-esac

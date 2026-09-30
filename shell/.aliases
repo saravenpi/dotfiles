@@ -73,8 +73,6 @@ if command -v nvim >/dev/null 2>&1; then
     alias caliases='cd $HOME && nvim .aliases'
     alias cfunctions='cd $HOME && nvim .functions'
     alias ctmux='cd $HOME && nvim .tmux.conf'
-    alias ckitty='cd $HOME/.config/kitty/ && nvim kitty.conf'
-    alias cterminal='cd $HOME/.config/kitty/ && nvim kitty.conf'
     alias cportals='cd $HOME/portals && nvim .'
     alias cclaude='cd $HOME/.claude && nvim .'
     alias ckori='nvim $HOME/.kori.yml'

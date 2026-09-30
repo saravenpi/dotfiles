@@ -2,6 +2,7 @@
 [[ $- == *i* ]] || return
 
 for file in \
+    "$HOME/.prompt" \
     "$HOME/.variables" \
     "$HOME/.functions" \
     "$HOME/.bash_settings" \
