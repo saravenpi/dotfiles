@@ -70,41 +70,6 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Interactive prompt
-prompt_user() {
-    local message="$1"
-    local default="${2:-y}"
-    local response
-
-    # Check if running non-interactively
-    if [[ ! -t 0 ]] || [[ "${NONINTERACTIVE:-}" == "1" ]]; then
-        info "Non-interactive mode: using default ($default) for: $message"
-        [[ "$default" == "y" ]]
-        return $?
-    fi
-
-    while true; do
-        echo -e "\n${CYAN}$message${NC}"
-        echo -n -e "${WHITE}[y/N]${NC} (default: $default): "
-        read -r response
-
-        # Use default if empty
-        response="${response:-$default}"
-
-        case "$response" in
-            [yY]|[yY][eE][sS])
-                return 0
-                ;;
-            [nN]|[nN][oO])
-                return 1
-                ;;
-            *)
-                warn "Please answer yes or no (y/n)"
-                ;;
-        esac
-    done
-}
-
 # Check dependencies
 check_dependencies() {
     info "Checking dependencies..."
@@ -203,14 +168,9 @@ clone_dotfiles() {
             fi
         fi
 
-        if prompt_user "Remove existing directory and continue?" "y"; then
-            # Change to safe directory before removing
-            cd "$HOME" || cd /tmp || cd /
-            rm -rf "$DOTFILES_DIR"
-        else
-            error "Cannot proceed with existing directory"
-            return 1
-        fi
+        # Change to safe directory before removing
+        cd "$HOME" || cd /tmp || cd /
+        rm -rf "$DOTFILES_DIR"
     fi
 
     info "Cloning dotfiles repository..."
