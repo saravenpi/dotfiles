@@ -28,3 +28,4 @@ esac
 
 export MANPAGER="nvim +Man!"
 export TLDR_AUTO_UPDATE_DISABLED="true"
+export PATH="/home/yann/.bun/bin:$PATH"
