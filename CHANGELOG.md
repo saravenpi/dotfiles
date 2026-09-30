@@ -16,8 +16,8 @@ Initial tagged release.
 - mise management: the installer installs mise and every tool declared in
   `~/.config/mise/config.toml`, with the language runtimes pinned to exact
   versions.
-- Starship prompt installed by the installer and configured through the
-  `starship` package (`~/.config/starship.toml`).
+- Custom shell prompt: zsh loads `~/.prompt`, bash builds the same prompt
+  inline in `~/.bash_interactive`.
 - TPM installation and automatic tmux plugin sync.
 - `~/.local/bin` added to `PATH` by the bash and zsh settings.
 
