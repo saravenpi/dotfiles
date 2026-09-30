@@ -19,6 +19,15 @@ curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh 
 Running the installer from a local checkout uses that checkout directly and
 never re-clones over it.
 
+### Manual install
+
+```sh
+git clone https://github.com/saravenpi/dotfiles ~/.dotfiles
+cd ~/.dotfiles
+git submodule update --init --recursive
+./stow.sh
+```
+
 ## What The Installer Does
 
 1. Picks a source checkout: a local clone if you are in one, otherwise `~/.dotfiles`
@@ -28,28 +37,20 @@ never re-clones over it.
    aside, never deleted)
 5. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
 
-## Submodules
-
-`zsh/.zsh/zsh-autosuggestions` is a git submodule. After a manual clone, run:
-
-```sh
-git submodule update --init --recursive && ./stow.sh
-```
-
 ## Packages
 
-| Package   | Installs                                                    |
-| --------- | ----------------------------------------------------------- |
-| `bash`    | `~/.bashrc`, `~/.bash_profile`, `~/.bash_*`                 |
-| `zsh`     | `~/.zshrc`, `~/.zprofile`, `~/.zsh_*`                       |
-| `shell`   | `~/.aliases`, `~/.functions`, `~/.variables`                |
-| `kitty`   | `~/.config/kitty`                                           |
-| `nvim`    | `~/.config/nvim`                                            |
-| `vim`     | `~/.vim`                                                    |
-| `mise`    | `~/.config/mise`                                            |
-| `tmux`    | `~/.tmux.conf`                                              |
-| `fonts`   | `~/.fonts`                                                  |
-| `scripts` | `~/scripts`                                                 |
+| Package   | Installs                                     |
+| --------- | -------------------------------------------- |
+| `bash`    | `~/.bashrc`, `~/.bash_profile`, `~/.bash_*`  |
+| `zsh`     | `~/.zshrc`, `~/.zprofile`, `~/.zsh_*`        |
+| `shell`   | `~/.aliases`, `~/.functions`, `~/.variables` |
+| `kitty`   | `~/.config/kitty`                            |
+| `nvim`    | `~/.config/nvim`                             |
+| `vim`     | `~/.vim`                                     |
+| `mise`    | `~/.config/mise`                             |
+| `tmux`    | `~/.tmux.conf`                               |
+| `fonts`   | `~/.fonts`                                   |
+| `scripts` | `~/scripts`                                  |
 
 ## Managing The Symlinks
 
@@ -61,3 +62,31 @@ git submodule update --init --recursive && ./stow.sh
 ./stow.sh --target DIR     # link into DIR instead of $HOME
 ./stow.sh -b DIR           # keep conflicting files here
 ```
+
+`stow.sh` folds a package directory into a single symlink when the target does
+not exist yet, descends into directories that already exist, and moves any
+real file in the way into a backup instead of overwriting it. It is safe to run
+repeatedly.
+
+## Submodules
+
+`zsh/.zsh/zsh-autosuggestions` is a git submodule pinned to a specific commit.
+The installer initializes it; after a manual clone run
+`git submodule update --init --recursive` before `./stow.sh`.
+
+## Backups And Recovery
+
+Nothing is ever deleted while installing:
+
+- The installer copies existing config to `~/.config/config.old.<timestamp>/`.
+- `stow.sh` moves conflicting files to `--backup DIR`
+  (default `<target>/.stow-backups/<timestamp>/`), preserving their paths.
+
+To recover an item, move it back from the backup directory to `$HOME` and
+re-run `./stow.sh`. Backup directories are safe to delete once the install
+looks right.
+
+The installer points `~/.dotfiles` at the checkout that is actually linked into
+`$HOME`, so relative symlinks (such as `~/.fonts` and `~/scripts`) keep
+working when the repository lives somewhere else, for example
+`~/Code/dotfiles`.
