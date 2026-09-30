@@ -46,6 +46,10 @@ readonly PACKAGES=(fonts kitty nvim shell bash zsh tmux vim mise scripts)
 
 SOURCE_DIR=""
 
+# Optional system packages (currently the tmux-yank clipboard helper) are
+# installed by default; --no-deps turns that off.
+INSTALL_SYSTEM_DEPS=1
+
 # Logging functions
 info() {
     echo -e "${BLUE}::  $*${NC}"
@@ -363,11 +367,81 @@ show_summary() {
     fi
 }
 
+# Best-effort install of the clipboard helper used by tmux-yank (wl-clipboard on
+# Wayland, xclip or xsel on X11; macOS has pbcopy built in). Failures only warn,
+# and --no-deps skips it entirely.
+install_clipboard_tool() {
+    if command_exists pbcopy || command_exists wl-copy \
+        || command_exists xclip || command_exists xsel; then
+        success "Clipboard helper available for tmux-yank"
+        return 0
+    fi
+
+    local pkg
+    if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+        pkg="wl-clipboard"
+    else
+        pkg="xclip"
+    fi
+
+    if [[ "$INSTALL_SYSTEM_DEPS" -eq 0 ]]; then
+        warn "No clipboard helper found (tmux-yank needs $pkg); install it manually"
+        return 0
+    fi
+
+    local install_cmd=""
+    if command_exists apt-get; then
+        install_cmd="apt-get install -y $pkg"
+    elif command_exists dnf; then
+        install_cmd="dnf install -y $pkg"
+    elif command_exists yum; then
+        install_cmd="yum install -y $pkg"
+    elif command_exists pacman; then
+        install_cmd="pacman -S --noconfirm $pkg"
+    elif command_exists zypper; then
+        install_cmd="zypper install -y $pkg"
+    elif command_exists apk; then
+        install_cmd="apk add $pkg"
+    fi
+
+    if [[ -z "$install_cmd" ]]; then
+        warn "Could not detect a package manager; install $pkg manually for tmux-yank"
+        return 0
+    fi
+
+    info "Installing clipboard helper: $pkg"
+    if [[ "$(id -u)" -eq 0 ]]; then
+        # shellcheck disable=SC2086
+        if $install_cmd >/dev/null 2>&1; then
+            success "Installed $pkg"
+        else
+            warn "Could not install $pkg automatically"
+        fi
+    elif command_exists sudo; then
+        # shellcheck disable=SC2086
+        if sudo $install_cmd >/dev/null 2>&1; then
+            success "Installed $pkg"
+        else
+            warn "Could not install $pkg automatically"
+        fi
+    else
+        warn "Root or sudo required to install $pkg; skipping"
+    fi
+}
+
 # Main installation flow
 main() {
+    local arg
+    for arg in "$@"; do
+        case "$arg" in
+            --no-deps|--no-system-deps) INSTALL_SYSTEM_DEPS=0 ;;
+        esac
+    done
+
     show_banner
 
     check_dependencies
+    install_clipboard_tool
 
     resolve_source
     init_submodules
