@@ -1,13 +1,20 @@
 #!/bin/bash
 
 # Detect if running from pipe/curl and save to temp file for proper execution
+# When piped (curl | bash), stdin is the pipe, not the terminal. Re-execute with
+# stdin connected to the real terminal so the confirmation prompt actually asks.
 if [ ! -t 0 ] && [ -z "${BASH_SOURCE[0]:-}" ]; then
     TEMP_SCRIPT="$(mktemp /tmp/dotfiles-install-XXXXXX.sh)"
     cat > "$TEMP_SCRIPT"
     chmod +x "$TEMP_SCRIPT"
-    bash "$TEMP_SCRIPT" "$@"
+    if [ -r /dev/tty ]; then
+        bash "$TEMP_SCRIPT" "$@" < /dev/tty
+    else
+        bash "$TEMP_SCRIPT" "$@"
+    fi
+    rc=$?
     rm -f "$TEMP_SCRIPT"
-    exit $?
+    exit $rc
 fi
 
 # Strict error handling
