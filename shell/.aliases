@@ -41,6 +41,7 @@ alias goc='cd $HOME/Code/'
 alias gof='cd $HOME/Code/Facile/'
 alias gos='cd $HOME/School'
 alias gob='cd "$BRAIN"'
+alias gon='cd "$NUAGE"'
 
 # Journal (j)
 command -v j >/dev/null 2>&1 && alias ja="j a"
@@ -75,8 +76,8 @@ if command -v nvim >/dev/null 2>&1; then
     alias ctmux='cd $HOME && nvim .tmux.conf'
     alias cportals='cd $HOME/portals && nvim .'
     alias cclaude='cd $HOME/.claude && nvim .'
-    alias ckori='nvim $HOME/.kori.yml'
-    alias ck='nvim $HOME/.kori.yml'
+    alias cbulle='nvim $HOME/.bulle.yml'
+    alias cb='nvim $HOME/.bulle.yml'
     alias n="nvim"
     alias links="nvim $HOME/Code/Portals/og.yml"
 fi
@@ -140,8 +141,7 @@ command -v zathura >/dev/null 2>&1 && alias za="zathura"
 command -v agy >/dev/null 2>&1 && alias ay="agy --dangerously-skip-permissions"
 command -v claude >/dev/null 2>&1 && alias cy="claude --dangerously-skip-permissions"
 command -v codex >/dev/null 2>&1 && alias coy="codex --dangerously-bypass-approvals-and-sandbox"
-command -v kori >/dev/null 2>&1 && alias a="kori"
-command -v kori >/dev/null 2>&1 && alias k="kori"
+command -v bulle >/dev/null 2>&1 && alias a="bulle"
 
 # cercle
 command -v cercle >/dev/null 2>&1 && export CERCLE_AGENT="${CERCLE_AGENT:-yann}"
