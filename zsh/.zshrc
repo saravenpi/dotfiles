@@ -1,5 +1,7 @@
 [[ $- == *i* ]] || return
 
+export PATH="$HOME/Code/Facile/kori.nvim/bin:$PATH"
+
 for file in \
     "$HOME/.prompt" \
     "$HOME/.variables" \

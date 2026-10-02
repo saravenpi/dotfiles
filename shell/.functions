@@ -13,23 +13,23 @@ _remove_path() {
 }
 
 setp() {
-    if ! _has skatos; then
-        echo "skatos not available"
+    if ! _has tiroir; then
+        echo "tiroir not available"
         return 1
     fi
 
-    skatos set current_project "$(pwd)"
+    tiroir set CURRENT_PROJECT "$(pwd)"
 }
 
 gop() {
     local dest
 
-    if ! _has skatos; then
-        echo "skatos not available"
+    if ! _has tiroir; then
+        echo "tiroir not available"
         return 1
     fi
 
-    dest="$(skatos get current_project 2>/dev/null || true)"
+    dest="$(tiroir get CURRENT_PROJECT 2>/dev/null || true)"
     if [ -z "$dest" ] || [ ! -d "$dest" ]; then
         echo "No saved project"
         return 1
