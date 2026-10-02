@@ -35,6 +35,7 @@ zoxide = "latest"
 "npm:gitmoji-cli" = "latest"
 "github:typst/typst" = "latest"
 "github:charmbracelet/vhs" = "latest"
+pandoc = "3.6.3"
 
 [settings]
 idiomatic_version_file_enable_tools = ["node", "python", "ruby"]
