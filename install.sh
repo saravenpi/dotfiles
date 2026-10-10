@@ -88,6 +88,9 @@ check_dependencies() {
     local missing_deps=()
 
     command_exists git || missing_deps+=("git")
+    if ! command_exists curl && ! command_exists wget; then
+        missing_deps+=("curl or wget")
+    fi
 
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         error "Missing required dependencies: ${missing_deps[*]}"
@@ -338,15 +341,23 @@ install_mise() {
         return 0
     fi
 
-    if ! command_exists curl; then
-        warn "curl not available, skipping mise install"
+    if ! command_exists curl && ! command_exists wget; then
+        warn "neither curl nor wget available, skipping mise install"
         return 0
     fi
 
     mkdir -p -- "$HOME/.local/bin"
 
     info "Installing mise..."
-    if curl -fsSL https://mise.run | MISE_INSTALL_PATH="$HOME/.local/bin/mise" sh >/dev/null 2>&1; then
+    local ok=0
+    if command_exists curl; then
+        curl -fsSL https://mise.run | MISE_INSTALL_PATH="$HOME/.local/bin/mise" sh >/dev/null 2>&1 && ok=1
+    elif command_exists wget; then
+        wget -qO- https://mise.run | MISE_INSTALL_PATH="$HOME/.local/bin/mise" sh >/dev/null 2>&1 && ok=1
+    fi
+
+    if [[ $ok -eq 1 ]]; then
+        export PATH="$HOME/.local/bin:$PATH"
         success "Installed mise into $HOME/.local/bin"
     else
         warn "Failed to install mise"
