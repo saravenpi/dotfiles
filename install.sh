@@ -12,7 +12,7 @@
 # itself; re-running from a real file keeps source detection working and frees
 # stdin from the piped script.
 if [ ! -t 0 ] && [ -z "${BASH_SOURCE[0]:-}" ]; then
-    TEMP_SCRIPT="$(mktemp /tmp/dotfiles-install-XXXXXX.sh)"
+    TEMP_SCRIPT="$(mktemp "${TMPDIR:-/tmp}/dotfiles-install-XXXXXX")" || exit 1
     cat > "$TEMP_SCRIPT"
     chmod +x "$TEMP_SCRIPT"
     if [ -r /dev/tty ]; then
