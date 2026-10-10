@@ -5,11 +5,7 @@ _has() {
 }
 
 _remove_path() {
-    if _has rip; then
-        rip "$1"
-    else
-        rm -rf -- "$1"
-    fi
+    rm -rf -- "$1"
 }
 
 setp() {
