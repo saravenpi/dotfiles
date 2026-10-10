@@ -31,7 +31,6 @@ esac
 
 [ -n "${ANDROID_HOME:-}" ] && [ -d "$ANDROID_HOME/platform-tools" ] && export PATH="$PATH:$ANDROID_HOME/platform-tools"
 [ -d "$HOME/.cargo/bin" ] && export PATH="$HOME/.cargo/bin:$PATH"
-[ -d "$HOME/.local/share/bob/nvim-bin" ] && export PATH="$PATH:$HOME/.local/share/bob/nvim-bin"
 
 export MANPAGER="nvim +Man!"
 export TLDR_AUTO_UPDATE_DISABLED="true"
