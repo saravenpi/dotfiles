@@ -410,6 +410,12 @@ main() {
         warn "tmux-yank needs a clipboard helper (wl-clipboard on Wayland, xclip or xsel on X11)"
     fi
 
+    if [ -f /etc/alpine-release ] || (command_exists ldd && ldd --version 2>&1 | grep -qi musl); then
+        if [ ! -f /usr/include/linux/errqueue.h ] || ! command_exists cc; then
+            warn "musl detected without build essentials; for Node and C/Rust tools, install: apk add build-base linux-headers libgcc libstdc++"
+        fi
+    fi
+
     resolve_source
     init_submodules
 
