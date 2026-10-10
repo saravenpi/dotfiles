@@ -42,7 +42,12 @@ set -euo pipefail
 # then walk up until the repository root - the directory holding install.sh and
 # this script's own package path - is found.
 self_path() {
-    realpath -m -- "${BASH_SOURCE[0]}" 2>/dev/null && return 0
+    local res
+    res="$(readlink -f -- "${BASH_SOURCE[0]}" 2>/dev/null)" || res=""
+    if [[ -n "$res" ]]; then
+        printf '%s\n' "$res"
+        return 0
+    fi
     printf '%s/%s\n' \
         "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)" \
         "$(basename -- "${BASH_SOURCE[0]}")"
@@ -104,7 +109,9 @@ usage() {
 
 # Resolve a path lexically, so dangling symlinks resolve too.
 resolve() {
-    realpath -m -- "$1" 2>/dev/null || printf '%s\n' "$1"
+    local res
+    res="$(readlink -f -- "$1" 2>/dev/null)" || res="$1"
+    printf '%s\n' "${res:-$1}"
 }
 
 # Absolute path of a symlink's destination, even when it does not exist.
