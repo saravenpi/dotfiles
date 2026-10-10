@@ -26,11 +26,43 @@ esac
 
 [ -n "${ANDROID_HOME:-}" ] && [ -d "$ANDROID_HOME/platform-tools" ] && export PATH="$PATH:$ANDROID_HOME/platform-tools"
 [ -d "$HOME/.cargo/bin" ] && export PATH="$HOME/.cargo/bin:$PATH"
-for _bob_dir in "$HOME/.local/share/bob"/*/bin; do
-    [ -d "$_bob_dir" ] && export PATH="$PATH:$_bob_dir"
-done
-unset _bob_dir
+if [ -d "$HOME/.local/share/bob" ]; then
+    for _bob_dir in "$HOME/.local/share/bob"/*/bin(N); do
+        [ -d "$_bob_dir" ] && export PATH="$PATH:$_bob_dir"
+    done
+    unset _bob_dir
+fi
 
 export MANPAGER="nvim +Man!"
 export TLDR_AUTO_UPDATE_DISABLED="true"
 export PATH="$HOME/.bun/bin:$PATH"
+bindkey -e
+bindkey '^A' beginning-of-line
+bindkey '^E' end-of-line
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line
+bindkey '^[[1~' beginning-of-line
+bindkey '^[[4~' end-of-line
+bindkey '^[[7~' beginning-of-line
+bindkey '^[[8~' end-of-line
+bindkey '^[[3~' delete-char
+bindkey '^?' backward-delete-char
+bindkey '^H' backward-delete-char
+bindkey '^W' backward-kill-word
+bindkey '^[^?' backward-kill-word
+bindkey '^[^H' backward-kill-word
+bindkey '^[d' kill-word
+bindkey '^[D' kill-word
+bindkey '^[[3;3~' kill-word
+bindkey '^[^[[3~' kill-word
+bindkey '^[[3;5~' kill-word
+bindkey '^[b' backward-word
+bindkey '^[f' forward-word
+bindkey '^[[1;5D' backward-word
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;3D' backward-word
+bindkey '^[[1;3C' forward-word
+bindkey '^K' kill-line
+bindkey '^U' backward-kill-line
+bindkey '^_' undo
+bindkey '^/' undo
