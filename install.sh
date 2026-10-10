@@ -383,16 +383,15 @@ install_mise_tools() {
     fi
 
     info "Installing mise tools (this can take a while)..."
-    if "$mise" install >/dev/null 2>&1; then
+    if "$mise" install --yes; then
         success "Installed mise tools"
-        # Put the freshly installed shims on PATH so the rest of this script
-        # can use the tools without a shell restart.
-        eval "$("$mise" activate bash --shims 2>/dev/null || true)"
-        if command_exists bob; then
-            bob install latest
-        fi
     else
-        warn "Some mise tools could not be installed; run 'mise install' later"
+        warn "Some mise tools could not be installed on this platform"
+    fi
+
+    eval "$("$mise" activate bash --shims 2>/dev/null || true)"
+    if command_exists bob && bob --version >/dev/null 2>&1; then
+        bob install latest >/dev/null 2>&1 || true
     fi
 }
 
