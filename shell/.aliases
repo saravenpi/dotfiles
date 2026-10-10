@@ -1,17 +1,10 @@
 #!/bin/bash
 
-if command -v rip >/dev/null 2>&1; then
-    alias rm="rip"
-fi
-
 if command -v bat >/dev/null 2>&1; then
     alias cat="bat"
 fi
 
-if command -v eza >/dev/null 2>&1; then
-    alias ls="eza --color=always --git --icons=always --no-user"
-    alias tn="eza --tree --color=always --git --icons=always --no-user"
-elif command ls --color=auto . >/dev/null 2>&1; then
+if command ls --color=auto . >/dev/null 2>&1; then
     alias ls="ls --color=auto"
     command -v tree >/dev/null 2>&1 && alias tn="tree -C"
 elif command ls -G . >/dev/null 2>&1; then
