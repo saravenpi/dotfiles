@@ -2,7 +2,6 @@
 bun = "1.4.2"
 python = "3.14.7"
 go = "1.27.1"
-ruby = "4.0.7"
 
 act = "latest"
 bob = "latest"
@@ -24,7 +23,6 @@ rust = "1.98.1"
 shellcheck = "latest"
 shfmt = "latest"
 tmux = "latest"
-tokei = "latest"
 yq = "latest"
 zoxide = "latest"
 
@@ -37,4 +35,4 @@ cmake = "4.4.4"
 
 [settings]
 all_compile = false
-idiomatic_version_file_enable_tools = ["bun", "python", "ruby"]
+idiomatic_version_file_enable_tools = ["bun", "python"]
