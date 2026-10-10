@@ -332,7 +332,7 @@ install_mise() {
     fi
 }
 
-# Install every tool declared in the mise config (node, bun, go, ruby, ...).
+# Install every tool declared in the mise config (bun, go, python, ...).
 # This is by far the slowest step: mise downloads language runtimes and
 # CLIs. It is skipped with a warning when mise or the config is missing, and a
 # partial failure is not fatal.

@@ -61,8 +61,8 @@ git submodule update --init --recursive
    never deleted)
 5. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
 6. Installs [mise](https://mise.jdx.dev) into `~/.local/bin` when missing
-7. Installs every tool declared in `~/.config/mise/config.toml` (node, bun,
-   go, ruby, python, ...) with `mise install`. This is the slow
+7. Installs every tool declared in `~/.config/mise/config.toml` (bun,
+   go, python, ...) with `mise install`. This is the slow
    step: mise downloads runtimes and CLIs, so a partial failure only warns
 8. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
    for you)
