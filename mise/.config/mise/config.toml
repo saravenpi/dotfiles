@@ -36,6 +36,8 @@ zoxide = "latest"
 "github:typst/typst" = "latest"
 "github:charmbracelet/vhs" = "latest"
 pandoc = "3.6.3"
+java = "21.0.2"
+cmake = "4.4.4"
 
 [settings]
 idiomatic_version_file_enable_tools = ["node", "python", "ruby"]
