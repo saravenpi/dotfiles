@@ -32,7 +32,7 @@ config since.
 ## Install
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh | sh
 ```
 
 Run from a checkout (`./install.sh`) and that checkout is used as-is; the
