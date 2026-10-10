@@ -1,5 +1,4 @@
 [tools]
-node = "26.10.0"
 bun = "1.4.2"
 python = "3.14.7"
 go = "1.27.1"
@@ -8,7 +7,6 @@ ruby = "4.0.7"
 act = "latest"
 bob = "latest"
 delta = "latest"
-eza = "latest"
 fd = "latest"
 fzf = "latest"
 gh = "latest"
@@ -31,8 +29,6 @@ yq = "latest"
 zoxide = "latest"
 
 "go:honnef.co/go/tools/cmd/staticcheck" = "latest"
-"npm:@yarnpkg/cli-dist" = "latest"
-"npm:gitmoji-cli" = "latest"
 "github:typst/typst" = "latest"
 "github:charmbracelet/vhs" = "latest"
 pandoc = "3.6.3"
@@ -40,4 +36,5 @@ java = "21.0.2"
 cmake = "4.4.4"
 
 [settings]
-idiomatic_version_file_enable_tools = ["node", "python", "ruby"]
+all_compile = false
+idiomatic_version_file_enable_tools = ["bun", "python", "ruby"]
