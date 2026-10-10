@@ -355,11 +355,6 @@ install_mise_tools() {
     else
         warn "Some mise tools could not be installed on this platform"
     fi
-
-    eval "$("$mise" activate bash --shims 2>/dev/null || true)"
-    if command_exists bob && bob --version >/dev/null 2>&1; then
-        bob install latest >/dev/null 2>&1 || true
-    fi
 }
 
 # Show installation summary

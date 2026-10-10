@@ -4,7 +4,6 @@ python = "3.14.7"
 go = "1.27.1"
 
 act = "latest"
-bob = "latest"
 delta = "latest"
 fd = "latest"
 fzf = "latest"
