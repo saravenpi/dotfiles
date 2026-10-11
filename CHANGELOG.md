@@ -4,6 +4,24 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-11
+
+### Added
+
+- Vendored tmux plugins: `tmux-yank`, `sertren`, and `tmux-agent-sidebar` are now versioned in `~/.config/tmux/plugins` and loaded directly without TPM.
+- `facile` package: versioned `~/.facile.yml` tool sources.
+- `bulle` package: versioned `~/.bulle.yml`, agent profiles (`free`, `lerouteur`, `orange`), and automated jobs.
+
+### Changed
+
+- `tido`: displays usage help when invoked without arguments; accurately lists and reports all up-to-date paths in `list` dry-run mode.
+
+### Removed
+
+- TPM: dropped TPM installation and plugin sync from `install.sh` and `~/.tmux.conf`.
+- `bob`: dropped Neovim version manager in favor of native system package managers (`apk`, `apt`).
+- `bubble.nvim` plugin: removed from Neovim configuration.
+
 ## [0.2.0] - 2026-09-30
 
 ### Added
@@ -40,5 +58,6 @@ Initial tagged release.
 - The tmux-yank clipboard helper is only reported when missing; the installer
   never touches the system package manager.
 
+[0.3.0]: https://github.com/saravenpi/dotfiles/releases/tag/v0.3.0
 [0.2.0]: https://github.com/saravenpi/dotfiles/releases/tag/v0.2.0
 [0.1.0]: https://github.com/saravenpi/dotfiles/releases/tag/v0.1.0
