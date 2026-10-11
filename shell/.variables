@@ -17,3 +17,11 @@ export WLR_NO_HARDWARE_CURSORS=1
 export WLR_RENDERER_ALLOW_SOFTWARE=1
 export WLR_SCENE_DISABLE_DIRECT_SCANOUT=1
 export WLR_DRM_NO_MODIFIERS=1
+
+if [ -z "$WLR_RENDERER" ]; then
+    if [ -f /sys/class/drm/card0/device/uevent ] && grep -qi -E "virtio|vbox|vmw|qxl|cirrus" /sys/class/drm/card0/device/uevent 2>/dev/null; then
+        export WLR_RENDERER=pixman
+    elif [ -f /sys/class/dmi/id/product_name ] && grep -qi -E "qemu|virtualbox|vmware|kvm" /sys/class/dmi/id/product_name 2>/dev/null; then
+        export WLR_RENDERER=pixman
+    fi
+fi
