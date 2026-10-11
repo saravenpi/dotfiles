@@ -16,7 +16,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `foot` package: modern Wayland terminal emulator configured with zsh shell, GohuFont, modern `[colors-dark]` section, and matching color palette.
 - `wmenu`: integrated launcher styled with the dotfiles palette.
 - `fonts` package: migrated from deprecated `~/.fonts` to XDG standard `~/.local/share/fonts`.
-- Shell profiles (`.zprofile`, `.bash_profile`, `.profile`, `.variables`): universal top-level `XDG_RUNTIME_DIR` initialization, anti-flicker Wayland environment flags (`WLR_NO_HARDWARE_CURSORS`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT`, `WLR_DRM_NO_MODIFIERS`), and auto-launch Sway on TTY1.
+- Shell profiles (`.zprofile`, `.bash_profile`, `.profile`, `.variables`): universal top-level `XDG_RUNTIME_DIR` initialization, anti-flicker Wayland environment flags (`WLR_NO_HARDWARE_CURSORS`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT`, `WLR_DRM_NO_MODIFIERS`), automatic `WLR_RENDERER=pixman` detection in virtual machines, and auto-launch Sway on TTY1.
 - `README.md`: added multi-distribution fresh install requirements (Alpine, Void, Arch, Debian) and Wayland edge cases.
 - `niri` package: full standard layout, column manipulation, screenshot, and hardware keybindings.
 - `rofi` package: custom dark theme matching the modernist color scheme.
