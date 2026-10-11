@@ -86,12 +86,13 @@ linked `tido` runs from anywhere.
 ## Managing The Symlinks
 
 ```sh
-tido                       # link every package into $HOME
-tido nvim tmux             # link only these packages
+tido                       # show usage help
+tido link                  # link every package into $HOME
+tido link nvim tmux        # link only these packages
 tido list                  # dry run: show what would change
 tido unlink nvim           # remove the links created for a package
-tido --target DIR          # link into DIR instead of $HOME
-tido -b DIR                # keep conflicting files here
+tido link --target DIR     # link into DIR instead of $HOME
+tido link -b DIR           # keep conflicting files here
 ```
 
 Before `~/scripts` is on `PATH`, run it in place:
