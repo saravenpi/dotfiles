@@ -23,7 +23,7 @@ NC='\033[0m'
 BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 DOTFILES_LINK="$HOME/.dotfiles"
 DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts"
+PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts niri rofi waybar"
 
 SOURCE_DIR=""
 
@@ -195,7 +195,7 @@ create_backup() {
         .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts"
-    config_dirs_to_backup="nvim mise"
+    config_dirs_to_backup="nvim mise niri rofi waybar"
 
     backup_count=0
 
@@ -321,6 +321,33 @@ install_mise_tools() {
     fi
 }
 
+# The installer links the zsh configuration but never changes the login shell:
+# chsh authenticates over PAM, so it either blocks on a password or fails with
+# stdin closed, and BusyBox ships no chsh at all. Setting the shell stays a
+# manual step, so point at it once at the end when it is still not done.
+warn_login_shell() {
+    login_shell="${SHELL:-}"
+
+    if command_exists getent; then
+        passwd_entry="$(getent passwd "$(id -un)" 2>/dev/null || true)"
+        if [ -n "$passwd_entry" ]; then
+            login_shell="${passwd_entry##*:}"
+        fi
+    fi
+
+    case "$login_shell" in
+        */zsh | zsh) return 0 ;;
+    esac
+
+    zsh_path="$(command -v zsh 2>/dev/null || true)"
+    if [ -z "$zsh_path" ]; then
+        warn "zsh is not installed; install it, then set it as your login shell with chsh"
+        return 0
+    fi
+
+    warn "zsh is not your login shell (current: ${login_shell:-unknown}); run: chsh -s $zsh_path"
+}
+
 # Show installation summary
 show_summary() {
     printf '\n%bDotfiles installation completed successfully!%b\n\n' "${GREEN}" "${NC}"
@@ -340,6 +367,8 @@ show_summary() {
     printf '  %b1.%b Restart your terminal or run: %bsource ~/.bashrc%b (or ~/.zshrc)\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b2.%b Install optional GUI apps as needed\n' "${CYAN}" "${NC}"
     printf '  %b3.%b See README for program installation links\n' "${CYAN}" "${NC}"
+
+    warn_login_shell
 
     printf '\n%bReport issues at:%b\n' "${WHITE}" "${NC}"
     printf '  %bhttps://github.com/saravenpi/dotfiles/issues%b\n' "${BLUE}" "${NC}"
