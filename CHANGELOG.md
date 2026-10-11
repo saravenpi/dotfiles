@@ -6,6 +6,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- The installer now warns at the end of a run when zsh is not the login shell, printing the exact `chsh -s` command to run. It never runs `chsh` itself: PAM needs a password and BusyBox ships no `chsh`.
+- `niri` package: full standard layout, column manipulation, screenshot, and hardware keybindings.
+- `rofi` package: custom dark theme matching the modernist niri color scheme.
+- `waybar` package: custom status bar with native niri workspaces and window integration.
+- `.zprofile`: cross-distro session launcher supporting Alpine, VMs, ARM, and systemd/non-systemd environments to auto-launch niri on TTY1.
+- `install.sh`: package and backup niri, rofi, and waybar configurations.
+
 ## [0.4.1] - 2026-10-11
 
 ### Fixed
