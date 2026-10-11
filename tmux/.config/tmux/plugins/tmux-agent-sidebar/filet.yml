@@ -1,0 +1,65 @@
+# filet configuration — https://github.com/FacileStudio/filet
+# Every value below is the default; delete what you do not want to pin.
+# Run "filet rules" for the full list of rule ids.
+
+# preset: epitech   # 5 funcs/file, 20-line funcs, 4 params, depth 3, 80 cols
+# preset: relaxed   # published tool defaults: 60-line funcs, complexity 15, no function budget
+
+ignore: [.git, node_modules, vendor, dist, build, target, testdata, .venv, __pycache__, .next, .output, _app, coverage]
+
+extensions: [.go, .ts, .tsx, .js, .jsx, .svelte, .rs, .py, .c, .h, .cpp, .java, .rb, .sh]
+
+limits:
+  fileLines: 250
+  funcsPerFile: 8      # 0 turns the function budget off; _test.go files are exempt
+  funcLines: 30         # Go only, blank and comment lines excluded
+  funcStatements: 25    # Go only; 0 disables
+  lineLength: 120
+  params: 5
+  returns: 3
+  nesting: 4
+  complexity: 10        # cognitive, not cyclomatic: a switch costs 1, nesting costs more
+  structFields: 12
+  interfaceMethods: 4
+
+architecture:
+  # requiredDirs: [internal, cmd]
+  # forbiddenDirs: [internal/utils, pkg/common]
+  # maxDepth: 6           # 0 (the default) disables the depth rule
+  # fileNamePattern: '^[a-z0-9_]+\.go$'
+  # maxFilesPerDir: 30    # warn when a directory holds more tracked files than this
+  # maxFilesPerDir:       # or glob-scoped, most specific glob wins; 0 opts a path out
+  #   .: 20
+  # requiredFiles:         # every directory matching a glob must hold these
+  #   "apps/api/modules/*": [router.go]
+  # forbiddenImports:      # keep the layers honest: prefix -> imports it must never pull in
+  #   internal/domain: [net/http, database/sql]
+
+style:
+  banInlineComments: true   # a comment trailing code, or sitting inside a function body
+  banTODO: true
+  requireDocComments: true
+  banGlobalMutable: true    # Must…/Once… initialised vars are treated as immutable singletons
+  banInit: true
+  banTrailingSpace: true
+  format: true              # filet clean reformats Go source through the language formatter
+
+# treesitter parses non-Go files (.rs, and any grammar filet vendors) to anchor
+# shape rules on real syntax instead of brace counting. On by default; each
+# grammar is compiled into filet, so it is deterministic and offline. Set false
+# to fall back to the lighter brace-counting rules.
+treesitter:
+  enabled: true
+
+# lsp folds each language's server diagnostics into lsp.* findings, giving the
+# report a compiler's eye on top of filet's own heuristics. On by default. A
+# server that is missing or incompatible becomes one lsp.unavailable info
+# finding, never a crash or a silent skip.
+# lsp:
+#   fail: true                  # promote lsp.* to errors so the tier gates the build
+#   servers:                    # key by extension to override or add a server
+#     .py: {server: pyright}
+
+disabled: []              # e.g. [gen.line.long, go.doc.missing]
+
+failOn: info                # info | warn | error | never
