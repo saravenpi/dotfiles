@@ -75,7 +75,7 @@ Seat management is handled automatically by `systemd-logind`.
 ### Environment and edge cases
 
 - Seat management: start Sway directly with `exec sway` from your login shell on `tty1`. Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`.
-- Virtual machines: virtual DRM drivers (such as UTM or QEMU using `virtio-gpu`) lack hardware cursor planes. Shell profiles (`.zprofile`, `.bash_profile`) export `WLR_NO_HARDWARE_CURSORS=1` and `WLR_RENDERER_ALLOW_SOFTWARE=1` before starting Sway.
+- Virtual machines: virtual DRM drivers (such as UTM or QEMU using `virtio-gpu`, VirtualBox, or VMware) lack hardware cursor planes and often fail to provide 3D hardware contexts. Shell profiles auto-detect virtual GPU devices and set `WLR_RENDERER=pixman` (switching Sway to fast 2D CPU rendering to eliminate lag and buffer flickers), `WLR_NO_HARDWARE_CURSORS=1`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT=1`, and `WLR_DRM_NO_MODIFIERS=1`. Sway output settings disable adaptive sync and set `max_render_time off`.
 - Runtime directory: on distributions without systemd (Alpine with OpenRC, Void with runit), shell profiles fall back to creating `/tmp/user-$(id -u)` with mode `0700` if `XDG_RUNTIME_DIR` is not set.
 - Clipboard: `tmux-yank` requires a Wayland clipboard helper (`wl-clipboard`), included in the desktop package lists above.
 
