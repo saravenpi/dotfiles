@@ -6,6 +6,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-11
+
+### Changed
+
+- `tmux`: `status.conf` sources `palette.conf` first and takes its muted grey
+  from `#{@palette_color8}` instead of the hard-coded `colour242`, so `palette`
+  no longer overrides the status style. Requires `palette` v0.6.0.
+
+### Fixed
+
+- `foot`: `palette.ini` uses the `[colors-dark]` section with `cursor=` inside
+  it. foot removed `[colors]` in 1.28.0 and `[cursor] color=` in 1.26.0 and
+  rejected the previous output.
+
 ## [0.5.1] - 2026-10-11
 
 ### Added
