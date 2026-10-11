@@ -1,0 +1,35 @@
+name: free
+provider:
+  backend: openai
+  model: "auto"
+  base_url: "http://localhost:3001/v1"
+  api_key_command: tiroir get CUSTOM_API_KEY
+
+reasoning:
+  effort: "medium"
+  thinking: true
+  budget: 2048
+
+limits:
+  max_iterations: 0
+  max_concurrency: 16
+  max_parallel_agents: 16
+  grind_min_cost: 0
+  grind_min_tokens: 0
+  grind_continuations: 2
+  # compact_at is an absolute token ceiling. Left unset (the default) the
+  # ceiling comes from the backend's context window and soft_ratio below; 0
+  # turns compaction off outright.
+  # compact_at: 75000
+  # compaction decides, per history block, what to keep, prune or fold into the
+  # state ledger. The judge is OPT-IN and off by default: enabling it sends
+  # conversation history to a third party — TypeSafe for jev, OpenRouter for
+  # clef (see docs/configuration.md). Its key comes from the provider's own
+  # environment variable, or from judge.api_key_command when that is unset.
+  compaction:
+    keep_turns: 3
+    judge:
+      enabled: true
+      provider: jev
+      model: jev-1.13.0
+      api_key_command: tiroir get TYPESAFE_API_KEY

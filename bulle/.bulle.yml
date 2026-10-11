@@ -1,0 +1,80 @@
+profile: lerouteur
+
+session:
+  root: .
+  system_prompt: ""
+  continue: false
+
+tools:
+  run_command: true
+  web_fetch: false
+  tasks: true
+  parallel_agents: true
+  diagnostics: true
+
+security:
+  approve_tools: false
+  path_isolation: false
+  deny_elevation: true
+  env_isolation: false
+
+discovery:
+  project_context: true
+  skills: true
+  trust_skills: true
+  trust_hooks: true
+
+ui:
+  prompt_placeholder: "Yooo, what we breaking today ?"
+  rendering_mode: "tui"
+  group_tools: true
+  show_thinking: true
+  diffs: true
+  transparent_blocks: true
+  cron_list_json: false
+  show_hooks: true
+  show_hook_output: true
+  hook_output: true
+
+editor:
+  editor: "nvim"
+  prompt_edit_key: "ctrl+g"
+
+sources:
+  skill_dirs: []
+  mcp:
+    cercle:
+      command: cercle
+      args: [mcp]
+      env:
+        CERCLE_AGENT: bulle
+        CERCLE_MACHINE: ruche
+    mycelium:
+      command: mycelium
+      args: [mcp]
+    sonar:
+      command: sonar
+      args: [mcp]
+    graft:
+      command: graft
+      args: [mcp]
+
+gates:
+  - name: filet
+    command: [filet, check]
+    timeout_secs: 30
+  - name: filet-fix
+    command: [filet, clean]
+    format: true
+
+chat:
+  matrix:
+    enabled: true
+    homeserver: https://matrix.org
+    user_id: "@nook-facile:matrix.org"
+    password_command: tiroir get BULLE_MATRIX_PASSWORD
+    allow: ["@saravenpi:matrix.org"]
+    # rooms: ["!cEBaQ0n-UmUWdY8sKifTCvu0u7f0ogBonwSHmsCcEys"]
+    self_sign: true
+    max_age: 2h
+    workdir: ~/tmp/bulle-chat
