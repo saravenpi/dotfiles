@@ -1,4 +1,4 @@
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -10,10 +10,21 @@ if command -v mise >/dev/null 2>&1; then
     eval "$(mise activate zsh --shims)"
 fi
 
-if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
-    if [ "${XDG_VTNR:-}" = "1" ] || [ "$(tty 2>/dev/null)" = "/dev/tty1" ]; then
-        if command -v niri >/dev/null 2>&1; then
-            exec niri
-        fi
+if [ -z "${XDG_RUNTIME_DIR:-}" ]; then
+    export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+    if [ ! -d "$XDG_RUNTIME_DIR" ]; then
+        export XDG_RUNTIME_DIR="/tmp/user-$(id -u)"
+        mkdir -p "$XDG_RUNTIME_DIR"
+        chmod 0700 "$XDG_RUNTIME_DIR"
     fi
+fi
+
+if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -z "$SSH_CLIENT" ] && [ -z "$SSH_TTY" ] && [ -z "$SSH_CONNECTION" ]; then
+    case "$(tty 2>/dev/null)" in
+        /dev/tty*|/dev/vc/*|/dev/console|tty*)
+            if command -v niri >/dev/null 2>&1; then
+                exec niri
+            fi
+            ;;
+    esac
 fi
