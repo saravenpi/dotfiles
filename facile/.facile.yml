@@ -1,8 +1,0 @@
-# User-defined tools for facile.
-# Each entry under single: is either a repo identifier (owner/repo) that facile
-# discovers from the repo's facile.toml or [facile] block in mise.toml, or an
-# inline tool definition with name: and the fields below it.
-
-single:
-  - repo: saravenpi/palette
-  - repo: saravenpi/pres
