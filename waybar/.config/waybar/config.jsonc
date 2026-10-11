@@ -4,8 +4,7 @@
     "height": 30,
     "spacing": 4,
     "modules-left": [
-        "niri/workspaces",
-        "niri/window"
+        "wlr/taskbar"
     ],
     "modules-center": [
         "clock"
@@ -14,20 +13,12 @@
         "cpu",
         "memory"
     ],
-    "niri/workspaces": {
-        "format": "{icon}",
-        "format-icons": {
-            "active": "●",
-            "default": "○"
-        }
-    },
-    "niri/window": {
-        "format": "{}",
-        "max-length": 50,
-        "rewrite": {
-            "(.*) - foot": " $1",
-            "(.*) - Mozilla Firefox": " $1"
-        }
+    "wlr/taskbar": {
+        "format": "{icon} {title}",
+        "icon-size": 16,
+        "all-outputs": false,
+        "tooltip": false,
+        "on-click": "activate"
     },
     "clock": {
         "format": "{:%H:%M}",
@@ -40,44 +31,5 @@
     },
     "memory": {
         "format": " {}%"
-    },
-    "battery": {
-        "states": {
-            "warning": 30,
-            "critical": 15
-        },
-        "format": "{icon} {capacity}%",
-        "format-full": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-plugged": " {capacity}%",
-        "format-alt": "{time} {icon}",
-        "format-icons": ["", "", "", "", ""]
-    },
-    "network": {
-        "format-wifi": " {signalStrength}%",
-        "format-ethernet": " {ipaddr}",
-        "tooltip-format": "{ifname} via {gwaddr}",
-        "format-linked": " {ifname} (No IP)",
-        "format-disconnected": "⚠ Disconnected",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
-    },
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-bluetooth": "{icon} {volume}%",
-        "format-bluetooth-muted": " {icon}",
-        "format-muted": "",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
-        },
-        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-    },
-    "tray": {
-        "spacing": 10
     }
 }
