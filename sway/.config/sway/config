@@ -3,6 +3,7 @@ set $term foot
 set $menu wmenu-run -f "GohuFont 14 Nerd Font Mono 11" -N "#14161b" -n "#c0caf5" -M "#14161b" -m "#FDD5FA" -S "#FDD5FA" -s "#14161b" -p "run:"
 
 output * bg ~/.dotfiles/wallpapers/modernist-black-building-stairs.png fill
+output * adaptive_sync off
 
 font pango:GohuFont 14 Nerd Font Mono, monospace 11
 
@@ -10,9 +11,10 @@ floating_modifier $mod normal
 
 default_border pixel 2
 default_floating_border pixel 2
-gaps inner 8
-smart_gaps on
-smart_borders on
+gaps inner 10
+gaps outer 6
+smart_gaps off
+smart_borders off
 
 client.focused #FDD5FA #14161b #c0caf5 #FDD5FA #FDD5FA
 client.focused_inactive #2e3440 #14161b #a9b1d6 #2e3440 #2e3440
