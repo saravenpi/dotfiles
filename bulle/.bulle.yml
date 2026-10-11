@@ -43,20 +43,11 @@ editor:
 sources:
   skill_dirs: []
   mcp:
-    cercle:
-      command: cercle
-      args: [mcp]
-      env:
-        CERCLE_AGENT: bulle
-        CERCLE_MACHINE: ruche
     mycelium:
       command: mycelium
       args: [mcp]
     sonar:
       command: sonar
-      args: [mcp]
-    graft:
-      command: graft
       args: [mcp]
 
 gates:
