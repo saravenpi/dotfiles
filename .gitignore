@@ -74,3 +74,8 @@ claude/.claude/logs/
 kettle/.config/kettle/**/.env
 kettle/.config/kettle/**/secrets/
 kettle/.config/kettle/**/*.log
+
+# Bulle agent state - ignore private chat, sessions, keys, and trust state
+bulle/.bulle/chat/
+bulle/.bulle/sessions/
+bulle/.bulle/trust.json

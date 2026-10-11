@@ -79,6 +79,8 @@ git submodule update --init --recursive
 | `tmux`    | `~/.tmux.conf`                                |
 | `fonts`   | `~/.fonts`                                    |
 | `scripts` | `~/scripts` (includes `tido`, added to `PATH`)|
+| `facile`  | `~/.facile.yml`                               |
+| `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
 
 `~/scripts` is added to `PATH` by the shell settings, so once the dotfiles are
 linked `tido` runs from anywhere.

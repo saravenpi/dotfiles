@@ -1,0 +1,53 @@
+name: lyon-deals
+when: "0 9 * * *"
+workdir: /home/user/Documents/News
+enabled: true
+delivery: "file:/home/user/Documents/News"
+timeout: 30m
+
+provider:
+  backend: openai
+  model: auto
+  base_url: http://localhost:3001/v1
+
+security:
+  deny_elevation: true
+  path_isolation: true
+  env_isolation: true
+
+tools:
+  run_command: true
+  web_fetch: true
+  parallel_agents: true
+  tasks: false
+  diagnostics: false
+
+reasoning:
+  effort: high
+  thinking: true
+
+prompt: |
+  # Deep research: search for best price cuts and deals in Lyon, France
+
+  Use sonar search to find current deals, promotions, and free stuff in Lyon.
+  Search for:
+  - Good offers in stores across Lyon (all arrondissements)
+  - Coupons available in LYON
+  - Free stuff being given away
+  - Daily deals and promotions
+
+  Investigate multiple sources:
+  1. Run sonar search queries for "Lyon deals today", "Lyon promotions", "Lyon free stuff"
+  2. Fetch relevant pages using sonar headless browser
+  3. Cross-verify deals across multiple sources
+  4. Identify the best and most verifiable deals
+
+  Format the final results as a scannable daily summary with:
+  - Store name and location (arrondissement if possible)
+  - Discount percentage or price cut
+  - What's on deal
+  - Any coupon codes available
+  - Expiration date if known
+  - Source URL for verification
+
+  Include only practical, verifiable deals. Cite sources with full URLs.

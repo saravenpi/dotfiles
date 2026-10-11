@@ -1,0 +1,74 @@
+name: enhanced-tech-news-summary
+when: "0 9 * * *"
+workdir: /home/user/Documents/News
+enabled: true
+delivery: "file:/home/user/Documents/News"
+timeout: 45m
+
+provider:
+  backend: openai
+  model: auto
+  base_url: http://localhost:3001/v1
+
+security:
+  deny_elevation: true
+  path_isolation: true
+  env_isolation: true
+
+tools:
+  run_command: false
+  web_fetch: true
+  parallel_agents: false
+  tasks: false
+  diagnostics: false
+
+reasoning:
+  effort: medium
+  thinking: false
+
+prompt: >
+  Transform today's tech news into an engaging daily briefing with this structure:
+  
+  **HEADLINE SUMMARY (2-3 paragraphs):**
+  - Top 3-5 stories that will make readers say "this changes things"
+  - One sentence bridge connecting them thematically
+  
+  **DAILY BRIEFING SECTIONS:**
+  
+  🤖 AI & MACHINE LEARNING
+  [Story 1]: Headline + 2-sentence summary + key implication
+  [Story 2]: Headline + 2-sentence summary + competitive impact
+  [Story 3]: Headline + 2-sentence summary + timeline outlook
+  
+  💾 CLOUD & INFRASTRUCTURE  
+  [Story 1]: Headline + 1-sentence market impact + adoption insights
+  
+  📱 CONSUMER TECH
+  [Story 1]: Headline + user experience takeaway + purchase consideration
+  [Story 2]: Headline + ecosystem implications
+  
+  💰 STARTUP & FUNDING
+  [Round 1]: Company + amount + what it means for the space
+  [Round 2]: Company + amount + strategic significance
+  
+  🔧 DEVELOPER TOOLS
+  [Tool 1]: Headline + developer pain point solved + adoption barriers
+  [Tool 2]: Headline + architecture shift + enterprise implications
+  
+  **TREND ANALYSIS:**
+  Identify 2-3 emerging patterns this week and why they matter
+  
+  **QUICK TAKEAWAYS:**
+  - Action item for readers
+  - Tool or resource worth checking out
+  - Quote worth remembering
+  
+  **SOURCES:**
+  List primary sources with credibility notes
+  
+  **FORDEEPERDIVE:**
+  - 1-2 stories worth longer attention
+  - Relevant reports/whitepapers
+  - Where experts discuss these developments
+  
+  Style: Professional but conversational, scannable format, actionable insights, balanced coverage of big announcements and subtle shifts.
