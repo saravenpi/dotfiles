@@ -9,11 +9,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - The installer now warns at the end of a run when zsh is not the login shell, printing the exact `chsh -s` command to run. It never runs `chsh` itself: PAM needs a password and BusyBox ships no `chsh`.
+- `sway` package: zero-dependency status command, gaps, window borders, theme palette, and wallpaper configuration via `swaybg`.
+- `foot` package: modern Wayland terminal emulator configured with GohuFont and matching color palette.
+- `wmenu`: integrated launcher styled with the dotfiles palette.
+- `fonts` package: migrated from deprecated `~/.fonts` to XDG standard `~/.local/share/fonts`.
+- Shell profiles (`.zprofile`, `.bash_profile`): auto-launch Sway on TTY1 with fallback `XDG_RUNTIME_DIR` initialization and software/cursor flags for VMs.
+- `README.md`: added Alpine Linux installation requirements (`build-base`, `linux-headers`, `seatd`, `udev`).
 - `niri` package: full standard layout, column manipulation, screenshot, and hardware keybindings.
-- `rofi` package: custom dark theme matching the modernist niri color scheme.
-- `waybar` package: custom status bar with native niri workspaces and window integration.
-- `.zprofile`: cross-distro session launcher supporting Alpine, VMs, ARM, and systemd/non-systemd environments to auto-launch niri on TTY1.
-- `install.sh`: package and backup niri, rofi, and waybar configurations.
+- `rofi` package: custom dark theme matching the modernist color scheme.
+- `waybar` package: custom status bar with native workspaces and window integration.
+- `install.sh`: package and backup sway, foot, niri, rofi, and waybar configurations.
 
 ## [0.4.1] - 2026-10-11
 

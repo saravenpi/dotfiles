@@ -11,6 +11,24 @@ themselves.
 
 No `stow` package needed.
 
+### Alpine Linux
+
+For compiling tools via mise (Python, Node, C/Rust native extensions) and running the Sway desktop:
+
+```sh
+apk add build-base linux-headers libffi-dev openssl-dev bzip2-dev zlib-dev readline-dev sqlite-dev
+apk add sway swaybg foot wmenu seatd udev mesa-dri-gallium font-dejavu
+```
+
+Enable hardware seat management:
+
+```sh
+setup-devd udev
+rc-update add seatd
+rc-service seatd start
+adduser $USER seat
+```
+
 `tmux-yank` needs a clipboard helper (`wl-clipboard` on Wayland, `xclip`/`xsel`
 on X11), which most distributions ship by default. If none is found the
 installer warns about the requirement; it never modifies system packages itself.
@@ -76,10 +94,15 @@ git submodule update --init --recursive
 | `vim`     | `~/.vim`                                      |
 | `mise`    | `~/.config/mise`                              |
 | `tmux`    | `~/.config/tmux/tmux.conf`, `~/.config/tmux/plugins` |
-| `fonts`   | `~/.fonts`                                    |
+| `fonts`   | `~/.local/share/fonts`                        |
 | `scripts` | `~/scripts` (includes `tido`, added to `PATH`)|
 | `facile`  | `~/.facile.yml`                               |
 | `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
+| `sway`    | `~/.config/sway`                              |
+| `foot`    | `~/.config/foot`                              |
+| `rofi`    | `~/.config/rofi`                              |
+| `waybar`  | `~/.config/waybar`                            |
+| `niri`    | `~/.config/niri`                              |
 
 `~/scripts` is added to `PATH` by the shell settings, so once the dotfiles are
 linked `tido` runs from anywhere.
