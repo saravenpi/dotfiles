@@ -255,42 +255,6 @@ install_dotfiles() {
     fi
 }
 
-install_tpm() {
-    tpm_dir="$HOME/.tmux/plugins/tpm"
-
-    mkdir -p -- "$HOME/.tmux/plugins"
-
-    if [ -d "$tpm_dir/.git" ]; then
-        info "Updating TPM..."
-        if git -C "$tpm_dir" pull --ff-only >/dev/null 2>&1; then
-            success "Updated TPM"
-        else
-            warn "Could not update TPM"
-        fi
-    else
-        info "Installing TPM..."
-        if git clone --depth 1 https://github.com/tmux-plugins/tpm "$tpm_dir" >/dev/null 2>&1; then
-            success "Installed TPM"
-        else
-            warn "Failed to install TPM"
-            return 0
-        fi
-    fi
-
-    if ! command_exists tmux; then
-        warn "tmux not available yet, skipping TPM plugin sync"
-        return 0
-    fi
-
-    if [ -x "$tpm_dir/bin/install_plugins" ]; then
-        if "$tpm_dir/bin/install_plugins" >/dev/null 2>&1; then
-            success "Installed tmux plugins"
-        else
-            warn "TPM is installed, but tmux plugins could not be synced automatically"
-        fi
-    fi
-}
-
 # Locate the mise binary: on PATH, or in ~/.local/bin (where the installer
 # drops it) before the shell has been reloaded and picked up the new PATH.
 mise_bin() {
@@ -419,7 +383,6 @@ main() {
 
     create_backup
     install_dotfiles || { error "Dotfiles installation failed"; exit 1; }
-    install_tpm
     install_mise
     install_mise_tools
 
