@@ -19,19 +19,19 @@ if [ -z "${XDG_RUNTIME_DIR:-}" ]; then
     fi
 fi
 
-if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -z "$SSH_CLIENT" ] && [ -z "$SSH_TTY" ] && [ -z "$SSH_CONNECTION" ]; then
+if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
     case "$(tty 2>/dev/null)" in
-        /dev/tty*|/dev/vc/*|/dev/console|tty*)
-            if command -v niri >/dev/null 2>&1; then
+        /dev/tty1|/dev/vc/1)
+            if [ -z "$NO_NIRI" ] && command -v niri >/dev/null 2>&1; then
                 export WLR_NO_HARDWARE_CURSORS=1
                 export WLR_RENDERER_ALLOW_SOFTWARE=1
                 export NO_AT_BRIDGE=1
                 export GTK_USE_PORTAL=0
 
                 if command -v dbus-run-session >/dev/null 2>&1 && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
-                    exec dbus-run-session niri --session
+                    dbus-run-session niri --session
                 else
-                    exec niri --session
+                    niri --session
                 fi
             fi
             ;;
