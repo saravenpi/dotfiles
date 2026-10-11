@@ -20,9 +20,9 @@ smart_gaps off
 smart_borders off
 
 bindsym $mod+Return exec $term
-bindsym $mod+d exec $menu
-bindsym $mod+Shift+q kill
-bindsym $mod+Shift+c reload
+bindsym $mod+space exec $menu
+bindsym $mod+q kill
+bindsym $mod+Shift+r reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'
 
 bindsym $mod+h focus left
@@ -45,12 +45,12 @@ bindsym $mod+Shift+Right move right
 
 bindsym $mod+b splith
 bindsym $mod+v splitv
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+# bindsym $mod+s layout stacking
+# bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 bindsym $mod+f fullscreen toggle
-bindsym $mod+Shift+space floating toggle
-bindsym $mod+space focus mode_toggle
+# bindsym $mod+Shift+space floating toggle
+# bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 bindsym $mod+1 workspace number 1
@@ -111,6 +111,17 @@ input type:pointer {
     natural_scroll enabled
 }
 
-bar {
-    swaybar_command waybar
+bar bar-0 {
+    position top
+    swaybar_command "which waybar >/dev/null 2>&1 && env NO_AT_BRIDGE=1 GTK_USE_PORTAL=0 waybar || swaybar"
+    status_command while date +'%Y-%m-%d %H:%M'; do sleep 1; done
+    colors {
+        statusline $palette_fg
+        background $palette_bg
+        separator $palette_color8
+        focused_workspace $palette_cursor $palette_bg $palette_cursor
+        active_workspace $palette_color8 $palette_bg $palette_fg
+        inactive_workspace $palette_bg $palette_bg $palette_color7
+        urgent_workspace $palette_color1 $palette_bg $palette_color1
+    }
 }

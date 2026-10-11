@@ -48,13 +48,17 @@ set -o pipefail 2>/dev/null || true
 
 self_path() {
     # shellcheck disable=SC3043
-    local res
-    res="$(readlink -f "$0" 2>/dev/null || true)"
+    local target="$0" res
+    case "$target" in
+        */*) ;;
+        *) target="$(command -v "$0" 2>/dev/null || printf '%s' "$0")" ;;
+    esac
+    res="$(readlink -f "$target" 2>/dev/null || true)"
     if [ -n "$res" ]; then
         printf '%s\n' "$res"
         return 0
     fi
-    printf '%s/%s\n' "$(cd "$(dirname "$0")" && pwd -P)" "$(basename "$0")"
+    printf '%s/%s\n' "$(cd "$(dirname "$target")" && pwd -P)" "$(basename "$target")"
 }
 
 find_repo_root() {
@@ -135,7 +139,14 @@ is_shared_dir() {
         .config|.local|.local/share) return 0 ;;
     esac
     [ -n "$SHARED_DIRS" ] || return 1
-    printf '%s\n' "$SHARED_DIRS" | grep -Fxq "$1"
+    case "
+$SHARED_DIRS
+" in
+        *"
+$1
+"*) return 0 ;;
+        *) return 1 ;;
+    esac
 }
 
 collect_shared_dirs() {
@@ -144,11 +155,18 @@ collect_shared_dirs() {
             [ -n "$pkg" ] || continue
             find "$SRC_DIR/$pkg" -mindepth 1 2>/dev/null | while IFS= read -r path; do
                 rel="${path#"$SRC_DIR/$pkg/"}"
-                anc="$(dirname "$rel")"
-                while [ -n "$anc" ] && [ "$anc" != "." ]; do
-                    printf '%s\t%s\n' "$pkg" "$anc"
-                    anc="$(dirname "$anc")"
-                done
+                case "$rel" in
+                    */*)
+                        anc="${rel%/*}"
+                        while [ -n "$anc" ]; do
+                            printf '%s\t%s\n' "$pkg" "$anc"
+                            case "$anc" in
+                                */*) anc="${anc%/*}" ;;
+                                *) break ;;
+                            esac
+                        done
+                        ;;
+                esac
             done
         done | sort -u | cut -f2 | sort | uniq -d
     )"
@@ -228,14 +246,18 @@ unfold_directory() {
 
 link_entry() {
     # shellcheck disable=SC3043
-    local src rel dst child base
+    local src rel dst child base src_res dst_dest dst_link
     src="$1"
     rel="$2"
     dst="$TARGET/$rel"
 
     if [ -L "$dst" ]; then
-        if [ "$(link_destination "$dst")" = "$(resolve "$src")" ]; then
-            if [ "$(readlink "$dst")" = "$(resolve "$src")" ]; then
+        src_res="$(resolve "$src")"
+        dst_dest="$(link_destination "$dst")"
+        dst_link="$(readlink "$dst" 2>/dev/null || true)"
+
+        if [ "$dst_dest" = "$src_res" ]; then
+            if [ "$dst_link" = "$src_res" ]; then
                 already_linked=$((already_linked + 1))
                 [ "$DRY_RUN" -eq 1 ] || [ "$VERBOSE" -eq 1 ] && ok "ok: $rel"
                 return 0
@@ -251,7 +273,7 @@ link_entry() {
             return 0
         fi
 
-        if [ -d "$src" ] && [ -d "$(link_destination "$dst")" ] && is_inside_repo "$dst"; then
+        if [ -d "$src" ] && [ -d "$dst_dest" ] && is_inside_repo "$dst"; then
             if [ "$DRY_RUN" -eq 1 ]; then
                 ok "would unfold shared directory: $rel"
             else
@@ -266,7 +288,7 @@ link_entry() {
             return 0
         fi
 
-        warn "replacing stale symlink: $rel -> $(readlink "$dst")"
+        warn "replacing stale symlink: $rel -> $dst_link"
         backup_path "$dst" "$rel" || { conflicts=$((conflicts + 1)); return 0; }
         create_link "$src" "$rel"
         return 0
@@ -440,8 +462,8 @@ if [ "$ACTION" = "update" ]; then
     [ -f "$SRC_DIR/install.sh" ] || die "cannot find installer at $SRC_DIR/install.sh"
     if [ -d "$SRC_DIR/.git" ] && command -v git >/dev/null 2>&1; then
         info "Pulling latest changes in $SRC_DIR"
-        (cd -- "$SRC_DIR" && git pull --ff-only) 2>/dev/null || \
-        (cd -- "$SRC_DIR" && git pull) 2>/dev/null || \
+        (cd -- "$SRC_DIR" && git pull --ff-only) || \
+        (cd -- "$SRC_DIR" && git pull) || \
         warn "git pull failed; continuing with local files"
     fi
     info "Re-running the installer: $SRC_DIR/install.sh"
@@ -479,7 +501,6 @@ collect_packages() {
 
 all_packages="$(collect_packages)"
 [ -n "$all_packages" ] || die "no packages found in $SRC_DIR"
-collect_shared_dirs "$all_packages"
 
 case "$ACTION" in
     link)
@@ -491,6 +512,8 @@ case "$ACTION" in
         info "Unlinking from: $TARGET"
         ;;
 esac
+
+collect_shared_dirs "$all_packages"
 
 for pkg in $all_packages; do
     [ -n "$pkg" ] || continue
