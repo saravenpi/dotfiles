@@ -23,7 +23,7 @@ NC='\033[0m'
 BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 DOTFILES_LINK="$HOME/.dotfiles"
 DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts sway foot niri rofi waybar"
+PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts sway foot niri rofi waybar facile"
 
 SOURCE_DIR=""
 
