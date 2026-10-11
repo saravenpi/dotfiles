@@ -23,7 +23,7 @@ NC='\033[0m'
 BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 DOTFILES_LINK="$HOME/.dotfiles"
 DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts niri rofi waybar"
+PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts sway foot niri rofi waybar"
 
 SOURCE_DIR=""
 
@@ -194,8 +194,8 @@ create_backup() {
         .prompt .zprofile .zshrc .zsh_interactive
         .zsh_settings .aliases .functions .variables
     "
-    dirs_to_backup=".vim .fonts scripts"
-    config_dirs_to_backup="nvim mise niri rofi waybar"
+    dirs_to_backup=".vim .fonts scripts .local/share/fonts"
+    config_dirs_to_backup="nvim mise niri rofi waybar sway foot"
 
     backup_count=0
 
