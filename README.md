@@ -75,7 +75,7 @@ git submodule update --init --recursive
 | `nvim`    | `~/.config/nvim`                              |
 | `vim`     | `~/.vim`                                      |
 | `mise`    | `~/.config/mise`                              |
-| `tmux`    | `~/.tmux.conf`, `~/.config/tmux/plugins`      |
+| `tmux`    | `~/.config/tmux/tmux.conf`, `~/.config/tmux/plugins` |
 | `fonts`   | `~/.fonts`                                    |
 | `scripts` | `~/scripts` (includes `tido`, added to `PATH`)|
 | `facile`  | `~/.facile.yml`                               |
@@ -91,6 +91,7 @@ tido                       # show usage help
 tido link                  # link every package into $HOME
 tido link nvim tmux        # link only these packages
 tido list                  # dry run: show what would change
+tido update                # pull the repo and re-run install.sh (from anywhere)
 tido unlink nvim           # remove the links created for a package
 tido link --target DIR     # link into DIR instead of $HOME
 tido link -b DIR           # keep conflicting files here
