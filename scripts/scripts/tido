@@ -18,16 +18,18 @@
 # created, and nothing is ever deleted silently.
 #
 # Usage:
-#   tido link     [options] [package...]   create/refresh symlinks
-#   tido unlink   [options] [package...]   remove links made by this repo
-#   tido list     [options] [package...]   dry run, change nothing
-#   tido update                            re-run install.sh to update the config
+#   tido link          [options] [package...]   create/refresh symlinks
+#   tido unlink        [options] [package...]   remove links made by this repo
+#   tido list          [options] [package...]   dry run, change nothing
+#   tido clean-backups [options]                remove backup directories
+#   tido update                                 pull the repo and re-run install.sh
 #
 # Options:
 #   -t, --target DIR   directory to link into (default: $HOME)
 #   -b, --backup DIR   where conflicting files are moved
 #                      (default: <target>/.tido-backups/<timestamp>)
 #       --no-backup    refuse to touch conflicting files instead
+#   -n, --dry-run      preview actions without making changes
 #   -v, --verbose      also print the source of each link
 #   -h, --help         show this help
 #
@@ -36,6 +38,7 @@
 #   tido link nvim tmux             # link only these packages
 #   tido list                       # show what would happen
 #   tido unlink nvim                # remove the nvim symlinks
+#   tido clean-backups              # remove all backup directories
 #   tido update                     # pull the repo and re-run install.sh
 #
 
@@ -347,17 +350,77 @@ unlink_entry() {
     fi
 }
 
+clean_backups() {
+    # shellcheck disable=SC3043
+    local root count found entry
+    found=0
+    count=0
+
+    if [ -n "$BACKUP_DIR" ]; then
+        if [ -e "$BACKUP_DIR" ] || [ -L "$BACKUP_DIR" ]; then
+            found=1
+            count=$((count + 1))
+            if [ "$DRY_RUN" -eq 1 ]; then
+                ok "would remove: $BACKUP_DIR"
+            else
+                rm -rf -- "$BACKUP_DIR"
+                ok "removed: $BACKUP_DIR"
+            fi
+        fi
+    fi
+
+    root="$TARGET/.tido-backups"
+    if [ -d "$root" ]; then
+        found=1
+        for entry in "$root"/*; do
+            [ -e "$entry" ] || [ -L "$entry" ] || continue
+            count=$((count + 1))
+            if [ "$DRY_RUN" -eq 1 ]; then
+                ok "would remove: ${entry#"$TARGET/"}"
+            fi
+        done
+        if [ "$DRY_RUN" -eq 0 ]; then
+            rm -rf -- "$root"
+            ok "removed: .tido-backups ($count snapshot(s))"
+        fi
+    fi
+
+    for entry in "$TARGET"/.config/config.old.*; do
+        [ -e "$entry" ] || [ -L "$entry" ] || continue
+        found=1
+        count=$((count + 1))
+        if [ "$DRY_RUN" -eq 1 ]; then
+            ok "would remove: ${entry#"$TARGET/"}"
+        else
+            rm -rf -- "$entry"
+            ok "removed: ${entry#"$TARGET/"}"
+        fi
+    done
+
+    if [ "$found" -eq 0 ]; then
+        info "no backups found in $TARGET"
+    else
+        if [ "$DRY_RUN" -eq 1 ]; then
+            info "Would remove $count backup path(s)."
+        else
+            info "Cleaned $count backup path(s)."
+        fi
+    fi
+}
+
 [ $# -eq 0 ] && { usage; exit 0; }
 
 while [ $# -gt 0 ]; do
     case "$1" in
         link|stow)       ACTION="link" ;;
         unlink|remove|unstow|destow) ACTION="unlink" ;;
-        list|dry-run|check) ACTION="link"; DRY_RUN=1 ;;
+        list|check)      ACTION="link"; DRY_RUN=1 ;;
+        clean|clean-backups|prune) ACTION="clean" ;;
         update|upgrade)  ACTION="update" ;;
         -t|--target)     shift; [ $# -gt 0 ] || die "--target needs a directory"; TARGET="$1" ;;
         -b|--backup)     shift; [ $# -gt 0 ] || die "--backup needs a directory"; BACKUP_DIR="$1" ;;
         --no-backup)     DO_BACKUP=0 ;;
+        -n|--dry-run)    DRY_RUN=1 ;;
         -v|--verbose)    VERBOSE=1 ;;
         -h|--help)       usage; exit 0 ;;
         --)              shift; PACKAGES="$PACKAGES $*"; break ;;
@@ -367,7 +430,20 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+if [ "$ACTION" = "clean" ]; then
+    [ -n "$TARGET" ] || die "no target directory (set \$HOME or pass --target)"
+    clean_backups
+    exit 0
+fi
+
 if [ "$ACTION" = "update" ]; then
+    [ -f "$SRC_DIR/install.sh" ] || die "cannot find installer at $SRC_DIR/install.sh"
+    if [ -d "$SRC_DIR/.git" ] && command -v git >/dev/null 2>&1; then
+        info "Pulling latest changes in $SRC_DIR"
+        (cd -- "$SRC_DIR" && git pull --ff-only) 2>/dev/null || \
+        (cd -- "$SRC_DIR" && git pull) 2>/dev/null || \
+        warn "git pull failed; continuing with local files"
+    fi
     info "Re-running the installer: $SRC_DIR/install.sh"
     exec sh -- "$SRC_DIR/install.sh"
 fi

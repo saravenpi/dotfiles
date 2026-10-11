@@ -160,6 +160,7 @@ tido                       # show usage help
 tido link                  # link every package into $HOME
 tido link nvim tmux        # link only these packages
 tido list                  # dry run: show what would change
+tido clean-backups         # remove backup directories
 tido update                # pull the repo and re-run install.sh (from anywhere)
 tido unlink nvim           # remove the links created for a package
 tido link --target DIR     # link into DIR instead of $HOME
@@ -194,4 +195,4 @@ Nothing is ever deleted while installing:
 
 To recover an item, move it back from the backup directory to `$HOME` and
 re-run `tido`. Backup directories are safe to delete once the install looks
-right.
+right; run `tido clean-backups` to remove all backup directories.
