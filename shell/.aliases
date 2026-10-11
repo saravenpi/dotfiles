@@ -66,7 +66,7 @@ if command -v nvim >/dev/null 2>&1; then
     alias cfish='cd $HOME && nvim .config/fish/config.fish'
     alias caliases='cd $HOME && nvim .aliases'
     alias cfunctions='cd $HOME && nvim .functions'
-    alias ctmux='cd $HOME && nvim .tmux.conf'
+    alias ctmux='cd $HOME && nvim .config/tmux/tmux.conf'
     alias cportals='cd $HOME/portals && nvim .'
     alias cclaude='cd $HOME/.claude && nvim .'
     alias cbulle='nvim $HOME/.bulle.yml'
@@ -103,7 +103,7 @@ command -v kettle >/dev/null 2>&1 && alias cinit="kettle use c ."
 # Tmux
 command -v tmux >/dev/null 2>&1 && alias ta="tmux attach"
 if command -v tmux >/dev/null 2>&1; then
-    alias treload="tmux source-file ~/.tmux.conf"
+    alias treload="tmux source-file ~/.config/tmux/tmux.conf"
     alias trel="treload"
     alias tl="tmux ls -f '#{session_name}'"
     alias sl="tmux ls -f '#{session_name}'"
