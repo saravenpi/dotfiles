@@ -19,6 +19,10 @@ if command -v mise >/dev/null 2>&1; then
     eval "$(mise activate zsh --shims)"
 fi
 
+if [ -f "$HOME/.variables" ]; then
+    . "$HOME/.variables"
+fi
+
 if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ "$(tty 2>/dev/null)" = "/dev/tty1" ]; then
     export WLR_NO_HARDWARE_CURSORS=1
     export WLR_RENDERER_ALLOW_SOFTWARE=1
