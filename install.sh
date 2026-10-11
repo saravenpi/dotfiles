@@ -191,7 +191,7 @@ create_backup() {
 
     files_to_backup="
         .bashrc .bash_profile .bash_settings .bash_interactive
-        .prompt .zprofile .zshrc .zsh_interactive
+        .prompt .profile .zprofile .zshrc .zsh_interactive
         .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts .local/share/fonts"
