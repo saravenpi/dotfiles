@@ -4,6 +4,7 @@ set $menu wmenu-run -f "GohuFont 14 Nerd Font Mono 11" -N "#14161b" -n "#c0caf5"
 
 output * bg ~/.dotfiles/wallpapers/modernist-black-building-stairs.png fill
 output * adaptive_sync off
+output * max_render_time off
 
 font pango:GohuFont 14 Nerd Font Mono, monospace 11
 
