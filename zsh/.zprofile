@@ -19,10 +19,6 @@ if [ -z "${XDG_RUNTIME_DIR:-}" ]; then
     fi
 fi
 
-if [ -S /run/seatd.sock ] && [ -z "${LIBSEAT_BACKEND:-}" ]; then
-    export LIBSEAT_BACKEND=seatd
-fi
-
 if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
     case "$(tty 2>/dev/null)" in
         /dev/tty1|/dev/vc/1)
@@ -32,14 +28,10 @@ if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
                 export NO_AT_BRIDGE=1
                 export GTK_USE_PORTAL=0
 
-                cmd="niri --session"
                 if command -v dbus-run-session >/dev/null 2>&1 && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
-                    cmd="dbus-run-session $cmd"
-                fi
-                if [ ! -S /run/seatd.sock ] && command -v seatd-launch >/dev/null 2>&1; then
-                    seatd-launch -- sh -c "$cmd"
+                    dbus-run-session niri --session
                 else
-                    eval "$cmd"
+                    niri --session
                 fi
             fi
             ;;
