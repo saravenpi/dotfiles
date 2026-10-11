@@ -19,6 +19,21 @@ input {
 }
 
 prefer-no-csd
+
+environment {
+    QT_QPA_PLATFORM "wayland;xcb"
+    GDK_BACKEND "wayland,x11"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    SDL_VIDEODRIVER "wayland"
+    MOZ_ENABLE_WAYLAND "1"
+    _JAVA_AWT_WM_NONREPARENTING "1"
+}
+
+debug {
+    disable-cursor-plane
+    disable-direct-scanout
+}
+
 spawn-sh-at-startup "swaybg -i ~/.dotfiles/wallpapers/modernist-black-building-stairs.png"
 spawn-at-startup "waybar"
 
