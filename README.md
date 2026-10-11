@@ -59,12 +59,11 @@ git submodule update --init --recursive
 3. Backs up conflicting files to `~/.config/config.old.<timestamp>/`
 4. Links every package into `$HOME` with `tido` (conflicts are moved aside,
    never deleted)
-5. Installs [TPM](https://github.com/tmux-plugins/tpm) and syncs tmux plugins
-6. Installs [mise](https://mise.jdx.dev) into `~/.local/bin` when missing
-7. Installs every tool declared in `~/.config/mise/config.toml` (bun,
+5. Installs [mise](https://mise.jdx.dev) into `~/.local/bin` when missing
+6. Installs every tool declared in `~/.config/mise/config.toml` (bun,
    go, python, ...) with `mise install`. This is the slow
    step: mise downloads runtimes and CLIs, so a partial failure only warns
-8. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
+7. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
    for you)
 
 ## Packages
@@ -76,7 +75,7 @@ git submodule update --init --recursive
 | `nvim`    | `~/.config/nvim`                              |
 | `vim`     | `~/.vim`                                      |
 | `mise`    | `~/.config/mise`                              |
-| `tmux`    | `~/.tmux.conf`                                |
+| `tmux`    | `~/.tmux.conf`, `~/.config/tmux/plugins`      |
 | `fonts`   | `~/.fonts`                                    |
 | `scripts` | `~/scripts` (includes `tido`, added to `PATH`)|
 | `facile`  | `~/.facile.yml`                               |
