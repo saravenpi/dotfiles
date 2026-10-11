@@ -1,0 +1,27 @@
+name: orange
+provider:
+  backend: openrouter
+  model: "anthropic/claude-haiku-5.5"
+  api_key_command: tiroir get OPENROUTER_API_KEY
+
+
+reasoning:
+  effort: "medium"
+  thinking: true
+  budget: 2048
+
+limits:
+  max_iterations: 0
+  max_concurrency: 16
+  max_parallel_agents: 16
+  grind_min_cost: 0
+  grind_min_tokens: 0
+  grind_continuations: 2
+
+  compaction:
+    keep_turns: 3
+    judge:
+      enabled: true
+      provider: jev
+      model: jev-1.13.0
+      api_key_command: tiroir get TYPESAFE_API_KEY
