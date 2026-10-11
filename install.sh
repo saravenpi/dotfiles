@@ -65,7 +65,6 @@ check_dependencies() {
     missing_deps=""
 
     command_exists git || missing_deps="$missing_deps git"
-    command_exists bash || missing_deps="$missing_deps bash"
     if ! command_exists curl && ! command_exists wget; then
         missing_deps="$missing_deps curl-or-wget"
     fi
@@ -247,7 +246,7 @@ install_dotfiles() {
 
     info "Linking dotfiles with tido..."
     # shellcheck disable=SC2086
-    if bash -- "$tido_script" link --target "$HOME" --backup "$BACKUP_DIR" $existing_packages; then
+    if sh -- "$tido_script" link --target "$HOME" --backup "$BACKUP_DIR" $existing_packages; then
         success "Dotfiles configuration completed"
     else
         error "Dotfiles linking failed"

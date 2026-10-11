@@ -1,15 +1,19 @@
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 if [ -z "$XDG_RUNTIME_DIR" ]; then
-    if [ -d "/run/user/$(id -u)" ]; then
-        export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+    u_id="$(id -u)"
+    if [ -d "/run/user/$u_id" ]; then
+        XDG_RUNTIME_DIR="/run/user/$u_id"
     else
-        export XDG_RUNTIME_DIR="/tmp/user-$(id -u)"
-        mkdir -p -m 0700 "$XDG_RUNTIME_DIR"
+        XDG_RUNTIME_DIR="/tmp/user-$u_id"
+        mkdir -p "$XDG_RUNTIME_DIR"
+        chmod 0700 "$XDG_RUNTIME_DIR"
     fi
+    export XDG_RUNTIME_DIR
 fi
 
 if [ -f "$HOME/.variables" ]; then
+    # shellcheck source=/dev/null
     . "$HOME/.variables"
 fi
 
