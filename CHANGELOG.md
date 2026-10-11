@@ -4,6 +4,24 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+## [0.4.0] - 2026-10-11
+
+### Added
+
+- `tido update`: re-runs `install.sh` from anywhere — pulls the checkout, re-links every package and installs the mise tools.
+
+### Changed
+
+- tmux configuration split into modular files: `tmux.conf` now only sources `options.conf`, `keybindings.conf`, `status.conf` and `plugins.conf` from `~/.config/tmux/`.
+- tmux config entry point moved from `~/.tmux.conf` to `~/.config/tmux/tmux.conf`; the reload binding, `treload` and `ctmux` aliases follow it, and `set-clipboard` is enabled.
+- Vendored tmux plugins trimmed to their runtime files: upstream CI, Vagrant, video and changelog leftovers dropped from `tmux-yank`, unused `go.mod`/`go.sum`/`filet.yml` from `tmux-agent-sidebar`.
+
+### Removed
+
+- `.tmux.conf` from the installer's backup list.
+
 ## [0.3.0] - 2026-10-11
 
 ### Added
