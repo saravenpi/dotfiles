@@ -367,7 +367,7 @@ show_summary() {
     printf '  %b-%b Install time: %s\n' "${CYAN}" "${NC}" "$(date)"
 
     printf '\n%bManaging the symlinks:%b\n' "${WHITE}" "${NC}"
-    printf '  %b-%b Re-link everything:  %btido%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
+    printf '  %b-%b Re-link everything:  %btido link%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Preview changes:     %btido list%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Remove a package:    %btido unlink nvim%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
 
