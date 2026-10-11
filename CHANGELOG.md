@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - The installer now warns at the end of a run when zsh is not the login shell, printing the exact `chsh -s` command to run. It never runs `chsh` itself: PAM needs a password and BusyBox ships no `chsh`.
-- `tido`: rewritten in pure POSIX `/bin/sh` without bashisms, process substitutions, or here-strings; runs portably on BusyBox ash, dash, and sh.
+- `tido`: rewritten in pure POSIX `/bin/sh` without bashisms, process substitutions, or here-strings; added `clean-backups` command and automatic git pull in `tido update`; runs portably on BusyBox ash, dash, and sh.
 - `install.sh`: removed bash dependency; executes tido via POSIX `sh`.
 - `shell` package: converted `.prompt` and `.variables` to pure POSIX compliance with default sh prompt fallback.
 - `sway` package: zero-dependency status command, inner/outer gaps, disabled adaptive sync, window borders, theme palette, and wallpaper configuration via `swaybg`.
