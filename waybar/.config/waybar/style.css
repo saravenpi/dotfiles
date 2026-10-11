@@ -12,6 +12,22 @@ window#waybar {
     color: #c0caf5;
 }
 
+#workspaces button {
+    padding: 0 8px;
+    color: #a9b1d6;
+    background-color: transparent;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    color: #FDD5FA;
+    background-color: #1e2029;
+}
+
+#workspaces button:hover {
+    background-color: #1e2029;
+}
+
 #taskbar button {
     padding: 0 8px;
     color: #a9b1d6;

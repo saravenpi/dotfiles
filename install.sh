@@ -138,7 +138,7 @@ update_repo() {
     git -C "$SOURCE_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
 
     info "Updating repository..."
-    if git -C "$SOURCE_DIR" pull --ff-only >/dev/null 2>&1; then
+    if git -C "$SOURCE_DIR" pull --ff-only; then
         success "Repository updated"
     else
         warn "Could not update the repository, using the local copy as-is"
@@ -155,7 +155,7 @@ init_submodules() {
     fi
 
     info "Initializing submodules..."
-    if git -C "$SOURCE_DIR" submodule update --init --recursive >/dev/null 2>&1; then
+    if git -C "$SOURCE_DIR" submodule update --init --recursive; then
         success "Submodules ready"
     else
         warn "Could not initialize submodules"
@@ -360,7 +360,7 @@ install_facile() {
 
     if [ -n "$facile" ]; then
         info "Installing default facile tools (tiroir, palette)..."
-        if "$facile" install tiroir palette >/dev/null 2>&1; then
+        if "$facile" install tiroir palette; then
             success "Installed default facile tools (tiroir, palette)"
         else
             warn "Some facile tools could not be installed"
