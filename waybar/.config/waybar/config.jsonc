@@ -1,9 +1,12 @@
 {
+    "id": "bar-0",
+    "name": "bar-0",
     "layer": "top",
     "position": "top",
     "height": 30,
     "spacing": 4,
     "modules-left": [
+        "sway/workspaces",
         "wlr/taskbar"
     ],
     "modules-center": [
@@ -13,6 +16,11 @@
         "cpu",
         "memory"
     ],
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}"
+    },
     "wlr/taskbar": {
         "format": "{icon} {title}",
         "icon-size": 16,

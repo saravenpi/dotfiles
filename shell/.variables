@@ -17,6 +17,8 @@ export WLR_NO_HARDWARE_CURSORS=1
 export WLR_RENDERER_ALLOW_SOFTWARE=1
 export WLR_SCENE_DISABLE_DIRECT_SCANOUT=1
 export WLR_DRM_NO_MODIFIERS=1
+export NO_AT_BRIDGE=1
+export GTK_USE_PORTAL=0
 
 if [ -z "$WLR_RENDERER" ]; then
     if [ -f /sys/class/drm/card0/device/uevent ] && grep -qi -E "virtio|vbox|vmw|qxl|cirrus" /sys/class/drm/card0/device/uevent 2>/dev/null; then
