@@ -194,7 +194,7 @@ create_backup() {
         .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts .local/share/fonts"
-    config_dirs_to_backup="nvim mise niri rofi waybar sway foot"
+    config_dirs_to_backup="nvim mise niri rofi waybar sway foot facile"
 
     backup_count=0
 
@@ -320,6 +320,64 @@ install_mise_tools() {
     fi
 }
 
+facile_bin() {
+    if command_exists facile; then
+        command -v facile
+    elif [ -x "$HOME/.local/bin/facile" ]; then
+        printf '%s\n' "$HOME/.local/bin/facile"
+    fi
+}
+
+install_facile() {
+    facile="$(facile_bin)"
+
+    if [ -z "$facile" ]; then
+        if ! command_exists curl && ! command_exists wget; then
+            warn "neither curl nor wget available, skipping facile install"
+            return 0
+        fi
+
+        mkdir -p -- "$HOME/.local/bin"
+        info "Installing facile..."
+        ok=0
+        if command_exists curl; then
+            curl -fsSL https://raw.githubusercontent.com/FacileStudio/facile/main/install.sh | bash >/dev/null 2>&1 && ok=1
+        elif command_exists wget; then
+            wget -qO- https://raw.githubusercontent.com/FacileStudio/facile/main/install.sh | bash >/dev/null 2>&1 && ok=1
+        fi
+
+        if [ "$ok" -eq 1 ]; then
+            export PATH="$HOME/.local/bin:$PATH"
+            facile="$(facile_bin)"
+            success "Installed facile into $HOME/.local/bin"
+        else
+            warn "Failed to install facile"
+            return 0
+        fi
+    else
+        info "facile is already installed"
+    fi
+
+    if [ -n "$facile" ]; then
+        info "Installing default facile tools (tiroir, palette)..."
+        if "$facile" install tiroir palette >/dev/null 2>&1; then
+            success "Installed default facile tools (tiroir, palette)"
+        else
+            warn "Some facile tools could not be installed"
+        fi
+    fi
+
+    palette_cmd=""
+    if command_exists palette; then
+        palette_cmd="$(command -v palette)"
+    elif [ -x "$HOME/.local/bin/palette" ]; then
+        palette_cmd="$HOME/.local/bin/palette"
+    fi
+    if [ -n "$palette_cmd" ] && [ -f "$HOME/.palette.yml" ]; then
+        "$palette_cmd" sync --no-reload >/dev/null 2>&1 || true
+    fi
+}
+
 # The installer links the zsh configuration but never changes the login shell:
 # chsh authenticates over PAM, so it either blocks on a password or fails with
 # stdin closed, and BusyBox ships no chsh at all. Setting the shell stays a
@@ -415,6 +473,7 @@ main() {
     install_dotfiles || { error "Dotfiles installation failed"; exit 1; }
     install_mise
     install_mise_tools
+    install_facile
 
     show_summary
 
