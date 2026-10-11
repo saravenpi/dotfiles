@@ -18,7 +18,7 @@
 # created, and nothing is ever deleted silently.
 #
 # Usage:
-#   tido [link]   [options] [package...]   create/refresh symlinks
+#   tido link     [options] [package...]   create/refresh symlinks
 #   tido unlink   [options] [package...]   remove links made by this repo
 #   tido list     [options] [package...]   dry run, change nothing
 #
@@ -31,8 +31,8 @@
 #   -h, --help         show this help
 #
 # Examples:
-#   tido                            # link every package into $HOME
-#   tido nvim tmux                  # link only these packages
+#   tido link                       # link every package into $HOME
+#   tido link nvim tmux             # link only these packages
 #   tido list                       # show what would happen
 #   tido unlink nvim                # remove the nvim symlinks
 #
@@ -352,6 +352,8 @@ unlink_entry() {
 }
 
 # ---------- argument handling -----------------------------------------------
+
+[[ $# -eq 0 ]] && { usage; exit 0; }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
