@@ -1,6 +1,8 @@
+include ~/.config/sway/palette.conf
+
 set $mod Mod4
 set $term foot
-set $menu wmenu-run -f "GohuFont 14 Nerd Font Mono 11" -N "#14161b" -n "#c0caf5" -M "#14161b" -m "#FDD5FA" -S "#FDD5FA" -s "#14161b" -p "run:"
+set $menu wmenu-run -f "GohuFont 14 Nerd Font Mono 11" -N "$palette_bg" -n "$palette_fg" -M "$palette_bg" -m "$palette_cursor" -S "$palette_cursor" -s "$palette_bg" -p "run:"
 
 output * bg ~/.dotfiles/wallpapers/modernist-black-building-stairs.png fill
 output * adaptive_sync off
@@ -16,12 +18,6 @@ gaps inner 10
 gaps outer 6
 smart_gaps off
 smart_borders off
-
-client.focused #FDD5FA #14161b #c0caf5 #FDD5FA #FDD5FA
-client.focused_inactive #2e3440 #14161b #a9b1d6 #2e3440 #2e3440
-client.unfocused #2e3440 #14161b #a9b1d6 #2e3440 #2e3440
-client.urgent #f7768e #14161b #f7768e #f7768e #f7768e
-client.placeholder #14161b #14161b #c0caf5 #14161b #14161b
 
 bindsym $mod+Return exec $term
 bindsym $mod+d exec $menu
@@ -111,16 +107,10 @@ input type:touchpad {
     middle_emulation enabled
 }
 
+input type:pointer {
+    natural_scroll enabled
+}
+
 bar {
-    position top
-    status_command while date +'%Y-%m-%d %H:%M'; do sleep 1; done
-    colors {
-        statusline #c0caf5
-        background #14161b
-        separator #2e3440
-        focused_workspace #FDD5FA #14161b #FDD5FA
-        active_workspace #2e3440 #14161b #c0caf5
-        inactive_workspace #14161b #14161b #a9b1d6
-        urgent_workspace #f7768e #14161b #f7768e
-    }
+    swaybar_command waybar
 }
