@@ -36,7 +36,7 @@ if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
                 if command -v dbus-run-session >/dev/null 2>&1 && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
                     cmd="dbus-run-session $cmd"
                 fi
-                if command -v seatd-launch >/dev/null 2>&1; then
+                if [ ! -S /run/seatd.sock ] && command -v seatd-launch >/dev/null 2>&1; then
                     seatd-launch -- sh -c "$cmd"
                 else
                     eval "$cmd"
