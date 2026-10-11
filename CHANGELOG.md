@@ -6,6 +6,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-11
+
+### Added
+
+- `palette` package: canonical color scheme stored in `~/.config/palette/config.yml` generated from the modernist wallpaper.
+- `foot` integration: includes `~/.config/foot/palette.ini` with dynamic ANSI colors, cursor, and selection styles.
+- `sway` bar wrapper: added `~/.config/sway/bar.sh` detecting `waybar` dynamically and falling back to `swaybar`.
+- `install.sh`: added `palette` to default backup list.
+
 ## [0.5.0] - 2026-10-11
 
 ### Added
