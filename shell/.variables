@@ -1,2 +1,11 @@
 #!/bin/bash
 command -v tiroir >/dev/null 2>&1 && eval "$(tiroir export)"
+
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+    if [ -d "/run/user/$(id -u)" ]; then
+        export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+    else
+        export XDG_RUNTIME_DIR="/tmp/user-$(id -u)"
+        mkdir -p -m 0700 "$XDG_RUNTIME_DIR"
+    fi
+fi
