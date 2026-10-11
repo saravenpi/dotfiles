@@ -11,12 +11,8 @@
         "clock"
     ],
     "modules-right": [
-        "pulseaudio",
-        "network",
         "cpu",
-        "memory",
-        "battery",
-        "tray"
+        "memory"
     ],
     "niri/workspaces": {
         "format": "{icon}",
