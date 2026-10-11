@@ -19,7 +19,7 @@ Install build dependencies and desktop packages:
 
 ```sh
 apk add build-base linux-headers libffi-dev openssl-dev bzip2-dev zlib-dev readline-dev sqlite-dev
-apk add sway swaybg foot wmenu seatd udev mesa-dri-gallium font-dejavu wl-clipboard
+apk add sway swaybg foot wmenu seatd udev mesa-dri-gallium font-dejavu wl-clipboard zsh
 ```
 
 Enable hardware seat management and add your user to device groups:
@@ -39,7 +39,7 @@ Install build dependencies and desktop packages:
 
 ```sh
 xbps-install -S base-devel linux-headers libffi-devel openssl-devel bzip2-devel zlib-devel readline-devel sqlite-devel
-xbps-install -S sway swaybg foot wmenu seatd mesa-dri font-dejavu wl-clipboard
+xbps-install -S sway swaybg foot wmenu seatd mesa-dri font-dejavu wl-clipboard zsh
 ```
 
 Enable the seat daemon and add your user to groups:
@@ -55,7 +55,7 @@ Install build dependencies and desktop packages:
 
 ```sh
 pacman -S base-devel linux-headers
-pacman -S sway swaybg foot wmenu wl-clipboard ttf-dejavu
+pacman -S sway swaybg foot wmenu wl-clipboard ttf-dejavu zsh
 ```
 
 Seat management is handled automatically by `systemd-logind`.
@@ -67,7 +67,7 @@ Install build dependencies and desktop packages:
 ```sh
 apt update
 apt install build-essential linux-headers-generic libssl-dev libffi-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
-apt install sway swaybg foot wmenu wl-clipboard fonts-dejavu
+apt install sway swaybg foot wmenu wl-clipboard fonts-dejavu zsh
 ```
 
 Seat management is handled automatically by `systemd-logind`.

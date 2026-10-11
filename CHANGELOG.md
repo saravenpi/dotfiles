@@ -13,7 +13,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `install.sh`: removed bash dependency; executes tido via POSIX `sh`.
 - `shell` package: converted `.prompt` and `.variables` to pure POSIX compliance with default sh prompt fallback.
 - `sway` package: zero-dependency status command, inner/outer gaps, disabled adaptive sync, window borders, theme palette, and wallpaper configuration via `swaybg`.
-- `foot` package: modern Wayland terminal emulator configured with GohuFont, modern `[colors-dark]` section, and matching color palette.
+- `foot` package: modern Wayland terminal emulator configured with zsh shell, GohuFont, modern `[colors-dark]` section, and matching color palette.
 - `wmenu`: integrated launcher styled with the dotfiles palette.
 - `fonts` package: migrated from deprecated `~/.fonts` to XDG standard `~/.local/share/fonts`.
 - Shell profiles (`.zprofile`, `.bash_profile`, `.profile`, `.variables`): universal top-level `XDG_RUNTIME_DIR` initialization, anti-flicker Wayland environment flags (`WLR_NO_HARDWARE_CURSORS`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT`, `WLR_DRM_NO_MODIFIERS`), and auto-launch Sway on TTY1.
