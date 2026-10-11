@@ -14,7 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `wmenu`: integrated launcher styled with the dotfiles palette.
 - `fonts` package: migrated from deprecated `~/.fonts` to XDG standard `~/.local/share/fonts`.
 - Shell profiles (`.zprofile`, `.bash_profile`): auto-launch Sway on TTY1 with fallback `XDG_RUNTIME_DIR` initialization and software/cursor flags for VMs.
-- `README.md`: added Alpine Linux installation requirements (`build-base`, `linux-headers`, `seatd`, `udev`).
+- `README.md`: added multi-distribution fresh install requirements (Alpine, Void, Arch, Debian) and Wayland edge cases.
 - `niri` package: full standard layout, column manipulation, screenshot, and hardware keybindings.
 - `rofi` package: custom dark theme matching the modernist color scheme.
 - `waybar` package: custom status bar with native workspaces and window integration.
