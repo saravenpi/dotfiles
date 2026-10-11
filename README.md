@@ -1,41 +1,87 @@
 # dotfiles
 
-Personal dotfiles, linked into `$HOME` with [`tido`](./scripts/scripts/tido) — a
-small dependency-free replacement for GNU Stow that ships with the dotfiles
-themselves.
+Personal dotfiles, linked into `$HOME` with [`tido`](./scripts/scripts/tido), a dependency-free symlink manager included in this repository.
 
 ## Requirements
 
+Core dependencies:
+
 - `git`
-- `curl` (only for the one-line install)
+- `curl` (for the one-line install)
 
-No `stow` package needed.
+### Fresh install by distribution
 
-### Alpine Linux
+The installer sets up user configuration and tools. Run the command for your distribution to install build essentials (required by mise for compiling Python, Node, and C/Rust tools) and the Sway Wayland desktop stack.
 
-For compiling tools via mise (Python, Node, C/Rust native extensions) and running the Sway desktop:
+#### Alpine Linux
+
+Install build dependencies and desktop packages:
 
 ```sh
 apk add build-base linux-headers libffi-dev openssl-dev bzip2-dev zlib-dev readline-dev sqlite-dev
-apk add sway swaybg foot wmenu seatd udev mesa-dri-gallium font-dejavu
+apk add sway swaybg foot wmenu seatd udev mesa-dri-gallium font-dejavu wl-clipboard
 ```
 
-Enable hardware seat management:
+Enable hardware seat management and add your user to device groups:
 
 ```sh
 setup-devd udev
 rc-update add seatd
 rc-service seatd start
-adduser $USER seat
+adduser "$USER" seat
+adduser "$USER" video
+adduser "$USER" input
 ```
 
-`tmux-yank` needs a clipboard helper (`wl-clipboard` on Wayland, `xclip`/`xsel`
-on X11), which most distributions ship by default. If none is found the
-installer warns about the requirement; it never modifies system packages itself.
+#### Void Linux
+
+Install build dependencies and desktop packages:
+
+```sh
+xbps-install -S base-devel linux-headers libffi-devel openssl-devel bzip2-devel zlib-devel readline-devel sqlite-devel
+xbps-install -S sway swaybg foot wmenu seatd mesa-dri font-dejavu wl-clipboard
+```
+
+Enable the seat daemon and add your user to groups:
+
+```sh
+ln -s /etc/sv/seatd /var/service/
+usermod -aG _seatd,video,input "$USER"
+```
+
+#### Arch Linux
+
+Install build dependencies and desktop packages:
+
+```sh
+pacman -S base-devel linux-headers
+pacman -S sway swaybg foot wmenu wl-clipboard ttf-dejavu
+```
+
+Seat management is handled automatically by `systemd-logind`.
+
+#### Debian and Ubuntu
+
+Install build dependencies and desktop packages:
+
+```sh
+apt update
+apt install build-essential linux-headers-generic libssl-dev libffi-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
+apt install sway swaybg foot wmenu wl-clipboard fonts-dejavu
+```
+
+Seat management is handled automatically by `systemd-logind`.
+
+### Environment and edge cases
+
+- Seat management: start Sway directly with `exec sway` from your login shell on `tty1`. Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`.
+- Virtual machines: virtual DRM drivers (such as UTM or QEMU using `virtio-gpu`) lack hardware cursor planes. Shell profiles (`.zprofile`, `.bash_profile`) export `WLR_NO_HARDWARE_CURSORS=1` and `WLR_RENDERER_ALLOW_SOFTWARE=1` before starting Sway.
+- Runtime directory: on distributions without systemd (Alpine with OpenRC, Void with runit), shell profiles fall back to creating `/tmp/user-$(id -u)` with mode `0700` if `XDG_RUNTIME_DIR` is not set.
+- Clipboard: `tmux-yank` requires a Wayland clipboard helper (`wl-clipboard`), included in the desktop package lists above.
 
 The installer also sets up [mise](https://mise.jdx.dev): it installs the mise
 binary into `~/.local/bin`, then runs `mise install` to fetch every tool declared
-in `~/.config/mise/config.toml` — the language runtimes and CLIs. When mise
+in `~/.config/mise/config.toml` (the language runtimes and CLIs). When mise
 cannot be set up, the installer simply warns and moves on. The mise install
 needs no elevated privileges: the shell settings add `~/.local/bin` to `PATH`.
 
