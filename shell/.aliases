@@ -154,3 +154,4 @@ command -v hunk >/dev/null 2>&1 && alias hd="hunk diff"
 command -v boite >/dev/null 2>&1 && alias bp="boite run pingu"
 
 command -v apk >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && alias apk-search="apk search | fzf"
+command -v fastfetch >/dev/null 2>&1 && alias neofetch="fastfetch"
