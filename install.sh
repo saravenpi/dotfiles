@@ -192,7 +192,7 @@ create_backup() {
     files_to_backup="
         .bashrc .bash_profile .bash_settings .bash_interactive
         .prompt .zprofile .zshrc .zsh_interactive
-        .zsh_settings .aliases .functions .variables .tmux.conf
+        .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts"
     config_dirs_to_backup="nvim mise"
@@ -332,6 +332,7 @@ show_summary() {
 
     printf '\n%bManaging the symlinks:%b\n' "${WHITE}" "${NC}"
     printf '  %b-%b Re-link everything:  %btido link%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
+    printf '  %b-%b Update the config:   %btido update%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Preview changes:     %btido list%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Remove a package:    %btido unlink nvim%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
 
