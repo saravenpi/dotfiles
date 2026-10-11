@@ -25,6 +25,8 @@ if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -z "$SSH_CLIENT" ] && [ -
             if command -v niri >/dev/null 2>&1; then
                 export WLR_NO_HARDWARE_CURSORS=1
                 export WLR_RENDERER_ALLOW_SOFTWARE=1
+                export NO_AT_BRIDGE=1
+                export GTK_USE_PORTAL=0
 
                 if command -v dbus-run-session >/dev/null 2>&1 && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
                     exec dbus-run-session niri --session
