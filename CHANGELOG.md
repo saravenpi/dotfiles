@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-11
+
+### Fixed
+
+- Restored the vendored `tmux-yank` plugin: v0.4.0's plugin trimming deleted `yank.tmux` and `scripts/` along with the upstream docs, and the follow-up commit dropped its `run-shell` line from `plugins.conf`.
+
 ## [0.4.0] - 2026-10-11
 
 ### Added
