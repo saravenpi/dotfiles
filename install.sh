@@ -194,7 +194,7 @@ create_backup() {
         .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts .local/share/fonts"
-    config_dirs_to_backup="nvim mise niri rofi waybar sway foot facile"
+    config_dirs_to_backup="nvim mise niri rofi waybar sway foot facile palette"
 
     backup_count=0
 
