@@ -113,7 +113,7 @@ input type:pointer {
 
 bar bar-0 {
     position top
-    swaybar_command "which waybar >/dev/null 2>&1 && env NO_AT_BRIDGE=1 GTK_USE_PORTAL=0 waybar || swaybar"
+    swaybar_command ~/.config/sway/bar.sh
     status_command while date +'%Y-%m-%d %H:%M'; do sleep 1; done
     colors {
         statusline $palette_fg
