@@ -21,6 +21,7 @@
 #   tido link     [options] [package...]   create/refresh symlinks
 #   tido unlink   [options] [package...]   remove links made by this repo
 #   tido list     [options] [package...]   dry run, change nothing
+#   tido update                            re-run install.sh to update the config
 #
 # Options:
 #   -t, --target DIR   directory to link into (default: $HOME)
@@ -35,6 +36,7 @@
 #   tido link nvim tmux             # link only these packages
 #   tido list                       # show what would happen
 #   tido unlink nvim                # remove the nvim symlinks
+#   tido update                     # pull the repo and re-run install.sh
 #
 set -euo pipefail
 
@@ -364,6 +366,7 @@ while [[ $# -gt 0 ]]; do
         link|stow)       ACTION="link" ;;
         unlink|remove|unstow|destow) ACTION="unlink" ;;
         list|dry-run|check) ACTION="link"; DRY_RUN=1 ;;
+        update|upgrade)  ACTION="update" ;;
         -t|--target)     shift; [[ $# -gt 0 ]] || die "--target needs a directory"; TARGET="$1" ;;
         -b|--backup)     shift; [[ $# -gt 0 ]] || die "--backup needs a directory"; BACKUP_DIR="$1" ;;
         --no-backup)     DO_BACKUP=0 ;;
@@ -375,6 +378,11 @@ while [[ $# -gt 0 ]]; do
     esac
     shift
 done
+
+if [[ "$ACTION" == "update" ]]; then
+    info "Re-running the installer: $SRC_DIR/install.sh"
+    exec bash -- "$SRC_DIR/install.sh"
+fi
 
 [[ -n "$TARGET" ]] || die "no target directory (set \$HOME or pass --target)"
 [[ -d "$SRC_DIR" ]] || die "cannot find the dotfiles directory"
