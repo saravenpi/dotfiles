@@ -82,6 +82,7 @@ created=0
 backed_up=0
 removed=0
 conflicts=0
+already_linked=0
 
 # Newline-separated relative directory paths contributed by more than one
 # package (kept as a string so the script still runs on bash 3.2 / macOS).
@@ -178,6 +179,7 @@ backup_path() {
     fi
 
     if [[ "$DRY_RUN" -eq 1 ]]; then
+        backed_up=$((backed_up + 1))
         ok "would back up: $rel"
         return 0
     fi
@@ -240,10 +242,12 @@ link_entry() {
     if [[ -L "$dst" ]]; then
         if [[ "$(link_destination "$dst")" == "$(resolve "$src")" ]]; then
             if [[ "$(readlink -- "$dst")" == "$(resolve "$src")" ]]; then
-                [[ "$VERBOSE" -eq 1 ]] && ok "ok: $rel"
+                already_linked=$((already_linked + 1))
+                [[ "$DRY_RUN" -eq 1 || "$VERBOSE" -eq 1 ]] && ok "ok: $rel"
                 return 0
             fi
             if [[ "$DRY_RUN" -eq 1 ]]; then
+                created=$((created + 1))
                 ok "would make absolute: $rel"
             else
                 rm -- "$dst"
@@ -328,11 +332,11 @@ unlink_entry() {
 
     if [[ -L "$dst" ]]; then
         if is_inside_repo "$dst"; then
+            removed=$((removed + 1))
             if [[ "$DRY_RUN" -eq 1 ]]; then
                 ok "would remove: $rel"
             else
                 rm -- "$dst"
-                removed=$((removed + 1))
                 ok "removed: $rel"
             fi
         else
@@ -430,10 +434,26 @@ done <<< "$packages"
 
 printf '\n'
 if [[ "$ACTION" == "unlink" ]]; then
-    info "Removed $removed link(s)."
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        info "Would remove $removed link(s)."
+    else
+        info "Removed $removed link(s)."
+    fi
 else
-    info "Linked $created path(s); moved aside $backed_up conflicting path(s)."
-    [[ "$backed_up" -gt 0 ]] && info "Backups kept in: $BACKUP_DIR"
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        if [[ "$created" -eq 0 && "$backed_up" -eq 0 ]]; then
+            info "All $already_linked path(s) are already linked and up to date."
+        else
+            info "Would link $created path(s); would move aside $backed_up conflicting path(s) ($already_linked already up to date)."
+        fi
+    else
+        if [[ "$created" -eq 0 && "$backed_up" -eq 0 ]]; then
+            info "All $already_linked path(s) are already linked and up to date."
+        else
+            info "Linked $created path(s); moved aside $backed_up conflicting path(s) ($already_linked already up to date)."
+            [[ "$backed_up" -gt 0 ]] && info "Backups kept in: $BACKUP_DIR"
+        fi
+    fi
 fi
 
 if [[ "$conflicts" -gt 0 ]]; then
