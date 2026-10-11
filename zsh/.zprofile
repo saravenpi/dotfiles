@@ -23,7 +23,14 @@ if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -z "$SSH_CLIENT" ] && [ -
     case "$(tty 2>/dev/null)" in
         /dev/tty*|/dev/vc/*|/dev/console|tty*)
             if command -v niri >/dev/null 2>&1; then
-                exec niri
+                export WLR_NO_HARDWARE_CURSORS=1
+                export WLR_RENDERER_ALLOW_SOFTWARE=1
+
+                if command -v dbus-run-session >/dev/null 2>&1 && [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+                    exec dbus-run-session niri --session
+                else
+                    exec niri --session
+                fi
             fi
             ;;
     esac
