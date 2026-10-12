@@ -4,7 +4,11 @@ set $mod Mod4
 set $term foot
 set $menu wmenu-run -f "GohuFont 14 Nerd Font Mono 11" -N "$palette_bg" -n "$palette_fg" -M "$palette_bg" -m "$palette_cursor" -S "$palette_cursor" -s "$palette_bg" -p "run:"
 
+<<<<<<< HEAD
 output * bg ~/.dotfiles/wallpapers/alcedo-atthis.png fill
+=======
+output * bg ~/wallpapers/modernist-black-building-stairs.png fill
+>>>>>>> 13c60e7496f5c4cb08839fc0460d530910108a65
 output * adaptive_sync off
 output * max_render_time off
 
