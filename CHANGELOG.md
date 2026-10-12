@@ -6,6 +6,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-12
+
+### Added
+
+- `waybar`: `style.css` imports `palette.css` and uses `@palette_bg`,
+  `@palette_fg`, `@palette_cursor` and `@palette_color0`..`@palette_color15`
+  instead of hard-coded hexes, so the bar follows the generated theme.
+  Requires `palette` 0.7.0 or newer.
+
+### Changed
+
+- `install.sh`: `tiroir` and `palette` are installed only when missing, the
+  palette sync also looks at `~/.config/palette/config.yml`, and the dotfiles
+  are re-linked with tido after the tool installs.
+- `tido update`: re-links the dotfiles itself after running install.sh, even
+  when the installer exits early.
+
 ## [0.5.2] - 2026-10-11
 
 ### Changed
