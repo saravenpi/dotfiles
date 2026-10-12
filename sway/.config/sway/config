@@ -4,7 +4,7 @@ set $mod Mod4
 set $term foot
 set $menu wmenu-run -f "GohuFont 14 Nerd Font Mono 11" -N "$palette_bg" -n "$palette_fg" -M "$palette_bg" -m "$palette_cursor" -S "$palette_cursor" -s "$palette_bg" -p "run:"
 
-output * bg ~/.dotfiles/wallpapers/modernist-black-building-stairs.png fill
+output * bg ~/.dotfiles/wallpapers/alcedo-atthis.png fill
 output * adaptive_sync off
 output * max_render_time off
 
@@ -113,7 +113,7 @@ input type:pointer {
 
 bar bar-0 {
     position top
-    swaybar_command ~/.config/sway/bar.sh
+    swaybar_command waybar
     status_command while date +'%Y-%m-%d %H:%M'; do sleep 1; done
     colors {
         statusline $palette_fg
