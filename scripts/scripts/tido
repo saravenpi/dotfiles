@@ -22,7 +22,7 @@
 #   tido unlink        [options] [package...]   remove links made by this repo
 #   tido list          [options] [package...]   dry run, change nothing
 #   tido clean-backups [options]                remove backup directories
-#   tido update                                 pull the repo and re-run install.sh
+#   tido update                                 pull the repo, re-run install.sh, then re-link
 #
 # Options:
 #   -t, --target DIR   directory to link into (default: $HOME)
@@ -39,7 +39,7 @@
 #   tido list                       # show what would happen
 #   tido unlink nvim                # remove the nvim symlinks
 #   tido clean-backups              # remove all backup directories
-#   tido update                     # pull the repo and re-run install.sh
+#   tido update                     # pull, re-run install.sh, then re-link
 #
 
 set -eu
@@ -467,7 +467,9 @@ if [ "$ACTION" = "update" ]; then
         warn "git pull failed; continuing with local files"
     fi
     info "Re-running the installer: $SRC_DIR/install.sh"
-    exec sh -- "$SRC_DIR/install.sh"
+    sh -- "$SRC_DIR/install.sh" || warn "installer exited non-zero; re-linking anyway"
+    info "Re-linking after update"
+    ACTION="link"
 fi
 
 [ -n "$TARGET" ] || die "no target directory (set \$HOME or pass --target)"
