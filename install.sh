@@ -254,14 +254,18 @@ install_dotfiles() {
     fi
 }
 
-# Locate the mise binary: on PATH, or in ~/.local/bin (where the installer
-# drops it) before the shell has been reloaded and picked up the new PATH.
-mise_bin() {
-    if command_exists mise; then
-        command -v mise
-    elif [ -x "$HOME/.local/bin/mise" ]; then
-        printf '%s\n' "$HOME/.local/bin/mise"
+# Locate a CLI on PATH, or in ~/.local/bin (where the installer drops it)
+# before the shell has been reloaded and picked up the new PATH.
+tool_bin() {
+    if command_exists "$1"; then
+        command -v "$1"
+    elif [ -x "$HOME/.local/bin/$1" ]; then
+        printf '%s\n' "$HOME/.local/bin/$1"
     fi
+}
+
+mise_bin() {
+    tool_bin mise
 }
 
 # Install mise, the tool manager that owns ~/.config/mise/config.toml. The
@@ -321,11 +325,7 @@ install_mise_tools() {
 }
 
 facile_bin() {
-    if command_exists facile; then
-        command -v facile
-    elif [ -x "$HOME/.local/bin/facile" ]; then
-        printf '%s\n' "$HOME/.local/bin/facile"
-    fi
+    tool_bin facile
 }
 
 install_facile() {
@@ -359,21 +359,26 @@ install_facile() {
     fi
 
     if [ -n "$facile" ]; then
-        info "Installing default facile tools (tiroir, palette)..."
-        if "$facile" install tiroir palette; then
-            success "Installed default facile tools (tiroir, palette)"
+        missing_tools=""
+        [ -n "$(tool_bin tiroir)" ] || missing_tools="$missing_tools tiroir"
+        [ -n "$(tool_bin palette)" ] || missing_tools="$missing_tools palette"
+        if [ -z "$missing_tools" ]; then
+            info "facile tools already installed (tiroir, palette)"
         else
-            warn "Some facile tools could not be installed"
+            info "Installing facile tools:$missing_tools"
+            # shellcheck disable=SC2086
+            if "$facile" install $missing_tools; then
+                success "Installed facile tools:$missing_tools"
+            else
+                warn "Some facile tools could not be installed"
+            fi
         fi
     fi
 
-    palette_cmd=""
-    if command_exists palette; then
-        palette_cmd="$(command -v palette)"
-    elif [ -x "$HOME/.local/bin/palette" ]; then
-        palette_cmd="$HOME/.local/bin/palette"
-    fi
-    if [ -n "$palette_cmd" ] && [ -f "$HOME/.palette.yml" ]; then
+    palette_cmd="$(tool_bin palette)"
+    palette_cfg="$HOME/.config/palette/config.yml"
+    [ -f "$palette_cfg" ] || palette_cfg="$HOME/.palette.yml"
+    if [ -n "$palette_cmd" ] && [ -f "$palette_cfg" ]; then
         "$palette_cmd" sync --no-reload >/dev/null 2>&1 || true
     fi
 }
@@ -474,6 +479,8 @@ main() {
     install_mise
     install_mise_tools
     install_facile
+
+    install_dotfiles || warn "Final re-link failed"
 
     show_summary
 
