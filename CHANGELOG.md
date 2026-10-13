@@ -4,6 +4,30 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-10-13
+
+### Added
+
+- `hypr`: a Hyprland config package at `~/.config/hypr`, the twin of the sway
+  config. `hyprland.conf` starts the same widgets, sets the same keybinds and
+  input options, disables animations, and draws borderless windows with a 12px
+  corner radius and the widgets' 6px outer gap. `palette.conf` carries the
+  colors from `palette sync` (Hyprland's `rgb(RRGGBB)` spelling plus
+  `$active_border`, `$inactive_border` and `$urgent_border`), and
+  `wallpaper.conf` is written by `setwallpaper`.
+- `setwallpaper` records the image for Hyprland in
+  `~/.config/hypr/wallpaper.conf` (`exec-once = swaybg …`, included by the
+  Hyprland config), the same persistence sway gets from its snippet.
+
+### Changed
+
+- The session default is now **Hyprland**: `~/.profile`, `~/.zprofile` and
+  `~/.bash_profile` start it on tty1 instead of sway. The sway config stays
+  complete, so switching back is a one-line change.
+- `sway`: the config is tidied into labelled sections and the commented-out dead
+  binds are gone; behaviour is unchanged.
+- `install.sh`: `~/.config/hypr` is included in the backup list.
+
 ## [0.9.0] - 2026-10-13
 
 ### Added
