@@ -6,6 +6,24 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `setwallpaper`, a script in the `scripts` package, replaces the `setwallpaper`
+  shell function. It sets the wallpaper on Wayland (sway natively, niri,
+  Hyprland and any other wlr-layer-shell compositor through `swaybg`), X11
+  (`feh`, `xwallpaper`, `nitrogen`, `hsetroot`), GNOME, KDE, XFCE, and macOS,
+  and records the chosen image in `~/.config/wallpaper` so the choice survives a
+  reload or a re-login. No shell startup is needed to change a wallpaper.
+- The sway config includes `~/.config/sway/wallpaper.conf`, generated from
+  `~/.config/wallpaper` by `setwallpaper`, so the wallpaper survives
+  `swaymsg reload` and a restart without editing the config by hand.
+
+### Changed
+
+- `sway` re-applies the palette on every reload with `exec_always palette sync
+  --no-reload`. Combined with the widgets' new palette hot-reload, pressing
+  `mod+Shift+r` restyles the bar, sidebar and launcher in place.
+
 ## [0.7.1] - 2026-10-13
 
 ### Fixed
