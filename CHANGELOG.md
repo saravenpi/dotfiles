@@ -6,6 +6,38 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-13
+
+### Added
+
+- `kitty`: restored `kitty.conf` with the `undefined` font, translucent window,
+  remote control socket, and colors from `palette.conf`; paste confirmations
+  disabled via `paste_actions`.
+- Desktop widgets (statusbar, sidebar, launcher) moved to the separate
+  [saravenpi/widgets](https://github.com/Saravenpi/widgets) Cargo workspace;
+  the sway config starts `~/.local/bin/statusbar`, `mod+n` toggles the sidebar
+  and `mod+space` opens the launcher. The facile catalog entry `widgets:`
+  points at that repo.
+
+### Changed
+
+- Default font switched from GohuFont to `undefined` (https://undefined-medium.com)
+  across sway and foot; the GohuFont file was dropped from `fonts`.
+- `vim`: `.vimrc` loads the `palette` colorscheme instead of `dracula`, so the
+  editor takes the same colors as the rest of the desktop.
+
+### Removed
+
+- `waybar`, `niri` and `rofi` packages. The sway `bar {}` block and wmenu are
+  gone; widgets replaced them.
+
+### Fixed
+
+- `install.sh`: runs the tido link pass once per install again. The duplicate
+  final re-link shipped in 0.6.0 made `tido update` link twice in a row.
+- `tido update`: re-links only when the installer exited non-zero, since a
+  successful installer already linked after pulling.
+
 ## [0.6.0] - 2026-10-12
 
 ### Added
