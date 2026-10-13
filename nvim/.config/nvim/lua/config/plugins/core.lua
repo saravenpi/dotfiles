@@ -66,13 +66,6 @@ return {
 			install_dir = vim.fn.stdpath("data") .. "/site",
 		})
 
-		require("nvim-treesitter").install({
-			"lua",
-			"vim",
-			"vimdoc",
-			"query",
-		})
-
 		vim.api.nvim_create_autocmd("FileType", {
 			callback = function(args)
 				local buf = args.buf

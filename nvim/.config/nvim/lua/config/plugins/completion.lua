@@ -3,7 +3,6 @@ return {
 		require("mason").setup()
 	end },
 	{ url = "https://github.com/mason-org/mason-lspconfig.nvim", dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" }, config = function()
-		-- local mason_servers = { "lua_ls", "ts_ls", "svelte", "html", "cssls", "jsonls", "bashls" }
 
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 		local server_settings = {
@@ -16,16 +15,6 @@ return {
 				},
 			},
 		}
-
-		-- for _, server in ipairs(mason_servers) do
-		-- 	vim.lsp.config(server, vim.tbl_deep_extend("force", {
-		-- 		capabilities = capabilities,
-		-- 	}, server_settings[server] or {}))
-		-- end
-		--
-		-- require("mason-lspconfig").setup({
-		-- 	ensure_installed = mason_servers,
-		-- })
 
 		vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(ev)
