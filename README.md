@@ -146,9 +146,13 @@ git submodule update --init --recursive
 | `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
 | `sway`    | `~/.config/sway`                              |
 | `foot`    | `~/.config/foot`                              |
-| `rofi`    | `~/.config/rofi`                              |
-| `waybar`  | `~/.config/waybar`                            |
-| `niri`    | `~/.config/niri`                              |
+| `kitty`   | `~/.config/kitty` (kitty.conf + palette colors) |
+
+Desktop widgets (statusbar, sidebar, launcher) live in the separate
+[saravenpi/widgets](https://github.com/Saravenpi/widgets) Cargo workspace;
+`make install` puts their binaries in `~/.local/bin`, which the sway config
+starts. `palette sync` writes the shared colors to
+`~/.config/widgets/palette.css`.
 
 `~/scripts` is added to `PATH` by the shell settings, so once the dotfiles are
 linked `tido` runs from anywhere.
