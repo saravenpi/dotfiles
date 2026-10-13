@@ -141,7 +141,7 @@ git submodule update --init --recursive
 | `mise`    | `~/.config/mise`                              |
 | `tmux`    | `~/.config/tmux/tmux.conf`, `~/.config/tmux/plugins` |
 | `fonts`   | `~/.local/share/fonts`                        |
-| `scripts` | `~/scripts` (includes `tido`, added to `PATH`)|
+| `scripts` | `~/scripts` (includes `tido` and `setwallpaper`, added to `PATH`) |
 | `facile`  | `~/.facile.yml`                               |
 | `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
 | `sway`    | `~/.config/sway`                              |
@@ -152,7 +152,22 @@ Desktop widgets (statusbar, sidebar, launcher) live in the separate
 [saravenpi/widgets](https://github.com/Saravenpi/widgets) Cargo workspace;
 `make install` puts their binaries in `~/.local/bin`, which the sway config
 starts. `palette sync` writes the shared colors to
-`~/.config/widgets/palette.css`.
+`~/.config/widgets/palette.css`; the widgets watch that file and restyle
+themselves the moment it changes, so no restart is needed. The sway config
+re-applies the palette on every reload (`exec_always palette sync
+--no-reload`), which means `mod+Shift+r` also refreshes the widgets.
+
+## Wallpaper
+
+`setwallpaper <image>` records the image in `~/.config/wallpaper` and applies it
+to the running session. On sway it also regenerates
+`~/.config/sway/wallpaper.conf` (`output * bg <image> fill`, included by the
+sway config), so the same image comes back after a reload or a restart; a niri
+config gets the equivalent `~/.config/niri/wallpaper.kdl` once
+`include "wallpaper.kdl"` is added to it by hand. Other Wayland compositors use
+a `swaybg` daemon, X11 uses the first of `feh`, `xwallpaper`, `nitrogen` and
+`hsetroot` that is installed, GNOME/KDE/XFCE use their own tools, and macOS uses
+`osascript` (`-a`/`--all-spaces` sets every Space).
 
 `~/scripts` is added to `PATH` by the shell settings, so once the dotfiles are
 linked `tido` runs from anywhere.
