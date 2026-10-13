@@ -468,11 +468,13 @@ if [ "$ACTION" = "update" ]; then
     fi
     info "Re-running the installer: $SRC_DIR/install.sh"
     if sh -- "$SRC_DIR/install.sh"; then
-        info "Installer already linked the dotfiles"
-    else
-        warn "installer exited non-zero; re-linking anyway"
-        ACTION="link"
+        # install.sh linked every package; linking again would be a second
+        # full pass over the same tree, so stop here.
+        info "Installer linked the dotfiles"
+        exit 0
     fi
+    warn "installer exited non-zero; linking the dotfiles anyway"
+    ACTION="link"
 fi
 
 [ -n "$TARGET" ] || die "no target directory (set \$HOME or pass --target)"

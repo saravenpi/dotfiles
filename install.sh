@@ -23,7 +23,6 @@ NC='\033[0m'
 BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 DOTFILES_LINK="$HOME/.dotfiles"
 DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts sway foot kitty facile"
 
 SOURCE_DIR=""
 
@@ -223,7 +222,12 @@ create_backup() {
     fi
 }
 
-# Install dotfiles with tido
+# Link every dotfiles package into $HOME with tido.
+#
+# tido is the single linker: it links all non-hidden package directories, so
+# the installer does not pass a hardcoded list that can drift from the repo.
+# `tido update` runs this script and then stops, rather than linking a second
+# time on top of it.
 install_dotfiles() {
     tido_script="$SOURCE_DIR/scripts/scripts/tido"
 
@@ -232,21 +236,8 @@ install_dotfiles() {
         return 1
     fi
 
-    existing_packages=""
-    for pkg in $PACKAGES; do
-        if [ -d "$SOURCE_DIR/$pkg" ]; then
-            existing_packages="$existing_packages $pkg"
-        fi
-    done
-
-    if [ -z "$existing_packages" ]; then
-        error "No packages found in $SOURCE_DIR"
-        return 1
-    fi
-
     info "Linking dotfiles with tido..."
-    # shellcheck disable=SC2086
-    if sh -- "$tido_script" link --target "$HOME" --backup "$BACKUP_DIR" $existing_packages; then
+    if sh -- "$tido_script" link --target "$HOME" --backup "$BACKUP_DIR"; then
         success "Dotfiles configuration completed"
     else
         error "Dotfiles linking failed"
@@ -437,14 +428,11 @@ show_summary() {
     printf '  %bhttps://github.com/saravenpi/dotfiles/issues%b\n' "${BLUE}" "${NC}"
     printf '%b=======================================%b\n' "${WHITE}" "${NC}"
 
+    # `welcome` is an optional command the user may provide; show it when it
+    # is on PATH. Never source ~/.functions here: it is a bash file and this
+    # script runs under sh + ``set -eu``, where sourcing it aborts the run.
     if command_exists welcome; then
         welcome
-    elif [ -f "$HOME/.functions" ]; then
-        # shellcheck source=/dev/null
-        . "$HOME/.functions" 2>/dev/null || true
-        if command_exists welcome; then
-            welcome
-        fi
     fi
 }
 
