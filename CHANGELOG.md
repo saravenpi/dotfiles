@@ -6,6 +6,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-10-13
+
+### Fixed
+
+- `tido update` links the dotfiles exactly once. It stops after `install.sh`
+  has linked and only runs its own link pass when the installer fails, instead
+  of linking a second time on top of a successful install.
+- `install.sh` links every package: `tido link` runs without a hardcoded list,
+  so `bulle`, `palette` and `wallpapers` are linked by the installer itself
+  rather than being left to `tido`'s second pass.
+- `install.sh` no longer sources `~/.functions` in the final summary. That file
+  is bash, and sourcing it under `sh` with `set -eu` aborted the installer with
+  exit status 2, which made `tido update` treat a successful install as a
+  failure and re-link.
+
 ## [0.7.0] - 2026-10-13
 
 ### Added
