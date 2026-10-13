@@ -1,0 +1,44 @@
+/* Custom properties for GTK 4.16 and later; the named color
+   declarations below are the fallback for older GTK releases. */
+
+:root {
+  --palette-bg: #131318;
+  --palette-fg: #e5e1e3;
+  --palette-cursor: #bfcaff;
+  --palette-color0: #1e1f26;
+  --palette-color1: #e49983;
+  --palette-color2: #88b78a;
+  --palette-color3: #c2a960;
+  --palette-color4: #8caed9;
+  --palette-color5: #baa1d7;
+  --palette-color6: #72b6c0;
+  --palette-color7: #c9c5c8;
+  --palette-color8: #6c6c75;
+  --palette-color9: #ffccbe;
+  --palette-color10: #b3e3b4;
+  --palette-color11: #f0d587;
+  --palette-color12: #bfd9ff;
+  --palette-color13: #e5ceff;
+  --palette-color14: #9ee2ed;
+  --palette-color15: #f9f5f6;
+}
+
+@define-color palette_bg #131318;
+@define-color palette_fg #e5e1e3;
+@define-color palette_cursor #bfcaff;
+@define-color palette_color0 #1e1f26;
+@define-color palette_color1 #e49983;
+@define-color palette_color2 #88b78a;
+@define-color palette_color3 #c2a960;
+@define-color palette_color4 #8caed9;
+@define-color palette_color5 #baa1d7;
+@define-color palette_color6 #72b6c0;
+@define-color palette_color7 #c9c5c8;
+@define-color palette_color8 #6c6c75;
+@define-color palette_color9 #ffccbe;
+@define-color palette_color10 #b3e3b4;
+@define-color palette_color11 #f0d587;
+@define-color palette_color12 #bfd9ff;
+@define-color palette_color13 #e5ceff;
+@define-color palette_color14 #9ee2ed;
+@define-color palette_color15 #f9f5f6;
