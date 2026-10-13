@@ -11,7 +11,7 @@ Core dependencies:
 
 ### Fresh install by distribution
 
-The installer sets up user configuration and tools. Run the command for your distribution to install build essentials (required by mise for compiling Python, Node, and C/Rust tools) and the Wayland desktop stack — **Hyprland by default**, with sway as a fully configured alternative.
+The installer sets up user configuration and tools. Run the command for your distribution to install build essentials (required by mise for compiling Python, Node, and C/Rust tools) and the Sway Wayland desktop stack. The **Hyprland** package is also included as a fully configured alternative session.
 
 #### Alpine Linux
 
@@ -72,11 +72,11 @@ apt install sway swaybg foot wmenu wl-clipboard fonts-dejavu zsh
 
 Seat management is handled automatically by `systemd-logind`.
 
-The commands above install the sway stack. The session starts **Hyprland** by default, so also install it from your distribution's repositories — the `hyprland` package on Arch, Void and Debian trixie and newer — plus a wallpaper tool (`hyprpaper` or `swaybg`). If you would rather stay on sway, both configs are complete; change the `exec` line in `~/.profile`, `~/.zprofile` and `~/.bash_profile` to `exec sway`.
+The commands above install the sway stack (and the Hyprland alternative). The session starts Sway by default; if you would rather use Hyprland, both configs are complete — change the `exec` line in `~/.profile`, `~/.zprofile` and `~/.bash_profile` to `exec Hyprland`.
 
 ### Environment and edge cases
 
-- Seat management: start Hyprland directly with `exec Hyprland` from your login shell on `tty1` (the shell profiles do this for you). Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`.
+- Seat management: start Sway directly with `exec sway` from your login shell on tty1 (the shell profiles do this for you). Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`.
 - Virtual machines: virtual DRM drivers (such as UTM or QEMU using `virtio-gpu`, VirtualBox, or VMware) lack hardware cursor planes and often fail to provide 3D hardware contexts. Shell profiles auto-detect virtual GPU devices and set `WLR_RENDERER=pixman` (switching the compositor to fast 2D CPU rendering to eliminate lag and buffer flickers), `WLR_NO_HARDWARE_CURSORS=1`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT=1`, and `WLR_DRM_NO_MODIFIERS=1`. The sway output settings disable adaptive sync and set `max_render_time off`.
 - Runtime directory: on distributions without systemd (Alpine with OpenRC, Void with runit), shell profiles fall back to creating `/tmp/user-$(id -u)` with mode `0700` if `XDG_RUNTIME_DIR` is not set.
 - Clipboard: `tmux-yank` requires a Wayland clipboard helper (`wl-clipboard`), included in the desktop package lists above.
