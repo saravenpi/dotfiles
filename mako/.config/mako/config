@@ -1,0 +1,41 @@
+# mako — the Wayland notification daemon.
+#
+# Colours live in ~/.config/mako/palette.conf, written by `palette sync`, and
+# are pulled in below; everything else — size, spacing, behaviour — lives here.
+# Edit this file for how notifications look and behave, never the generated one.
+
+include=~/.config/mako/palette.conf
+
+font=undefined 11
+
+width=360
+height=200
+margin=10
+outer-margin=12
+padding=12,14
+border-size=1
+border-radius=12
+
+icons=1
+max-icon-size=48
+icon-location=left
+icon-border-radius=8
+
+markup=1
+actions=1
+history=1
+max-history=25
+max-visible=4
+
+default-timeout=8000
+ignore-timeout=0
+
+group-by=app-name
+text-alignment=left
+
+anchor=top-right
+format=<b>%s</b>\n%b
+
+# Critical notifications stay on screen until they are dismissed.
+[urgency=critical]
+default-timeout=0
