@@ -13,6 +13,11 @@ output * max_render_time off
 
 exec $HOME/.local/bin/statusbar
 
+# The sidebar is also the session's notification daemon: it owns
+# org.freedesktop.Notifications from login, so notifications are kept whether
+# or not the panel has been toggled open. `mod+n` only shows and hides it.
+exec $HOME/.local/bin/sidebar
+
 # Re-apply the palette on every reload, including the automatic one `palette
 # sync` sends. palette.css is rewritten and the running widgets pick the new
 # colors up from their file monitor, so a reload restyles them without a
@@ -23,8 +28,10 @@ font pango:undefined 11
 
 floating_modifier $mod normal
 
-default_border pixel 2
-default_floating_border pixel 2
+# Flat, borderless windows. Rounded corners would need the swayfx fork; the
+# stock sway package does not support them.
+default_border none
+default_floating_border none
 gaps inner 10
 gaps outer 6
 smart_gaps off
