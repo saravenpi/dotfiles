@@ -11,7 +11,7 @@ Core dependencies:
 
 ### Fresh install by distribution
 
-The installer sets up user configuration and tools. Run the command for your distribution to install build essentials (required by mise for compiling Python, Node, and C/Rust tools) and the Sway Wayland desktop stack.
+The installer sets up user configuration and tools. Run the command for your distribution to install build essentials (required by mise for compiling Python, Node, and C/Rust tools) and the Wayland desktop stack — **Hyprland by default**, with sway as a fully configured alternative.
 
 #### Alpine Linux
 
@@ -72,10 +72,12 @@ apt install sway swaybg foot wmenu wl-clipboard fonts-dejavu zsh
 
 Seat management is handled automatically by `systemd-logind`.
 
+The commands above install the sway stack. The session starts **Hyprland** by default, so also install it from your distribution's repositories — the `hyprland` package on Arch, Void and Debian trixie and newer — plus a wallpaper tool (`hyprpaper` or `swaybg`). If you would rather stay on sway, both configs are complete; change the `exec` line in `~/.profile`, `~/.zprofile` and `~/.bash_profile` to `exec sway`.
+
 ### Environment and edge cases
 
-- Seat management: start Sway directly with `exec sway` from your login shell on `tty1`. Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`.
-- Virtual machines: virtual DRM drivers (such as UTM or QEMU using `virtio-gpu`, VirtualBox, or VMware) lack hardware cursor planes and often fail to provide 3D hardware contexts. Shell profiles auto-detect virtual GPU devices and set `WLR_RENDERER=pixman` (switching Sway to fast 2D CPU rendering to eliminate lag and buffer flickers), `WLR_NO_HARDWARE_CURSORS=1`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT=1`, and `WLR_DRM_NO_MODIFIERS=1`. Sway output settings disable adaptive sync and set `max_render_time off`.
+- Seat management: start Hyprland directly with `exec Hyprland` from your login shell on `tty1` (the shell profiles do this for you). Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`.
+- Virtual machines: virtual DRM drivers (such as UTM or QEMU using `virtio-gpu`, VirtualBox, or VMware) lack hardware cursor planes and often fail to provide 3D hardware contexts. Shell profiles auto-detect virtual GPU devices and set `WLR_RENDERER=pixman` (switching the compositor to fast 2D CPU rendering to eliminate lag and buffer flickers), `WLR_NO_HARDWARE_CURSORS=1`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT=1`, and `WLR_DRM_NO_MODIFIERS=1`. The sway output settings disable adaptive sync and set `max_render_time off`.
 - Runtime directory: on distributions without systemd (Alpine with OpenRC, Void with runit), shell profiles fall back to creating `/tmp/user-$(id -u)` with mode `0700` if `XDG_RUNTIME_DIR` is not set.
 - Clipboard: `tmux-yank` requires a Wayland clipboard helper (`wl-clipboard`), included in the desktop package lists above.
 
@@ -144,15 +146,16 @@ git submodule update --init --recursive
 | `scripts` | `~/scripts` (includes `tido` and `setwallpaper`, added to `PATH`) |
 | `facile`  | `~/.facile.yml`                               |
 | `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
-| `sway`    | `~/.config/sway`                              |
+| `sway`    | `~/.config/sway` (the alternative session)    |
+| `hypr`    | `~/.config/hypr` (Hyprland, the default session) |
 | `foot`    | `~/.config/foot`                              |
 | `kitty`   | `~/.config/kitty` (kitty.conf + palette colors) |
 | `mako`    | `~/.config/mako` (config + palette colors)    |
 
 Desktop widgets (statusbar, sidebar, launcher) live in the separate
 [saravenpi/widgets](https://github.com/Saravenpi/widgets) Cargo workspace;
-`make install` puts their binaries in `~/.local/bin`, which the sway config
-starts. `palette sync` writes the shared colors to
+`make install` puts their binaries in `~/.local/bin`, which the Hyprland and
+sway configs start. `palette sync` writes the shared colors to
 `~/.config/widgets/palette.css`; the widgets watch that file and restyle
 themselves the moment it changes, so no restart is needed. The sway config
 re-applies the palette on every reload (`exec_always palette sync
@@ -166,12 +169,14 @@ time: a session bus has exactly one owner of `org.freedesktop.Notifications`.
 - The **sidebar** from [saravenpi/widgets](https://github.com/Saravenpi/widgets)
   is the default. It owns the bus name from login, keeps the last 50
   notifications in `$XDG_STATE_HOME/widgets/notifications.json`, shows them in
-  the top-right as they arrive and lists the history under `mod+n`. Sway starts
-  it from `~/.config/sway/config`; `mako` must not run alongside it.
+  the top-right as they arrive and lists the history under `mod+n`. Hyprland
+  starts it from `~/.config/hypr/hyprland.conf` and sway from
+  `~/.config/sway/config`; `mako` must not run alongside it.
 - **mako** is the alternative. Its config is packaged here (`~/.config/mako`):
   `config` sets the size, spacing and behaviour, and `palette.conf` carries the
   colors, generated by `palette sync` and pulled in with `include=`. To use mako
-  instead, start `mako` and drop the `sidebar` line from the sway config.
+  instead, start `mako` and drop the `sidebar` line from the Hyprland or sway
+  config.
 
 `palette sync` reloads a running mako with `makoctl reload`, so either choice
 stays on the same colors as the rest of the desktop.
@@ -181,9 +186,11 @@ stays on the same colors as the rest of the desktop.
 `setwallpaper <image>` records the image in `~/.config/wallpaper` and applies it
 to the running session. On sway it also regenerates
 `~/.config/sway/wallpaper.conf` (`output * bg <image> fill`, included by the
-sway config), so the same image comes back after a reload or a restart; a niri
-config gets the equivalent `~/.config/niri/wallpaper.kdl` once
-`include "wallpaper.kdl"` is added to it by hand. Other Wayland compositors use
+sway config); on Hyprland it writes `~/.config/hypr/wallpaper.conf`
+(`exec-once = swaybg …`, included by the Hyprland config), so the same image
+comes back after a reload or a restart; a niri config gets the equivalent
+`~/.config/niri/wallpaper.kdl` once `include "wallpaper.kdl"` is added to it by
+hand. Other Wayland compositors use
 a `swaybg` daemon, X11 uses the first of `feh`, `xwallpaper`, `nitrogen` and
 `hsetroot` that is installed, GNOME/KDE/XFCE use their own tools, and macOS uses
 `osascript` (`-a`/`--all-spaces` sets every Space).
