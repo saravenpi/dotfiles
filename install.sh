@@ -23,7 +23,7 @@ NC='\033[0m'
 BACKUP_DIR="$HOME/.config/config.old.$(date +%Y%m%d_%H%M%S)"
 DOTFILES_LINK="$HOME/.dotfiles"
 DOTFILES_REPO="https://github.com/saravenpi/dotfiles"
-PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts sway foot niri rofi waybar facile"
+PACKAGES="fonts nvim shell bash zsh tmux vim mise scripts sway foot kitty facile"
 
 SOURCE_DIR=""
 
@@ -194,7 +194,7 @@ create_backup() {
         .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts .local/share/fonts"
-    config_dirs_to_backup="nvim mise niri rofi waybar sway foot facile palette"
+    config_dirs_to_backup="nvim mise kitty sway foot facile palette"
 
     backup_count=0
 
@@ -479,8 +479,6 @@ main() {
     install_mise
     install_mise_tools
     install_facile
-
-    install_dotfiles || warn "Final re-link failed"
 
     show_summary
 

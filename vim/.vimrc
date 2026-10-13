@@ -9,7 +9,7 @@ if v:version < 802
     packadd! dracula
 endif
 syntax enable
-colorscheme dracula
+colorscheme palette
 hi Normal guibg=NONE ctermbg=NONE
 hi NonText guibg=NONE ctermbg=NONE
 
