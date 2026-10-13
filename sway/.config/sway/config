@@ -2,13 +2,14 @@ include ~/.config/sway/palette.conf
 
 set $mod Mod4
 set $term foot
-set $menu wmenu-run -f "GohuFont 14 Nerd Font Mono 11" -N "$palette_bg" -n "$palette_fg" -M "$palette_bg" -m "$palette_cursor" -S "$palette_cursor" -s "$palette_bg" -p "run:"
 
 output * bg ~/wallpapers/alcedo-atthis.png fill
 output * adaptive_sync off
 output * max_render_time off
 
-font pango:GohuFont 14 Nerd Font Mono, monospace 11
+exec $HOME/.local/bin/statusbar
+
+font pango:undefined 11
 
 floating_modifier $mod normal
 
@@ -20,10 +21,11 @@ smart_gaps off
 smart_borders off
 
 bindsym $mod+Return exec $term
-bindsym $mod+space exec $menu
+bindsym $mod+space exec $HOME/.local/bin/launcher
 bindsym $mod+q kill
 bindsym $mod+Shift+r reload
 bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'
+bindsym $mod+n exec $HOME/.local/bin/sidebar toggle
 
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -109,19 +111,4 @@ input type:touchpad {
 
 input type:pointer {
     natural_scroll enabled
-}
-
-bar bar-0 {
-    position top
-    swaybar_command waybar
-    status_command while date +'%Y-%m-%d %H:%M'; do sleep 1; done
-    colors {
-        statusline $palette_fg
-        background $palette_bg
-        separator $palette_color8
-        focused_workspace $palette_cursor $palette_bg $palette_cursor
-        active_workspace $palette_color8 $palette_bg $palette_fg
-        inactive_workspace $palette_bg $palette_bg $palette_color7
-        urgent_workspace $palette_color1 $palette_bg $palette_color1
-    }
 }
