@@ -1,0 +1,57 @@
+/* Centered launcher. `.surface` (shell_common::theme) provides the panel
+   background; only the search field and the rows are specific to this widget.
+   The panel is a floating card with squared-off corners, matching the bar. */
+
+.popup {
+  padding: 10px 0;
+}
+
+/* The query line is the panel's top rule: no field chrome, just type. The
+   theme's own `entry:focus-within` paints a 2px accent outline inside a focused
+   field, which reads as a strange border around the query line; focus is shown
+   inline as a painted underline instead of a hairline. */
+entry {
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 15px;
+  color: @palette_fg;
+  background-color: transparent;
+  background-image: none;
+  border: none;
+  border-bottom: 1px solid alpha(@palette_fg, 0.14);
+  box-shadow: none;
+  outline: 0 solid transparent;
+}
+
+/* The line under the query is the focus indicator. */
+entry:focus-within {
+  border-bottom-color: @palette_color4;
+}
+
+list {
+  background-color: transparent;
+  background-image: none;
+  border-width: 0;
+}
+
+row {
+  padding: 8px 16px;
+  background-color: transparent;
+  background-image: none;
+  color: @palette_fg;
+  font-size: 13px;
+}
+
+row:hover {
+  background-color: alpha(@palette_fg, 0.06);
+}
+
+/* Selected row uses the same accent as the focused workspace chip. */
+row:selected {
+  background-color: @palette_color4;
+  color: @palette_bg;
+}
+
+row:selected .dim {
+  color: alpha(@palette_bg, 0.75);
+}

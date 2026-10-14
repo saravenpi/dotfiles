@@ -1,0 +1,73 @@
+/* Top bar: workspace chips on the left, clock in the middle, CPU and memory
+   readings on the right. Everything it shares with the other widgets (transparent
+   window, ghost buttons, muted text, the undefined font) lives in
+   shell_common::theme. */
+
+/* A floating bar, not a full-width strip: it is inset from the screen edges by
+   `theme::GAP`, has no border and squared-off corners (the bar itself is a
+   translucent fill; the chips keep their circles so the bar still reads as a
+   status line). The window is `theme::BAR_HEIGHT` tall, which is this bar plus
+   its margins, and that is the strip the compositor reserves. The chips stay
+   circles so the bar keeps its status-line rhythm. */
+.bar {
+  min-height: 32px;
+  margin: 6px;
+  padding: 6px;
+  background-color: alpha(@palette_bg, 0.92);
+  color: @palette_fg;
+  border-radius: 0;
+}
+
+.workspaces {
+}
+
+button.ws {
+  background-color: alpha(@palette_fg, 0.1);
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: @palette_fg;
+  border-radius: 0;
+}
+
+button.ws:hover {
+  background-color: alpha(@palette_fg, 0.18);
+  color: @palette_fg;
+}
+
+button.ws.focused,
+button.ws.focused:hover {
+  background-color: @palette_color4;
+  color: @palette_bg;
+}
+
+button.ws.urgent,
+button.ws.urgent:hover {
+  background-color: transparent;
+  color: @palette_color1;
+  border: 2px solid @palette_color1;
+}
+
+.clock {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: @palette_fg;
+}
+/* RAM and CPU, at the right-hand end: the same chips as the workspace ones, so
+   the two ends of the bar read as one material. */
+.stats {
+  /* margin: 4px; */
+}
+
+.stat {
+  min-height: 20px;
+  padding: 0 8px;
+  background-color: alpha(@palette_fg, 0.1);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: alpha(@palette_fg, 0.7);
+}
