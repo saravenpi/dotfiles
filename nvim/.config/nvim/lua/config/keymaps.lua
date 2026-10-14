@@ -121,7 +121,7 @@ vim.api.nvim_create_user_command("ReloadTheme", function()
 		local theme = vim.fn.readfile(theme_mode_file)[1]
 		if theme == "dark" or theme == "light" then
 			vim.opt.background = theme
-			vim.cmd.colorscheme("paper")
+			vim.cmd.colorscheme("palette")
 			print("🎨 Reloaded theme: " .. theme .. " mode")
 		end
 	end
