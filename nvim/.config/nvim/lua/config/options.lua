@@ -16,6 +16,8 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.colorcolumn = "80"
 
+vim.cmd.colorscheme("palette")
+
 vim.api.nvim_create_autocmd("VimLeave", {
 	callback = function()
 		vim.opt.guicursor = "a:underline"
