@@ -4,11 +4,23 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.10.1] - 2026-10-13
+## [0.11.0] - 2026-10-14
+
+### Added
+
+- `widgets` package: the user-editable stylesheets for the statusbar, sidebar
+  and launcher are now versioned in the dotfiles at `~/.config/widgets/*.css`.
+  Each widget watches `~/.config/widgets/<name>.css` and restyles itself in
+  place when it changes, the same way it already watched `palette.css`. Copy any
+  widget's `style.css` there, edit it, and the widget picks it up without a
+  restart.
 
 ### Changed
 
-- README: the palette-refresh note now covers Hyprland as well as sway.
+- `sway`: inner and outer gaps are now 10 px everywhere, matching the widgets'
+  `theme::GAP` (the bar, sidebar and launcher all inset by the same measure the
+  window rectangles use on every exposed screen edge).
+- README: the widgets section now documents the per-widget stylesheet hot-reload.
 
 ## [0.10.0] - 2026-10-13
 

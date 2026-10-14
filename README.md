@@ -157,10 +157,15 @@ Desktop widgets (statusbar, sidebar, launcher) live in the separate
 `make install` puts their binaries in `~/.local/bin`, which the Hyprland and
 sway configs start. `palette sync` writes the shared colors to
 `~/.config/widgets/palette.css`; the widgets watch that file and restyle
-themselves the moment it changes, so no restart is needed. Sway re-applies the
-palette on every reload (`exec_always palette sync --no-reload`), so
-`mod+Shift+r` also refreshes the widgets there; the Hyprland config runs
-`palette sync --no-reload` once at login.
+themselves the moment it changes, so no restart is needed. Each widget also
+reads its own stylesheet from `~/.config/widgets/<name>.css` (for example
+`~/.config/widgets/statusbar.css`) when that file exists, and watches it for
+changes — copy any widget's `style.css` there, edit it, and the widget
+restyles in place. When the file is absent the widget falls back to its
+compiled-in default. Sway re-applies the palette on every reload
+(`exec_always palette sync --no-reload`), so `mod+Shift+r` also refreshes
+the widgets there; the Hyprland config runs `palette sync --no-reload` once
+at login.
 
 ## Notifications
 

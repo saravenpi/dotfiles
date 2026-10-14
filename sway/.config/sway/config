@@ -41,8 +41,8 @@ floating_modifier $mod normal
 # stock sway package does not support them.
 default_border none
 default_floating_border none
-gaps inner 3
-gaps outer 3
+gaps inner 10
+gaps outer 10
 smart_gaps off
 smart_borders off
 

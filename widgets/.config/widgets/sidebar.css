@@ -1,0 +1,88 @@
+/* Right-hand notification panel. `.surface` (shell_common::theme) gives it the
+   palette background; the panel only sets its padding. It floats — the window
+   keeps `theme::GAP` off the right and bottom edges — so it reads like the bar.
+   The title row keeps the only divider in the widget: a hairline under it, then
+   the list below. */
+
+.panel {
+  padding: 12px 16px;
+}
+
+/* The one rule above the list, under the title row. */
+.header {
+  border-bottom: 1px solid alpha(@palette_fg, 0.14);
+  padding-bottom: 8px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: @palette_fg;
+}
+
+.count {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.clear,
+.dismiss {
+  padding: 2px 8px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.dismiss {
+  min-width: 20px;
+  padding: 0 6px;
+  color: alpha(@palette_fg, 0.55);
+}
+
+.dismiss:hover {
+  background-color: alpha(@palette_color1, 0.16);
+  color: @palette_color1;
+}
+
+/* One notification: not a card, just a rule between entries. */
+.row {
+  padding: 10px 0;
+  border-bottom: 1px solid alpha(@palette_fg, 0.14);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row.urgent {
+  border-left: 2px solid @palette_color1;
+}
+
+.summary {
+  font-size: 13px;
+  font-weight: 600;
+  color: @palette_fg;
+}
+
+.body {
+  font-size: 12px;
+  color: alpha(@palette_fg, 0.78);
+}
+
+/* Top-right toasts: the transient half of the daemon. A notification that
+   arrives while the panel is closed still has to be visible somewhere, so it
+   lands here as a card under the statusbar and expires on its own. A hairline
+   separates one toast from the next. */  .toast {
+  padding: 10px 12px;
+  background-color: alpha(@palette_bg, 0.96);
+  color: @palette_fg;
+  border-bottom: 1px solid alpha(@palette_fg, 0.14);
+}
+
+.toast:last-child {
+  border-bottom: none;
+}
+
+.toast.urgent {
+  border-left: 3px solid @palette_color1;
+}
