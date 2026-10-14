@@ -193,7 +193,7 @@ create_backup() {
         .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts .local/share/fonts"
-    config_dirs_to_backup="nvim mise kitty sway hypr foot mako facile palette"
+    config_dirs_to_backup="nvim mise kitty sway hypr foot mako facile palette widgets"
 
     backup_count=0
 
