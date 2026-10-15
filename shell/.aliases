@@ -57,8 +57,8 @@ command -v j >/dev/null 2>&1 && alias jhelp="j help"
 
 
 # Editing
-if command -v bob >/dev/null 2>&1; then
-    alias nvim="bob run latest"
+if command -v nvim >/dev/null 2>&1; then
+    # alias nvim="bob run latest"
     alias brain='cd "$BRAIN/" && nvim Home.md'
     alias b='cd "$BRAIN/" && nvim Home.md'
     alias bn='cd "$BRAIN/Inbox" && nvim -c "set filetype=markdown"'
