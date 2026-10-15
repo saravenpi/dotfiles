@@ -11,14 +11,11 @@
    circles so the bar keeps its status-line rhythm. */
 .bar {
   min-height: 32px;
-  margin: 6px;
-  padding: 6px;
+  margin: 10px;
+  padding: 10px;
   background-color: alpha(@palette_bg, 0.92);
   color: @palette_fg;
   border-radius: 0;
-}
-
-.workspaces {
 }
 
 button.ws {
@@ -56,12 +53,18 @@ button.ws.urgent:hover {
   letter-spacing: 0.02em;
   color: @palette_fg;
 }
-/* RAM and CPU, at the right-hand end: the same chips as the workspace ones, so
-   the two ends of the bar read as one material. */
-.stats {
-  /* margin: 4px; */
-}
 
+/* Right-hand controls: volume, brightness and the logout button share the same
+   soft pill language as the RAM/CPU stat pills, so the right end of the bar
+   reads as one material. The slider popup is a small floating card that appears
+   under the pill when a control is pressed and held (or clicked) so the bar
+   itself stays a narrow status line.
+
+   The stats are labels rather than buttons and had no rule of their own here, so
+   they came out as bare text beside a row of pills: none of the material, and
+   not even the same height. One rule covers both; the space between them, and
+   between them and the controls, is the bar's own module gap. */
+.pill,
 .stat {
   min-height: 20px;
   padding: 0 8px;
@@ -70,4 +73,71 @@ button.ws.urgent:hover {
   font-weight: 600;
   letter-spacing: 0.02em;
   color: alpha(@palette_fg, 0.7);
+  border-radius: 0;
+}
+
+.pill:hover {
+  background-color: alpha(@palette_fg, 0.18);
+  color: @palette_fg;
+}
+
+.pill.logout {
+  background-color: alpha(@palette_color1, 0.12);
+  color: alpha(@palette_color1, 0.85);
+}
+
+.pill.logout:hover {
+  background-color: alpha(@palette_color1, 0.22);
+  color: @palette_color1;
+}
+
+/* A tiny popup card for volume and brightness, shown while a pill is held or
+   clicked. It mirrors the bar's inset so it floats the same way the bar does. */
+.popup {
+  min-width: 180px;
+  padding: 10px 12px;
+  background-color: alpha(@palette_bg, 0.96);
+  color: @palette_fg;
+  border-radius: 0;
+}
+
+.popup .label {
+  font-size: 11px;
+  font-weight: 600;
+  color: @palette_fg;
+  margin-bottom: 6px;
+}
+
+.popup .value {
+  font-size: 12px;
+  font-weight: 600;
+  color: @palette_color4;
+  margin-bottom: 8px;
+}
+
+.popup .row {
+  padding: 4px 0;
+}
+
+.popup .step {
+  min-width: 20px;
+  min-height: 20px;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: @palette_fg;
+  background-color: alpha(@palette_fg, 0.08);
+}
+
+.popup .step:hover {
+  background-color: alpha(@palette_fg, 0.18);
+}
+
+.popup .fill {
+  min-height: 8px;
+  background-color: alpha(@palette_fg, 0.1);
+}
+
+.popup .fill > .thumb {
+  background-color: @palette_color4;
 }
