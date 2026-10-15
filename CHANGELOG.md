@@ -4,6 +4,27 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-10-15
+
+### Added
+
+- `fonts`: a `Helvetica` family (Regular, Bold, Italic, Bold Italic) in the
+  dotfiles-backed `~/.local/share/fonts`. The four faces are TeX Gyre Heros
+  v2.004 from CTAN with only their internal name table rewritten to read
+  `Helvetica`, so Typst documents written with `#text(font: "Helvetica")`
+  compile with real Helvetica metrics without a single line changed.
+  `fonts/LICENSE-TeXGyreHeros.txt` carries the GUST Font License next to the
+  derived files and the README records the provenance.
+- `widgets`: `statusbar.css` styles the pill controls (volume, brightness,
+  logout) and their slider popup card in the same material as the stat chips.
+
+### Changed
+
+- `widgets`: the statusbar's margin and padding are now 10 px, matching the
+  gaps; the empty `.workspaces` and `.stats` rules are gone.
+- `shell`: the `nvim` alias calls `nvim` directly instead of `bob run latest`.
+- README: the packages section documents what the `fonts` package ships.
+
 ## [0.11.0] - 2026-10-14
 
 ### Added
