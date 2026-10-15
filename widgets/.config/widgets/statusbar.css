@@ -5,10 +5,10 @@
 
 /* A floating bar, not a full-width strip: it is inset from the screen edges by
    `theme::GAP`, has no border and squared-off corners (the bar itself is a
-   translucent fill; the chips keep their circles so the bar still reads as a
+   translucent fill; the chips stay squared so the bar still reads as a
    status line). The window is `theme::BAR_HEIGHT` tall, which is this bar plus
    its margins, and that is the strip the compositor reserves. The chips stay
-   circles so the bar keeps its status-line rhythm. */
+   squared so the bar keeps its status-line rhythm. */
 .bar {
   min-height: 32px;
   margin: 10px;
@@ -55,7 +55,7 @@ button.ws.urgent:hover {
 }
 
 /* Right-hand controls: volume, brightness and the logout button share the same
-   soft pill language as the RAM/CPU stat pills, so the right end of the bar
+   squared material as the RAM/CPU stat pills, so the right end of the bar
    reads as one material. The slider popup is a small floating card that appears
    under the pill when a control is pressed and held (or clicked) so the bar
    itself stays a narrow status line.
