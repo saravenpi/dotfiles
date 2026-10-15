@@ -152,6 +152,17 @@ git submodule update --init --recursive
 | `kitty`   | `~/.config/kitty` (kitty.conf + palette colors) |
 | `mako`    | `~/.config/mako` (config + palette colors)    |
 
+The `fonts` package also ships a **Helvetica** family
+(`texgyreheros-{regular,bold,italic,bolditalic}.otf`, next to
+`fonts/LICENSE-TeXGyreHeros.txt`). Helvetica is a commercial Monotype typeface,
+so those files are [TeX Gyre Heros](https://mirrors.ctan.org/fonts/tex-gyre.zip)
+v2.004 from CTAN — a metrically identical revival — with only their internal
+name table rewritten so the family reads `Helvetica`. A Typst document written
+with `#text(font: "Helvetica")` therefore compiles with real Helvetica metrics
+without a single line changed, and any other fontconfig program finds the same
+family under the same name. The copyright strings inside the OTFs and the GUST
+Font License are untouched.
+
 Desktop widgets (statusbar, sidebar, launcher) live in the separate
 [saravenpi/widgets](https://github.com/Saravenpi/widgets) Cargo workspace;
 `make install` puts their binaries in `~/.local/bin`, which the Hyprland and
