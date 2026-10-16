@@ -6,16 +6,23 @@
 /* A floating bar, not a full-width strip: it is inset from the screen edges by
    `theme::GAP`, has no border and squared-off corners (the bar itself is a
    translucent fill; the chips stay squared so the bar still reads as a
-   status line). The window is `theme::BAR_HEIGHT` tall, which is this bar plus
-   its margins, and that is the strip the compositor reserves. The chips stay
-   squared so the bar keeps its status-line rhythm. */
+   status line).
+
+   The box model is exact on purpose. The window is `theme::BAR_HEIGHT` (52)
+   tall and that is the strip the compositor reserves, so the bar's own total
+   height has to be *exactly* that: `GAP` margin above + 32px of content +
+   `GAP` margin below = 52. The horizontal padding is the 10px kept inside the
+   bar; vertical padding stays 0 so nothing inflates the reserved strip. Before
+   this, `padding: 10px` added 20px of vertical padding on top of the 32px
+   content and the 20px of margin, so the bar really rendered 72px while only
+   52 was reserved — the sidebar, placed at `BAR_HEIGHT`, then sat under the
+   bar's lower edge and the whole top of the screen looked misaligned. */
 .bar {
   min-height: 32px;
   margin: 10px;
-  padding: 10px;
+  padding: 0 10px;
   background-color: alpha(@palette_bg, 0.92);
   color: @palette_fg;
-  border-radius: 0;
 }
 
 button.ws {
@@ -136,8 +143,10 @@ button.ws.urgent:hover {
 .popup .fill {
   min-height: 8px;
   background-color: alpha(@palette_fg, 0.1);
+  border-radius: 0;
 }
 
 .popup .fill > .thumb {
   background-color: @palette_color4;
+  border-radius: 0;
 }

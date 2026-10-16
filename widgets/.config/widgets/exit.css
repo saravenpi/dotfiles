@@ -1,0 +1,92 @@
+/* Exit dialog for ending the desktop session.
+   Centered modal floating card with palette theming and squared corners. */
+
+.exit-dialog {
+  padding: 24px 28px;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: @palette_fg;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: alpha(@palette_fg, 0.6);
+  margin-bottom: 20px;
+}
+
+.actions {
+  margin-top: 4px;
+}
+
+button.action {
+  min-height: 34px;
+  min-width: 90px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: @palette_fg;
+  background-color: alpha(@palette_fg, 0.08);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  outline: 0 solid transparent;
+}
+
+button.action:hover {
+  background-color: alpha(@palette_fg, 0.18);
+  color: @palette_fg;
+}
+
+button.action:focus,
+button.action:focus-visible {
+  outline: 0 solid transparent;
+  box-shadow: none;
+}
+
+button.action.exit {
+  background-color: alpha(@palette_color1, 0.16);
+  color: @palette_color1;
+}
+
+button.action.exit:hover {
+  background-color: @palette_color1;
+  color: @palette_bg;
+}
+
+button.action.reboot {
+  background-color: alpha(@palette_color3, 0.14);
+  color: @palette_color3;
+}
+
+button.action.reboot:hover {
+  background-color: @palette_color3;
+  color: @palette_bg;
+}
+
+button.action.poweroff {
+  background-color: alpha(@palette_color1, 0.22);
+  color: @palette_color1;
+}
+
+button.action.poweroff:hover {
+  background-color: @palette_color1;
+  color: @palette_bg;
+}
+
+button.action.cancel {
+  background-color: transparent;
+  border: 1px solid alpha(@palette_fg, 0.14);
+  color: alpha(@palette_fg, 0.7);
+}
+
+button.action.cancel:hover {
+  background-color: alpha(@palette_fg, 0.1);
+  color: @palette_fg;
+}
