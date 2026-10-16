@@ -8,18 +8,14 @@
    translucent fill; the chips stay squared so the bar still reads as a
    status line).
 
-   The box model is exact on purpose. The window is `theme::BAR_HEIGHT` (52)
+   The box model is exact on purpose. The window is `theme::BAR_HEIGHT` (42)
    tall and that is the strip the compositor reserves, so the bar's own total
    height has to be *exactly* that: `GAP` margin above + 32px of content +
-   `GAP` margin below = 52. The horizontal padding is the 10px kept inside the
-   bar; vertical padding stays 0 so nothing inflates the reserved strip. Before
-   this, `padding: 10px` added 20px of vertical padding on top of the 32px
-   content and the 20px of margin, so the bar really rendered 72px while only
-   52 was reserved — the sidebar, placed at `BAR_HEIGHT`, then sat under the
-   bar's lower edge and the whole top of the screen looked misaligned. */
+   0px margin below = 42. The horizontal padding is the 10px kept inside the
+   bar; vertical padding stays 0 so nothing inflates the reserved strip. */
 .bar {
   min-height: 32px;
-  margin: 10px;
+  margin: 10px 10px 0 10px;
   padding: 0 10px;
   background-color: alpha(@palette_bg, 0.92);
   color: @palette_fg;
