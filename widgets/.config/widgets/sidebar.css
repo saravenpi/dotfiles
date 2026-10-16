@@ -31,6 +31,7 @@
   padding: 2px 8px;
   min-width: 0;
   min-height: 0;
+  border-radius: 0;
 }
 
 .dismiss {
@@ -77,6 +78,7 @@
   background-color: alpha(@palette_bg, 0.96);
   color: @palette_fg;
   border-bottom: 1px solid alpha(@palette_fg, 0.14);
+  border-radius: 0;
 }
 
 .toast:last-child {
