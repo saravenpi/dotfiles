@@ -42,7 +42,7 @@ floating_modifier $mod normal
 default_border none
 default_floating_border none
 gaps inner 10
-gaps outer 10
+gaps outer 0
 smart_gaps off
 smart_borders off
 
@@ -52,7 +52,7 @@ bindsym $mod+space exec $HOME/.local/bin/launcher
 bindsym $mod+n exec $HOME/.local/bin/sidebar toggle
 bindsym $mod+q kill
 bindsym $mod+Shift+r reload
-bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'
+bindsym $mod+Shift+e exec $HOME/.local/bin/exit
 
 # --- Focus -------------------------------------------------------------------
 bindsym $mod+h focus left
