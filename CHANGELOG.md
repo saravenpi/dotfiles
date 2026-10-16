@@ -4,6 +4,25 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-10-16
+
+### Added
+
+- `sway`: `$mod+Shift+e` triggers the new desktop `exit` widget (`~/.local/bin/exit`)
+  replacing `swaynag` with a hard-edged, palette-themed modal dialog.
+- `widgets`: `exit.css` added to the versioned stylesheets package at
+  `~/.config/widgets/exit.css` with zero border radius and palette styling.
+
+### Changed
+
+- `sway`: outer gaps set to 0 (`gaps outer 0`). Because Sway adds outer gaps to
+  inner gaps (`gaps_outer + gaps_inner`), setting outer gaps to 0 ensures window
+  margins to screen edges and the statusbar exclusive zone are exactly 10 px,
+  matching the desktop widgets' 10 px margins.
+- `widgets`: all stylesheets (`statusbar.css`, `sidebar.css`, `launcher.css`)
+  enforce `border-radius: 0`. The launcher query input has a 6 px bottom margin
+  and zero chrome outline.
+
 ## [0.12.0] - 2026-10-15
 
 ### Added
