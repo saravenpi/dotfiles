@@ -156,3 +156,4 @@ command -v boite >/dev/null 2>&1 && alias bp="boite run pingu"
 
 command -v apk >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && alias apk-search="apk search | fzf"
 command -v fastfetch >/dev/null 2>&1 && alias neofetch="fastfetch"
+command -v kicad >/dev/null 2>&1 && alias kicad="GDK_BACKEND=x11 kicad"

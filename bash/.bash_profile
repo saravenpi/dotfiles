@@ -20,3 +20,7 @@ fi
 if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ "$(tty 2>/dev/null)" = "/dev/tty1" ]; then
     exec sway
 fi
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/sara/.local/bin:$PATH"
