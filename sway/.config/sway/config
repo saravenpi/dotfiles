@@ -50,6 +50,8 @@ smart_borders off
 bindsym $mod+Return exec $term
 bindsym $mod+space exec $HOME/.local/bin/launcher
 bindsym $mod+n exec $HOME/.local/bin/sidebar toggle
+bindsym $mod+s exec $HOME/.local/bin/settings
+bindsym $mod+comma exec $HOME/.local/bin/settings
 bindsym $mod+q kill
 bindsym $mod+Shift+r reload
 bindsym $mod+Shift+e exec $HOME/.local/bin/exit
