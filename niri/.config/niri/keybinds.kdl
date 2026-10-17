@@ -8,7 +8,7 @@ binds {
     Mod+comma { spawn "sh" "-c" "settings"; }
     Mod+question { spawn "sh" "-c" "cheatsheet"; }
     Mod+slash { spawn "sh" "-c" "cheatsheet"; }
-    Mod+Shift+e { spawn "sh" "-c" "exit"; }
+    Mod+Shift+e { spawn "sh" "-c" "env exit"; }
     // --- Window Management ---
     Mod+q { close-window; }
     Mod+f { fullscreen-window; }
