@@ -1,0 +1,44 @@
+# ~/.config/widgets/config.yml
+# Wayland desktop components configuration for sway, niri, and hyprland.
+# Powered by widgets (https://github.com/saravenpi/widgets)
+
+general:
+  font: "undefined 11"
+  gap: 10
+  inner_gap: 10
+
+statusbar:
+  position: "top"             # "top" | "bottom"
+  height: 32                  # Base bar height in px
+  clock:
+    format: "%H:%M"           # strftime format, e.g. "%a %b %d  %H:%M" or "%H:%M"
+  stats:
+    interval_ms: 1000
+    cpu: true
+    ram: true
+  modules:
+    left: ["workspaces"]
+    center: ["clock"]
+    right: ["stats", "volume", "brightness", "battery", "network", "logout"]
+
+sidebar:
+  position: "right"           # "right" | "left"
+  width: 380
+  toast_timeout_ms: 5000
+  max_notifications: 50
+
+launcher:
+  width: 600
+  top_ratio: 0.35             # 35% down from monitor top
+  placeholder: "Search applications..."
+
+exit:
+  title: "Session Control"
+  subtitle: "End desktop session, reboot, or shut down"
+  commands:
+    exit: "swaymsg exit"
+    reboot: "reboot"          # Falls back to loginctl/systemctl if available
+    poweroff: "poweroff"
+
+settings:
+  default_tab: "displays"     # "displays" | "appearance" | "about"

@@ -11,3 +11,7 @@ for file in \
 do
     [ -s "$file" ] && . "$file"
 done
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/sara/.local/bin:$PATH"
