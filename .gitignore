@@ -27,6 +27,9 @@
 /.freebuff/
 /gtk-3.0/.config/gtk-3.0/bookmarks
 /fonts/.DS_Store
+fonts/.local/bin/
+fonts/.local/share/
+fonts/.local/state/
 /mybins/mybins/agesssh
 /tmux/.tmux.conf.backup
 /tmux/.tmux.conf.bak
