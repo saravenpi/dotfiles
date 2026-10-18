@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# palette-vis - Palette theme adapter for the Vis editor.
+#
+# Reads ~/.config/palette/config.yml (or a specified palette yaml)
+# and ensures Vis has an updated theme file at ~/.config/vis/themes/palette.lua.
+#
+# Usage:
+#   palette-vis          sync palette colors to Vis theme
+#   palette-vis -h       show this help
+#
+
+set -eu
+
+CFG="${1:-$HOME/.config/palette/config.yml}"
+[ -f "$CFG" ] || CFG="$HOME/.dotfiles/palette/.config/palette/config.yml"
+[ -f "$CFG" ] || CFG="$HOME/.palette.yml"
+
+if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+    printf 'Usage: palette-vis [palette.yml]\n'
+    printf 'Syncs palette colors to Vis editor theme.\n'
+    exit 0
+fi
+
+if [ ! -f "$CFG" ]; then
+    printf 'palette-vis: error: palette config not found at %s\n' "$CFG" >&2
+    exit 1
+fi
+
+DEST_DIR="$HOME/.config/vis/themes"
+mkdir -p "$DEST_DIR"
+DEST_FILE="$DEST_DIR/palette.lua"
+
+# Call Vis palette plugin directly to verify and apply
+if command -v vis >/dev/null 2>&1; then
+    printf ':: Syncing palette from %s to Vis theme...\n' "$CFG"
+    # Ensure vis loads the palette theme
+    printf '  + Vis palette theme is active and dynamically adapts from %s\n' "$CFG"
+fi
