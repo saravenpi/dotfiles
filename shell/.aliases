@@ -147,7 +147,6 @@ command -v cercle >/dev/null 2>&1 && alias cin="cercle inbox read"
 command -v cercle >/dev/null 2>&1 && alias cmark="cercle inbox mark-read"
 
 # filet
-command -v filet >/dev/null 2>&1 && alias f="filet check . "
 command -v filet >/dev/null 2>&1 && alias fc="filet check ."
 command -v filet >/dev/null 2>&1 && alias fr="filet roast ."
 
@@ -157,3 +156,4 @@ command -v boite >/dev/null 2>&1 && alias bp="boite run pingu"
 command -v apk >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && alias apk-search="apk search | fzf"
 command -v fastfetch >/dev/null 2>&1 && alias neofetch="fastfetch"
 command -v kicad >/dev/null 2>&1 && alias kicad="GDK_BACKEND=x11 kicad"
+command -v facile >/dev/null 2>&1 && alias f="facile"
