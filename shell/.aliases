@@ -57,24 +57,21 @@ command -v j >/dev/null 2>&1 && alias jhelp="j help"
 
 
 # Editing
-if command -v nvim >/dev/null 2>&1; then
-    alias brain='cd "$BRAIN/" && nvim Home.md'
-    alias b='cd "$BRAIN/" && nvim Home.md'
-    alias bn='cd "$BRAIN/Inbox" && nvim -c "set filetype=markdown"'
-    alias cnvim='cd $HOME/.config/nvim/ && nvim .'
-    alias cbash='cd $HOME && nvim .bashrc'
-    alias czsh='cd $HOME && nvim .zshrc'
-    alias cfish='cd $HOME && nvim .config/fish/config.fish'
-    alias caliases='cd $HOME && nvim .aliases'
-    alias cfunctions='cd $HOME && nvim .functions'
-    alias ctmux='cd $HOME && nvim .config/tmux/tmux.conf'
-    alias cportals='cd $HOME/portals && nvim .'
-    alias cclaude='cd $HOME/.claude && nvim .'
-    alias cbulle='nvim $HOME/.bulle.yml'
-    alias cb='nvim $HOME/.bulle.yml'
-    alias n="nvim"
-    alias links="nvim $HOME/Code/Portals/og.yml"
-fi
+alias e="$EDITOR"
+alias brain="cd "$BRAIN/" && $EDITOR Home.md"
+alias b="cd "$BRAIN/" && $EDITOR Home.md"
+alias bn='cd "$BRAIN/Inbox" && $EDITOR -c "set filetype=markdown"'
+alias cnvim="cd $HOME/.config/nvim/ && $EDITOR init.lua"
+alias cbash="cd $HOME && $EDITOR .bashrc"
+alias czsh="cd $HOME && $EDITOR .zshrc"
+alias cfish="cd $HOME && $EDITOR .config/fish/config.fish"
+alias caliases="cd $HOME && $EDITOR .aliases"
+alias cfunctions="cd $HOME && $EDITOR .functions"
+alias ctmux="cd $HOME && $EDITOR .config/tmux/tmux.conf"
+alias cportals="cd $HOME/portals && $EDITOR portal.yml"
+alias cbulle="$EDITOR $HOME/.config/bulle/config.yml"
+alias cb="$EDITOR $HOME/.config/bulle/config.yml"
+alias links="$EDITOR $HOME/Code/Portals/og.yml"
 
 # Git
 if command -v git >/dev/null 2>&1; then
@@ -157,4 +154,5 @@ command -v apk >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && alias apk-se
 command -v fastfetch >/dev/null 2>&1 && alias neofetch="fastfetch"
 command -v kicad >/dev/null 2>&1 && alias kicad="GDK_BACKEND=x11 kicad"
 command -v facile >/dev/null 2>&1 && alias f="facile"
-command -v vis >/dev/null 2>&1 && alias v="vis"
+command -v yazi >/dev/null 2>&1 && alias y="yazi"
+
