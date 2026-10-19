@@ -12,13 +12,39 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   patched with the Nerd Fonts v3.5.1 glyph set and named `Undefined Nerd Font`,
   plus the single-width `UndefinedNerdFontMono-Medium.otf` sibling named
   `Undefined Nerd Font Mono`.
+- macOS support: the installer links the fonts into `~/Library/Fonts` (macOS
+  does not scan `~/.local/share/fonts`), and the shell profiles only run the
+  Linux-only Sway/XDG/wlroots setup on Linux.
+- `install.sh`, `tido`, `palette-vis`: use `$DOTFILES` (exported by tiroir)
+  when it points at a checkout, falling back to `~/.dotfiles`.
+- `tido`: skip the Linux-only desktop packages (`foot`, `hypr`, `mako`,
+  `niri`, `sway`, `waybar`, `widgets`) when linking every package on macOS.
+- CI: a macOS job runs `tido` under the stock bash 3.2 and BSD `readlink`.
 
 ### Changed
 
 - `foot`, `kitty`: use `Undefined Nerd Font Mono` as the terminal font.
 - `sway`: title font reads `Undefined Nerd Font`.
 - `shell`: `EDITOR` defaults to `vis` in bash and zsh, and `j` opens journal
-  entries with it.
+  entries with it. A pre-set `EDITOR` or `MYBINS` (for example from tiroir) is
+  now respected instead of overwritten, and zsh adds `MYBINS` to `PATH` like
+  bash does. The README documents every environment variable the aliases use.
+
+### Removed
+
+- `tido update`: the linker only creates and removes links; updating the
+  checkout is left to the installer and to git.
+
+### Fixed
+
+- `tido`: run on macOS again. The system `/bin/sh` is bash 3.2, whose
+  command-substitution parser rejected the `case` that collects shared
+  directories, and BSD `readlink` has no `-f`; the linker now uses a portable
+  path resolver.
+- `install.sh`: resolve a symlinked `~/.dotfiles` without `readlink -f`.
+- `shell`: stop prepending the Linux-only `/home/sara/.local/bin` to `PATH`.
+- `scripts`: `local-ip` skips loopback so it prints the same address on macOS
+  and Linux.
 
 ## [0.13.1] - 2026-10-16
 

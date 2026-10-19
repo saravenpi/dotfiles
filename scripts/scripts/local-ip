@@ -1,2 +1,5 @@
 #!/bin/bash
-ifconfig | grep 'inet ' | awk '{print $2}' | head -2 | tail -1
+
+# Print the first non-loopback IPv4 address. `ifconfig` output is the same on
+# Linux and macOS, so one awk filter covers both.
+ifconfig 2>/dev/null | awk '/inet / && $2 != "127.0.0.1" { print $2; exit }'

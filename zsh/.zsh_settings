@@ -1,11 +1,15 @@
 # history
 HISTCONTROL=ignoreboth
 
-# default editor
-export EDITOR='vis'
+# default editor (override through tiroir or the environment)
+export EDITOR="${EDITOR:-vis}"
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# local bins
+export MYBINS="${MYBINS:-$HOME/mybins}"
+[ -d "$MYBINS" ] && export PATH="$MYBINS:$PATH"
 
 # personal scripts
 [ -d "$HOME/scripts" ] && export PATH="$HOME/scripts:$PATH"
