@@ -158,15 +158,15 @@ journal_open_date() {
     local file editor_cmd
 
     file="$(journal_ensure_date "$1")" || return 1
-    editor_cmd="${EDITOR:-nvim}"
+    editor_cmd="${EDITOR:-vis}"
 
     if _has "$editor_cmd"; then
         "$editor_cmd" "$file"
         return
     fi
 
-    if _has nvim; then
-        nvim "$file"
+    if _has vis; then
+        vis "$file"
         return
     fi
 

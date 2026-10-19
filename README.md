@@ -140,9 +140,10 @@ git submodule update --init --recursive
 | `shell`   | `~/.aliases`, `~/.functions`, `~/.variables`, `~/.prompt` |
 | `nvim`    | `~/.config/nvim`                              |
 | `vim`     | `~/.vim`                                      |
+| `vis`     | `~/.config/vis` (default editor)              |
 | `mise`    | `~/.config/mise`                              |
 | `tmux`    | `~/.config/tmux/tmux.conf`, `~/.config/tmux/plugins` |
-| `fonts`   | `~/.local/share/fonts`                        |
+| `fonts`   | `~/.local/share/fonts` (Helvetica, undefined Nerd Font) |
 | `scripts` | `~/scripts` (includes `tido` and `setwallpaper`, added to `PATH`) |
 | `facile`  | `~/.facile.yml`                               |
 | `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
@@ -162,6 +163,13 @@ with `#text(font: "Helvetica")` therefore compiles with real Helvetica metrics
 without a single line changed, and any other fontconfig program finds the same
 family under the same name. The copyright strings inside the OTFs and the GUST
 Font License are untouched.
+
+The `fonts` package also ships `UndefinedNerdFont-Medium.otf`, the `undefined`
+monospace face patched with the Nerd Fonts v3.5.1 glyph set and named
+`Undefined Nerd Font`, plus the single-width `UndefinedNerdFontMono-Medium.otf`
+sibling named `Undefined Nerd Font Mono`. `foot` and `kitty` use the Mono
+variant as their terminal font, and the sway title font uses
+`Undefined Nerd Font`.
 
 Desktop widgets (statusbar, sidebar, launcher) live in the separate
 [saravenpi/widgets](https://github.com/Saravenpi/widgets) Cargo workspace;

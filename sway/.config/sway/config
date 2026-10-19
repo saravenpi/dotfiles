@@ -32,7 +32,7 @@ exec $HOME/.local/bin/sidebar
 # `--no-reload` flag keeps this from reloading sway in a loop.
 exec_always $HOME/.local/bin/palette sync --no-reload
 
-font pango:undefined 11
+font pango:Undefined Nerd Font 11
 
 floating_modifier $mod normal
 
