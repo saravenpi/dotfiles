@@ -19,7 +19,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   when it points at a checkout, falling back to `~/.dotfiles`.
 - `tido`: skip the Linux-only desktop packages (`foot`, `hypr`, `mako`,
   `niri`, `sway`, `waybar`, `widgets`) when linking every package on macOS.
-- CI: a macOS job runs `tido` under the stock bash 3.2 and BSD `readlink`.
+- CI: a macOS job runs `tido` under the stock bash 3.2 with both the native
+  and the no-`-f` `readlink`, then runs `install.sh` in a scratch `HOME`.
 
 ### Changed
 
