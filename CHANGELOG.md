@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.1] - 2026-10-19
+
+### Fixed
+
+- `install.sh`, `tido`, `setwallpaper`: run on Ubuntu's dash again. An
+  unsupported `set -o pipefail` is a fatal special-builtin error there even
+  behind `|| true`, so the option is now probed in a subshell and enabled only
+  where the shell supports it.
+
 ## [0.14.0] - 2026-10-19
 
 ### Added
