@@ -33,7 +33,7 @@ alias zreload="clear && source $HOME/.zshrc"
 alias zrel="zreload"
 
 # Quick navigation
-alias god="cd $DOTFILES"
+alias dots="cd $DOTFILES"
 alias goc="cd $WORKSPACE"
 alias gow="cd $WORKSPACE_PRO"
 alias gos="cd $SCHOOL"
