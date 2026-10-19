@@ -4,6 +4,16 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-10-19
+
+### Added
+
+- `setwallpaper`: after applying the image, regenerate the palette from that
+  image with `palette generate <image> -s` and sync every target, so the
+  terminal, editors, bar, notifications and Yazi follow the new wallpaper. A
+  missing or failing `palette` only warns and leaves the wallpaper change
+  intact. The Yazi theme is updated when palette 0.12.0 or newer is installed.
+
 ## [0.14.1] - 2026-10-19
 
 ### Fixed
