@@ -12,3 +12,5 @@ for file in \
 do
     [ -s "$file" ] && . "$file"
 done
+
+command -v pokeget >/dev/null 2>&1 && pokeget random --hide-name
