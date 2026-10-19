@@ -1,0 +1,52 @@
+name: Linux
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    name: install.sh in a scratch HOME
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # The runner's /bin/sh is dash, so this also covers install.sh and tido
+      # under a strict POSIX shell. Network installers are stubbed so the job
+      # stays offline and fast; install.sh must only warn when they fail.
+      - name: Install into a scratch HOME
+        env:
+          HOME: ${{ runner.temp }}/home
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME" "$RUNNER_TEMP/bin"
+
+          for tool in mise facile palette tiroir; do
+            printf '#!/bin/sh\nexit 1\n' > "$RUNNER_TEMP/bin/$tool"
+          done
+          chmod +x "$RUNNER_TEMP"/bin/*
+
+          printf 'pre-existing\n' > "$HOME/.bashrc"
+
+          PATH="$RUNNER_TEMP/bin:$PATH" DOTFILES="$PWD" sh ./install.sh
+
+          test -L "$HOME/.bashrc"
+          test -L "$HOME/.config/nvim"
+          test -L "$HOME/.local/share/fonts"
+
+          # Every package is linked on Linux, including the desktop ones.
+          for pkg in sway hypr foot widgets; do
+            test -e "$HOME/.config/$pkg"
+          done
+
+          backup=""
+          for candidate in "$HOME/.config"/config.old.*; do
+            [ -d "$candidate" ] || continue
+            backup="$candidate"
+            break
+          done
+          test -n "$backup"
+          grep -qx 'pre-existing' "$backup/.bashrc"
