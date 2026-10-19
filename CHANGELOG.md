@@ -4,6 +4,22 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- `fonts`: ship `UndefinedNerdFont-Medium.otf`, the `undefined` monospace face
+  patched with the Nerd Fonts v3.5.1 glyph set and named `Undefined Nerd Font`,
+  plus the single-width `UndefinedNerdFontMono-Medium.otf` sibling named
+  `Undefined Nerd Font Mono`.
+
+### Changed
+
+- `foot`, `kitty`: use `Undefined Nerd Font Mono` as the terminal font.
+- `sway`: title font reads `Undefined Nerd Font`.
+- `shell`: `EDITOR` defaults to `vis` in bash and zsh, and `j` opens journal
+  entries with it.
+
 ## [0.13.1] - 2026-10-16
 
 ### Fixed
