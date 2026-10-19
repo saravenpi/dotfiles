@@ -1,9 +1,6 @@
 #!/bin/bash
 
-if command -v bat >/dev/null 2>&1; then
-    alias cat="bat"
-fi
-
+# ls styling
 if command ls --color=auto . >/dev/null 2>&1; then
     alias ls="ls --color=auto"
     command -v tree >/dev/null 2>&1 && alias tn="tree -C"
@@ -12,32 +9,39 @@ elif command ls -G . >/dev/null 2>&1; then
     command -v tree >/dev/null 2>&1 && alias tn="tree -C"
 fi
 
+# ls
 alias ll="ls -lh"
 alias la="ls -ah"
 alias lal="ls -alh"
 alias lla="ls -alh"
 alias l="ls"
 
-alias f="fg"
-alias ax="chmod +x"
-alias rx="chmod -x"
+
+# Terminal utils
 alias q="exit"
 alias :q="exit"
 alias c="clear"
-alias breload='clear && source $HOME/.bashrc'
+alias h="clear && cd $HOME"
+alias f="fg"
+alias ax="chmod +x"
+alias rx="chmod -x"
+
+# Shell
+alias breload="clear && source $HOME/.bashrc"
 alias brel="breload"
-alias zreload='clear && source $HOME/.zshrc'
+alias zreload="clear && source $HOME/.zshrc"
 alias zrel="zreload"
-alias h='clear && cd $HOME'
-alias dots='cd $HOME/.dotfiles'
-alias goc='cd $HOME/Code/'
-alias gof='cd $HOME/Code/Facile/'
-alias gos='cd $HOME/School'
-alias gob='cd "$BRAIN"'
-alias gon='cd "$NUAGE"'
+
+# Quick navigation
+alias god="cd $DOTFILES"
+alias goc="cd $WORKSPACE"
+alias gow="cd $WORKSPACE_PRO"
+alias gos="cd $SCHOOL"
+alias gob="cd $BRAIN"
+alias gon="cd $NUAGE"
 
 # Journal (j)
-command -v j >/dev/null 2>&1 && alias ja="j a"
+command -v j >/dev/null 3>&1 && alias ja="j a"
 command -v j >/dev/null 2>&1 && alias jadd="j add"
 command -v j >/dev/null 2>&1 && alias jr="j r"
 command -v j >/dev/null 2>&1 && alias jdream="j dream"
@@ -56,11 +60,10 @@ command -v j >/dev/null 2>&1 && alias jh="j help"
 command -v j >/dev/null 2>&1 && alias jhelp="j help"
 
 
-# Editing
+# Quick config editing
 alias e="$EDITOR"
-alias brain="cd "$BRAIN/" && $EDITOR Home.md"
-alias b="cd "$BRAIN/" && $EDITOR Home.md"
-alias bn='cd "$BRAIN/Inbox" && $EDITOR -c "set filetype=markdown"'
+alias brain="cd $BRAIN && $EDITOR Home.md"
+alias b="cd $BRAIN && $EDITOR Home.md"
 alias cnvim="cd $HOME/.config/nvim/ && $EDITOR init.lua"
 alias cbash="cd $HOME && $EDITOR .bashrc"
 alias czsh="cd $HOME && $EDITOR .zshrc"
@@ -68,10 +71,10 @@ alias cfish="cd $HOME && $EDITOR .config/fish/config.fish"
 alias caliases="cd $HOME && $EDITOR .aliases"
 alias cfunctions="cd $HOME && $EDITOR .functions"
 alias ctmux="cd $HOME && $EDITOR .config/tmux/tmux.conf"
-alias cportals="cd $HOME/portals && $EDITOR portal.yml"
 alias cbulle="$EDITOR $HOME/.config/bulle/config.yml"
 alias cb="$EDITOR $HOME/.config/bulle/config.yml"
-alias links="$EDITOR $HOME/Code/Portals/og.yml"
+alias cportal="$EDITOR $PORTALS/*.yml"
+alias csway="$EDITOR $HOME/.config/sway/config"
 
 # Git
 if command -v git >/dev/null 2>&1; then
@@ -99,8 +102,8 @@ command -v valgrind >/dev/null 2>&1 && alias vgf="valgrind --leak-check=full"
 command -v kettle >/dev/null 2>&1 && alias cinit="kettle use c ."
 
 # Tmux
-command -v tmux >/dev/null 2>&1 && alias ta="tmux attach"
 if command -v tmux >/dev/null 2>&1; then
+    alias ta="tmux attach"
     alias treload="tmux source-file ~/.config/tmux/tmux.conf"
     alias trel="treload"
     alias tl="tmux ls -f '#{session_name}'"
@@ -109,50 +112,35 @@ if command -v tmux >/dev/null 2>&1; then
     alias trs="tmux rename-session -t"
 fi
 
-# Tools
+# CLI Tools
 command -v egg >/dev/null 2>&1 && alias e="egg"
 command -v donut >/dev/null 2>&1 && alias d="donut"
 command -v purse >/dev/null 2>&1 && alias p="purse i"
 command -v vero >/dev/null 2>&1 && alias v="vero"
-command -v knot >/dev/null 2>&1 && alias k="knot"
-command -v marcel >/dev/null 2>&1 && alias m="marcel"
-command -v marcel >/dev/null 2>&1 && alias ma="marcel"
-command -v iamb >/dev/null 2>&1 && alias i="iamb"
-command -v w3m >/dev/null 2>&1 && alias w="w3m"
-command -v mise >/dev/null 2>&1 && alias mi="mise"
 command -v mise >/dev/null 2>&1 && alias m="mise"
-command -v linear >/dev/null 2>&1 && alias li="linear"
-command -v railway >/dev/null 2>&1 && alias r="railway"
+command -v iamb >/dev/null 2>&1 && alias i="iamb"
 command -v rg >/dev/null 2>&1 && alias rg="rg --smart-case"
+command -v bat >/dev/null 2>&1 && alias cat="bat"
 command -v csvlens >/dev/null 2>&1 && alias csv="csvlens"
-command -v telnet >/dev/null 2>&1 && alias starwars="telnet towel.blinkenlights.nl"
 command -v zathura >/dev/null 2>&1 && alias za="zathura"
+command -v yazi >/dev/null 2>&1 && alias y="yazi"
 
-# AI agents
+# AI
 command -v agy >/dev/null 2>&1 && alias ay="agy --dangerously-skip-permissions"
 command -v claude >/dev/null 2>&1 && alias cy="claude --dangerously-skip-permissions"
 command -v codex >/dev/null 2>&1 && alias coy="codex --dangerously-bypass-approvals-and-sandbox"
-command -v bulle >/dev/null 2>&1 && alias a="bulle"
-
-# cercle
-command -v cercle >/dev/null 2>&1 && export CERCLE_AGENT="${CERCLE_AGENT:-user}"
-command -v cercle >/dev/null 2>&1 && alias ct="cercle thread list"
-command -v cercle >/dev/null 2>&1 && alias ctr="cercle thread read"
-command -v cercle >/dev/null 2>&1 && alias cm="cercle message read"
-command -v cercle >/dev/null 2>&1 && alias cpost="cercle message post"
-command -v cercle >/dev/null 2>&1 && alias cin="cercle inbox read"
-command -v cercle >/dev/null 2>&1 && alias cmark="cercle inbox mark-read"
+command -v bulle >/dev/null 2>&1 && alias a="$HARNESS"
 
 # filet
 command -v filet >/dev/null 2>&1 && alias fc="filet check ."
 command -v filet >/dev/null 2>&1 && alias fr="filet roast ."
+command -v facile >/dev/null 2>&1 && alias f="facile"
 
 command -v hunk >/dev/null 2>&1 && alias hd="hunk diff"
 command -v boite >/dev/null 2>&1 && alias bp="boite run pingu"
 
+# Other linux stuff
 command -v apk >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && alias apk-search="apk search | fzf"
 command -v fastfetch >/dev/null 2>&1 && alias neofetch="fastfetch"
 command -v kicad >/dev/null 2>&1 && alias kicad="GDK_BACKEND=x11 kicad"
-command -v facile >/dev/null 2>&1 && alias f="facile"
-command -v yazi >/dev/null 2>&1 && alias y="yazi"
 

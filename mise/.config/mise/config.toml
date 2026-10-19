@@ -24,14 +24,15 @@ shfmt = "latest"
 tmux = "latest"
 yq = "latest"
 zoxide = "latest"
-
-"go:honnef.co/go/tools/cmd/staticcheck" = "latest"
-"github:typst/typst" = "latest"
-"github:charmbracelet/vhs" = "latest"
 pandoc = "3.6.3"
 java = "21.0.2"
 cmake = "4.4.4"
 yazi = "latest"
+
+"go:honnef.co/go/tools/cmd/staticcheck" = "latest"
+"github:typst/typst" = "latest"
+"github:charmbracelet/vhs" = "latest"
+
 
 [settings]
 all_compile = false
