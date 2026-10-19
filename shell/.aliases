@@ -157,3 +157,4 @@ command -v apk >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && alias apk-se
 command -v fastfetch >/dev/null 2>&1 && alias neofetch="fastfetch"
 command -v kicad >/dev/null 2>&1 && alias kicad="GDK_BACKEND=x11 kicad"
 command -v facile >/dev/null 2>&1 && alias f="facile"
+command -v vis >/dev/null 2>&1 && alias v="vis"
