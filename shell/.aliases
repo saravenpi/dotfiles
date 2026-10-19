@@ -114,7 +114,6 @@ if command -v tmux >/dev/null 2>&1; then
 fi
 
 # CLI Tools
-command -v egg >/dev/null 2>&1 && alias e="egg"
 command -v donut >/dev/null 2>&1 && alias d="donut"
 command -v purse >/dev/null 2>&1 && alias p="purse i"
 command -v vero >/dev/null 2>&1 && alias v="vero"
