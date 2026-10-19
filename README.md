@@ -222,6 +222,12 @@ a `swaybg` daemon, X11 uses the first of `feh`, `xwallpaper`, `nitrogen` and
 `hsetroot` that is installed, GNOME/KDE/XFCE use their own tools, and macOS uses
 `osascript` (`-a`/`--all-spaces` sets every Space).
 
+Once the image is applied, `setwallpaper` runs `palette generate <image> -s`:
+it regenerates `~/.config/palette/config.yml` from the new wallpaper and syncs
+every target (Kitty, tmux, Neovim, sway, Hyprland, foot, waybar, widgets, mako,
+Yazi and Vim). A missing or failing `palette` only prints a warning; the
+wallpaper change itself still succeeds.
+
 `~/scripts` is added to `PATH` by the shell settings, so once the dotfiles are
 linked `tido` runs from anywhere.
 
