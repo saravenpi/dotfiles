@@ -32,6 +32,7 @@ yazi = "latest"
 "go:honnef.co/go/tools/cmd/staticcheck" = "latest"
 "github:typst/typst" = "latest"
 "github:charmbracelet/vhs" = "latest"
+"cargo:pokeget" = "latest"
 
 
 [settings]
