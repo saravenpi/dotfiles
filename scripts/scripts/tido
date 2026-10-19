@@ -48,9 +48,9 @@ set -o pipefail 2>/dev/null || true
 
 # Resolve a path to an absolute one with symlinks followed.
 #
-# GNU readlink -f does this in one call, but macOS ships BSD readlink, which has
-# no -f. Fall back to following the link chain one hop at a time and resolving
-# the parent directory with pwd -P, both of which POSIX sh and macOS provide.
+# GNU readlink -f does this in one call, but macOS before 12.3 and BusyBox do
+# not have it. Fall back to following the link chain one hop at a time and
+# resolving the parent directory with pwd -P, both of which POSIX sh provides.
 real_path() {
     # shellcheck disable=SC3043
     local target link dir base

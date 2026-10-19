@@ -109,7 +109,8 @@ resolve_source() {
     # 3. ~/.dotfiles is a symlink to a checkout (made by an older installer).
     #    Keep working from it, but never create one again.
     if [ -L "$DOTFILES_LINK" ]; then
-        # macOS readlink has no -f, so resolve through cd/pwd -P instead.
+        # readlink -f is missing before macOS 12.3 and on BusyBox, so resolve
+        # through cd/pwd -P instead.
         resolved="$(cd -P "$DOTFILES_LINK" 2>/dev/null && pwd -P || true)"
         if [ -n "$resolved" ] && [ -d "$resolved" ]; then
             SOURCE_DIR="$resolved"

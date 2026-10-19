@@ -15,28 +15,43 @@ jobs:
           submodules: recursive
 
       # The point of this job: macOS ships bash 3.2 (whose command-substitution
-      # parser broke tido) and a BSD readlink without -f (which broke its path
-      # resolution). Both are covered by running the linker for real below.
-      - name: Confirm stock bash 3.2 and BSD readlink
+      # parser broke tido). readlink gained -f in macOS 12.3, so the runner's
+      # readlink may accept it; the linker's portable no--f fallback is forced
+      # with a shim below and the native resolver runs a second time.
+      - name: Confirm stock bash 3.2
         run: |
           set -euo pipefail
           /bin/bash --version > "$RUNNER_TEMP/bash-version.txt"
           grep -q 'version 3\.2\.' "$RUNNER_TEMP/bash-version.txt"
           if /usr/bin/readlink -f / >/dev/null 2>&1; then
-            echo "expected /usr/bin/readlink to reject -f" >&2
-            exit 1
+            echo "readlink accepts -f; the no--f fallback is shimmed below"
+          else
+            echo "using BSD readlink without -f"
           fi
-          echo "using $(/bin/bash -c 'echo $BASH_VERSION') and BSD readlink"
+          echo "using $(/bin/bash -c 'echo $BASH_VERSION')"
 
       - name: Link into a scratch HOME
         env:
           HOME: ${{ runner.temp }}/home
         run: |
           set -euo pipefail
-          mkdir -p "$HOME"
+          mkdir -p "$HOME" "$RUNNER_TEMP/bin"
+
+          # Exercise the pre-macOS-12.3 resolver even on runners whose readlink
+          # has -f, so the fallback stays covered.
+          cat > "$RUNNER_TEMP/bin/readlink" <<'SHIM'
+          #!/bin/sh
+          if [ "${1:-}" = "-f" ]; then
+            echo "readlink: illegal option -- f" >&2
+            exit 1
+          fi
+          exec /usr/bin/readlink "$@"
+          SHIM
+          chmod +x "$RUNNER_TEMP/bin/readlink"
+
           printf 'pre-existing\n' > "$HOME/.bashrc"
 
-          /bin/bash --posix scripts/scripts/tido link
+          PATH="$RUNNER_TEMP/bin:$PATH" /bin/bash --posix scripts/scripts/tido link
 
           test -L "$HOME/.bashrc"
           test -L "$HOME/.config/nvim"
@@ -48,5 +63,55 @@ jobs:
           test ! -e "$HOME/.config/foot"
           test ! -e "$HOME/.config/widgets"
 
-          /bin/bash --posix scripts/scripts/tido list > "$RUNNER_TEMP/tido-list.txt"
+          PATH="$RUNNER_TEMP/bin:$PATH" /bin/bash --posix scripts/scripts/tido list > "$RUNNER_TEMP/tido-list.txt"
           grep -q 'already linked' "$RUNNER_TEMP/tido-list.txt"
+
+      - name: Link with the native readlink
+        env:
+          HOME: ${{ runner.temp }}/home-native
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME"
+          printf 'pre-existing\n' > "$HOME/.bashrc"
+
+          /bin/bash --posix scripts/scripts/tido link
+
+          test -L "$HOME/.bashrc"
+          test -L "$HOME/.config/nvim"
+          test -n "$(find "$HOME/.tido-backups" -name .bashrc)"
+
+      # Run the installer itself, not just the linker: it must resolve the
+      # local checkout, back up the existing file with macOS cp, link every
+      # package, and link the fonts into ~/Library/Fonts.
+      - name: Install into a scratch HOME
+        env:
+          HOME: ${{ runner.temp }}/install-home
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME" "$RUNNER_TEMP/install-bin"
+
+          # Keep the smoke test offline and fast. The mise/facile installers
+          # run real downloads, so they are stubbed; install.sh must only warn
+          # and carry on when they fail.
+          for tool in mise facile palette tiroir; do
+            printf '#!/bin/sh\nexit 1\n' > "$RUNNER_TEMP/install-bin/$tool"
+          done
+          chmod +x "$RUNNER_TEMP"/install-bin/*
+
+          printf 'pre-existing\n' > "$HOME/.bashrc"
+
+          PATH="$RUNNER_TEMP/install-bin:$PATH" DOTFILES="$PWD" sh ./install.sh
+
+          test -L "$HOME/.bashrc"
+          test -L "$HOME/.config/nvim"
+          test -L "$HOME/.local/share/fonts"
+          test -L "$HOME/Library/Fonts/undefined-medium.otf"
+
+          backup=""
+          for candidate in "$HOME/.config"/config.old.*; do
+            [ -d "$candidate" ] || continue
+            backup="$candidate"
+            break
+          done
+          test -n "$backup"
+          grep -qx 'pre-existing' "$backup/.bashrc"
