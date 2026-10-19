@@ -13,7 +13,7 @@
 set -eu
 
 CFG="${1:-$HOME/.config/palette/config.yml}"
-[ -f "$CFG" ] || CFG="$HOME/.dotfiles/palette/.config/palette/config.yml"
+[ -f "$CFG" ] || CFG="${DOTFILES:-$HOME/.dotfiles}/palette/.config/palette/config.yml"
 [ -f "$CFG" ] || CFG="$HOME/.palette.yml"
 
 if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then

@@ -3,9 +3,11 @@
 # tido - dotfiles linker; a dependency-free replacement for GNU Stow.
 #
 # Installed as part of the scripts package (scripts/scripts/tido -> ~/scripts/tido)
-# and reachable as `tido` from anywhere. The repository root is found by walking
-# up from this script's own resolved path, so it works whether it is invoked as
-# <repo>/scripts/scripts/tido, through the ~/scripts symlink, or from PATH.
+# and reachable as `tido` from anywhere. The repository root comes from
+# $DOTFILES when it is set (tiroir exports it), otherwise it is found by
+# walking up from this script's own resolved path, so it works whether it is
+# invoked as <repo>/scripts/scripts/tido, through the ~/scripts symlink, or
+# from PATH.
 #
 # Links the contents of each package directory into a target directory
 # (default: $HOME). Packages are the non-hidden directories at the root of
@@ -22,7 +24,6 @@
 #   tido unlink        [options] [package...]   remove links made by this repo
 #   tido list          [options] [package...]   dry run, change nothing
 #   tido clean-backups [options]                remove backup directories
-#   tido update                                 pull the repo, re-run install.sh, re-link only if it fails
 #
 # Options:
 #   -t, --target DIR   directory to link into (default: $HOME)
@@ -39,26 +40,63 @@
 #   tido list                       # show what would happen
 #   tido unlink nvim                # remove the nvim symlinks
 #   tido clean-backups              # remove all backup directories
-#   tido update                     # pull and re-run install.sh (links if it fails)
 #
 
 set -eu
 # shellcheck disable=SC3040
 set -o pipefail 2>/dev/null || true
 
+# Resolve a path to an absolute one with symlinks followed.
+#
+# GNU readlink -f does this in one call, but macOS ships BSD readlink, which has
+# no -f. Fall back to following the link chain one hop at a time and resolving
+# the parent directory with pwd -P, both of which POSIX sh and macOS provide.
+real_path() {
+    # shellcheck disable=SC3043
+    local target link dir base
+    target="$1"
+
+    if link="$(readlink -f "$target" 2>/dev/null)" && [ -n "$link" ]; then
+        printf '%s\n' "$link"
+        return 0
+    fi
+
+    case "$target" in
+        /*) ;;
+        *) target="$(pwd -P)/$target" ;;
+    esac
+
+    while [ -L "$target" ]; do
+        link="$(readlink "$target" 2>/dev/null)" || break
+        [ -n "$link" ] || break
+        case "$link" in
+            /*) target="$link" ;;
+            *) target="$(dirname "$target")/$link" ;;
+        esac
+    done
+
+    dir="$(cd "$(dirname "$target")" 2>/dev/null && pwd -P)" || \
+        dir="$(dirname "$target")"
+    base="$(basename "$target")"
+    if [ "$dir" = "/" ]; then
+        printf '/%s\n' "$base"
+    else
+        printf '%s/%s\n' "$dir" "$base"
+    fi
+}
+
 self_path() {
     # shellcheck disable=SC3043
-    local target="$0" res
+    local target="$0"
     case "$target" in
         */*) ;;
         *) target="$(command -v "$0" 2>/dev/null || printf '%s' "$0")" ;;
     esac
-    res="$(readlink -f "$target" 2>/dev/null || true)"
-    if [ -n "$res" ]; then
-        printf '%s\n' "$res"
-        return 0
-    fi
-    printf '%s/%s\n' "$(cd "$(dirname "$target")" && pwd -P)" "$(basename "$target")"
+    real_path "$target"
+}
+
+is_repo_root() {
+    [ -f "$1/install.sh" ] && [ -f "$1/scripts/scripts/tido" ]
 }
 
 find_repo_root() {
@@ -66,7 +104,7 @@ find_repo_root() {
     local dir
     dir="$1"
     while [ -n "$dir" ] && [ "$dir" != "/" ] && [ "$dir" != "." ]; do
-        if [ -f "$dir/install.sh" ] && [ -f "$dir/scripts/scripts/tido" ]; then
+        if is_repo_root "$dir"; then
             printf '%s\n' "$dir"
             return 0
         fi
@@ -75,10 +113,18 @@ find_repo_root() {
     return 1
 }
 
-SRC_DIR="$(find_repo_root "$(dirname "$(self_path)")")" || {
-    printf 'tido: cannot locate the dotfiles repository around %s\n' "$0" >&2
-    exit 1
-}
+# $DOTFILES (set by tiroir) is the explicit answer; use it when it points at
+# this checkout and fall back to the script location otherwise.
+if [ -n "${DOTFILES:-}" ] && is_repo_root "$DOTFILES"; then
+    SRC_DIR="$(real_path "$DOTFILES")"
+else
+    SRC_DIR="$(find_repo_root "$(dirname "$(self_path)")")" || {
+        printf 'tido: cannot locate the dotfiles repository around %s\n' "$0" >&2
+        exit 1
+    }
+fi
+
+PLATFORM="$(uname -s 2>/dev/null || printf 'unknown')"
 
 TARGET="${HOME:-}"
 ACTION="link"
@@ -114,10 +160,7 @@ usage() {
 }
 
 resolve() {
-    # shellcheck disable=SC3043
-    local res
-    res="$(readlink -f "$1" 2>/dev/null || true)"
-    printf '%s\n' "${res:-$1}"
+    real_path "$1"
 }
 
 link_destination() {
@@ -149,27 +192,36 @@ $1
     esac
 }
 
+# Print every directory that more than one package contributes to, one per
+# line. This lives in its own function because macOS runs scripts with bash 3.2,
+# whose command-substitution parser mistakes the `)` closing a case pattern for
+# the end of the substitution and aborts with "syntax error near unexpected
+# token `newline`". Keeping the `case` outside the $(...) keeps it portable.
+parent_dirs() {
+    # shellcheck disable=SC3043
+    local pkg path rel anc
+    for pkg in $1; do
+        [ -n "$pkg" ] || continue
+        find "$SRC_DIR/$pkg" -mindepth 1 2>/dev/null | while IFS= read -r path; do
+            rel="${path#"$SRC_DIR/$pkg/"}"
+            case "$rel" in
+                */*)
+                    anc="${rel%/*}"
+                    while [ -n "$anc" ]; do
+                        printf '%s\t%s\n' "$pkg" "$anc"
+                        case "$anc" in
+                            */*) anc="${anc%/*}" ;;
+                            *) break ;;
+                        esac
+                    done
+                    ;;
+            esac
+        done
+    done | sort -u | cut -f2 | sort | uniq -d
+}
+
 collect_shared_dirs() {
-    SHARED_DIRS="$(
-        for pkg in $1; do
-            [ -n "$pkg" ] || continue
-            find "$SRC_DIR/$pkg" -mindepth 1 2>/dev/null | while IFS= read -r path; do
-                rel="${path#"$SRC_DIR/$pkg/"}"
-                case "$rel" in
-                    */*)
-                        anc="${rel%/*}"
-                        while [ -n "$anc" ]; do
-                            printf '%s\t%s\n' "$pkg" "$anc"
-                            case "$anc" in
-                                */*) anc="${anc%/*}" ;;
-                                *) break ;;
-                            esac
-                        done
-                        ;;
-                esac
-            done
-        done | sort -u | cut -f2 | sort | uniq -d
-    )"
+    SHARED_DIRS="$(parent_dirs "$1")"
 }
 
 timestamp() { date +%Y%m%d_%H%M%S; }
@@ -438,7 +490,6 @@ while [ $# -gt 0 ]; do
         unlink|remove|unstow|destow) ACTION="unlink" ;;
         list|check)      ACTION="link"; DRY_RUN=1 ;;
         clean|clean-backups|prune) ACTION="clean" ;;
-        update|upgrade)  ACTION="update" ;;
         -t|--target)     shift; [ $# -gt 0 ] || die "--target needs a directory"; TARGET="$1" ;;
         -b|--backup)     shift; [ $# -gt 0 ] || die "--backup needs a directory"; BACKUP_DIR="$1" ;;
         --no-backup)     DO_BACKUP=0 ;;
@@ -458,31 +509,22 @@ if [ "$ACTION" = "clean" ]; then
     exit 0
 fi
 
-if [ "$ACTION" = "update" ]; then
-    [ -f "$SRC_DIR/install.sh" ] || die "cannot find installer at $SRC_DIR/install.sh"
-    if [ -d "$SRC_DIR/.git" ] && command -v git >/dev/null 2>&1; then
-        info "Pulling latest changes in $SRC_DIR"
-        (cd -- "$SRC_DIR" && git pull --ff-only) || \
-        (cd -- "$SRC_DIR" && git pull) || \
-        warn "git pull failed; continuing with local files"
-    fi
-    info "Re-running the installer: $SRC_DIR/install.sh"
-    if sh -- "$SRC_DIR/install.sh"; then
-        # install.sh linked every package; linking again would be a second
-        # full pass over the same tree, so stop here.
-        info "Installer linked the dotfiles"
-        exit 0
-    fi
-    warn "installer exited non-zero; linking the dotfiles anyway"
-    ACTION="link"
-fi
-
 [ -n "$TARGET" ] || die "no target directory (set \$HOME or pass --target)"
 [ -d "$SRC_DIR" ] || die "cannot find the dotfiles directory"
 
 if [ -z "$BACKUP_DIR" ]; then
     BACKUP_DIR="$TARGET/.tido-backups/$(timestamp)"
 fi
+
+# Desktop packages that only make sense on Linux. They are skipped when
+# linking every package on macOS; naming one explicitly still links it, and
+# unlink still visits them so links left by an older run can be removed.
+is_linux_only_package() {
+    case "$1" in
+        foot|hypr|mako|niri|sway|waybar|widgets) return 0 ;;
+    esac
+    return 1
+}
 
 collect_packages() {
     # shellcheck disable=SC3043
@@ -499,8 +541,11 @@ collect_packages() {
         p_name="${p_entry##*/}"
         case "$p_name" in
             .*) continue ;;
-            *) printf '%s\n' "$p_name" ;;
         esac
+        if [ "$ACTION" != "unlink" ] && [ "$PLATFORM" = "Darwin" ] && is_linux_only_package "$p_name"; then
+            continue
+        fi
+        printf '%s\n' "$p_name"
     done
 }
 

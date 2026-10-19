@@ -83,10 +83,22 @@ check_dependencies() {
 # A real checkout at ~/.dotfiles is the source of truth: it is used and updated
 # in place, and it is never replaced by a symlink. An earlier installer did
 # exactly that, moving the user's clone aside and leaving ~/.dotfiles a link.
+# $DOTFILES, when set (tiroir exports it), overrides that location.
 resolve_source() {
     script_dir="$(cd -- "$(dirname -- "$0")" && pwd -P)"
 
-    # 1. A real checkout at ~/.dotfiles - the canonical location.
+    # 1. $DOTFILES from the environment, when it points at a checkout.
+    if [ -n "${DOTFILES:-}" ]; then
+        if [ -f "$DOTFILES/install.sh" ] && [ -d "$DOTFILES/scripts" ]; then
+            SOURCE_DIR="$(cd -P "$DOTFILES" 2>/dev/null && pwd -P)"
+            info "Using \$DOTFILES checkout: $SOURCE_DIR"
+            update_repo
+            return 0
+        fi
+        warn "\$DOTFILES ($DOTFILES) is not a dotfiles checkout; ignoring it"
+    fi
+
+    # 2. A real checkout at ~/.dotfiles - the canonical location.
     if [ -d "$DOTFILES_LINK/.git" ] && [ ! -L "$DOTFILES_LINK" ]; then
         SOURCE_DIR="$DOTFILES_LINK"
         info "Using checkout: $SOURCE_DIR"
@@ -94,10 +106,11 @@ resolve_source() {
         return 0
     fi
 
-    # 2. ~/.dotfiles is a symlink to a checkout (made by an older installer).
+    # 3. ~/.dotfiles is a symlink to a checkout (made by an older installer).
     #    Keep working from it, but never create one again.
     if [ -L "$DOTFILES_LINK" ]; then
-        resolved="$(readlink -f -- "$DOTFILES_LINK" 2>/dev/null || true)"
+        # macOS readlink has no -f, so resolve through cd/pwd -P instead.
+        resolved="$(cd -P "$DOTFILES_LINK" 2>/dev/null && pwd -P || true)"
         if [ -n "$resolved" ] && [ -d "$resolved" ]; then
             SOURCE_DIR="$resolved"
             warn "$DOTFILES_LINK is a symlink to $SOURCE_DIR; a real clone is preferred"
@@ -107,14 +120,14 @@ resolve_source() {
         rm -- "$DOTFILES_LINK"
     fi
 
-    # 3. Running from a local checkout never clones over it.
+    # 4. Running from a local checkout never clones over it.
     if [ -f "$script_dir/install.sh" ] && [ -d "$script_dir/scripts" ]; then
         SOURCE_DIR="$script_dir"
         info "Using local checkout: $SOURCE_DIR"
         return 0
     fi
 
-    # 4. Something else lives at ~/.dotfiles - preserve it, then clone.
+    # 5. Something else lives at ~/.dotfiles - preserve it, then clone.
     if [ -e "$DOTFILES_LINK" ]; then
         mkdir -p -- "$BACKUP_DIR"
         mv -- "$DOTFILES_LINK" "$BACKUP_DIR/.dotfiles-pre-existing"
@@ -226,8 +239,6 @@ create_backup() {
 #
 # tido is the single linker: it links all non-hidden package directories, so
 # the installer does not pass a hardcoded list that can drift from the repo.
-# `tido update` runs this script and then stops, rather than linking a second
-# time on top of it.
 install_dotfiles() {
     tido_script="$SOURCE_DIR/scripts/scripts/tido"
 
@@ -242,6 +253,33 @@ install_dotfiles() {
     else
         error "Dotfiles linking failed"
         return 1
+    fi
+}
+
+# macOS does not scan ~/.local/share/fonts the way fontconfig does on Linux, so
+# the fonts package would be linked but never picked up. Symlink each font into
+# ~/Library/Fonts, which Font Book and terminal emulators do read. Existing
+# files are left alone; nothing is overwritten.
+install_fonts_macos() {
+    [ "$(uname -s)" = "Darwin" ] || return 0
+
+    font_src="$HOME/.local/share/fonts"
+    [ -d "$font_src" ] || return 0
+
+    mkdir -p "$HOME/Library/Fonts"
+    linked=0
+    for font in "$font_src"/*.otf "$font_src"/*.ttf; do
+        [ -e "$font" ] || continue
+        dest="$HOME/Library/Fonts/${font##*/}"
+        if [ -e "$dest" ] || [ -L "$dest" ]; then
+            continue
+        fi
+        ln -s "$font" "$dest"
+        linked=$((linked + 1))
+    done
+
+    if [ "$linked" -gt 0 ]; then
+        success "Linked $linked font(s) into ~/Library/Fonts"
     fi
 }
 
@@ -412,7 +450,6 @@ show_summary() {
 
     printf '\n%bManaging the symlinks:%b\n' "${WHITE}" "${NC}"
     printf '  %b-%b Re-link everything:  %btido link%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
-    printf '  %b-%b Update the config:   %btido update%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Preview changes:     %btido list%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Remove a package:    %btido unlink nvim%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Clean backup files:  %btido clean-backups%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
@@ -447,7 +484,7 @@ main() {
     # system package manager.
     if ! command_exists pbcopy && ! command_exists wl-copy \
         && ! command_exists xclip && ! command_exists xsel; then
-        warn "tmux-yank needs a clipboard helper (wl-clipboard on Wayland, xclip or xsel on X11)"
+        warn "tmux-yank needs a clipboard helper (pbcopy on macOS, wl-clipboard on Wayland, xclip or xsel on X11)"
     fi
 
     if [ -f /etc/alpine-release ] || (command_exists ldd && ldd --version 2>&1 | grep -qi musl); then
@@ -464,6 +501,7 @@ main() {
 
     create_backup
     install_dotfiles || { error "Dotfiles installation failed"; exit 1; }
+    install_fonts_macos
     install_mise
     install_mise_tools
     install_facile

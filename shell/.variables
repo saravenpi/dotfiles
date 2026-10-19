@@ -1,29 +1,33 @@
 #!/bin/sh
 command -v tiroir >/dev/null 2>&1 && eval "$(tiroir export)"
 
-if [ -z "$XDG_RUNTIME_DIR" ]; then
-    u_id="$(id -u)"
-    if [ -d "/run/user/$u_id" ]; then
-        XDG_RUNTIME_DIR="/run/user/$u_id"
-    else
-        XDG_RUNTIME_DIR="/tmp/user-$u_id"
-        mkdir -p "$XDG_RUNTIME_DIR"
-        chmod 0700 "$XDG_RUNTIME_DIR"
+# XDG runtime directories and the wlroots renderer variables only apply to a
+# Linux session; macOS has no /run/user and no Wayland compositor.
+if [ "$(uname -s)" = "Linux" ]; then
+    if [ -z "${XDG_RUNTIME_DIR:-}" ]; then
+        u_id="$(id -u)"
+        if [ -d "/run/user/$u_id" ]; then
+            XDG_RUNTIME_DIR="/run/user/$u_id"
+        else
+            XDG_RUNTIME_DIR="/tmp/user-$u_id"
+            mkdir -p "$XDG_RUNTIME_DIR"
+            chmod 0700 "$XDG_RUNTIME_DIR"
+        fi
+        export XDG_RUNTIME_DIR
     fi
-    export XDG_RUNTIME_DIR
-fi
 
-export WLR_NO_HARDWARE_CURSORS=1
-export WLR_RENDERER_ALLOW_SOFTWARE=1
-export WLR_SCENE_DISABLE_DIRECT_SCANOUT=1
-export WLR_DRM_NO_MODIFIERS=1
-export NO_AT_BRIDGE=1
-export GTK_USE_PORTAL=0
+    export WLR_NO_HARDWARE_CURSORS=1
+    export WLR_RENDERER_ALLOW_SOFTWARE=1
+    export WLR_SCENE_DISABLE_DIRECT_SCANOUT=1
+    export WLR_DRM_NO_MODIFIERS=1
+    export NO_AT_BRIDGE=1
+    export GTK_USE_PORTAL=0
 
-if [ -z "$WLR_RENDERER" ]; then
-    if [ -f /sys/class/drm/card0/device/uevent ] && grep -qi -E "virtio|vbox|vmw|qxl|cirrus" /sys/class/drm/card0/device/uevent 2>/dev/null; then
-        export WLR_RENDERER=pixman
-    elif [ -f /sys/class/dmi/id/product_name ] && grep -qi -E "qemu|virtualbox|vmware|kvm" /sys/class/dmi/id/product_name 2>/dev/null; then
-        export WLR_RENDERER=pixman
+    if [ -z "${WLR_RENDERER:-}" ]; then
+        if [ -f /sys/class/drm/card0/device/uevent ] && grep -qi -E "virtio|vbox|vmw|qxl|cirrus" /sys/class/drm/card0/device/uevent 2>/dev/null; then
+            export WLR_RENDERER=pixman
+        elif [ -f /sys/class/dmi/id/product_name ] && grep -qi -E "qemu|virtualbox|vmware|kvm" /sys/class/dmi/id/product_name 2>/dev/null; then
+            export WLR_RENDERER=pixman
+        fi
     fi
 fi

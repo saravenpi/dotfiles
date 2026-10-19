@@ -9,77 +9,25 @@ Core dependencies:
 - `git`
 - `curl` (for the one-line install)
 
-### Fresh install by distribution
+### macOS
 
-The installer sets up user configuration and tools. Run the command for your distribution to install build essentials (required by mise for compiling Python, Node, and C/Rust tools) and the Sway Wayland desktop stack. The **Hyprland** package is also included as a fully configured alternative session.
+The installer needs only `git` and `curl`; run `xcode-select --install` first if
+`git` is missing. Homebrew is picked up automatically from `/opt/homebrew` or
+`/usr/local` when it is installed.
 
-#### Alpine Linux
-
-Install build dependencies and desktop packages:
-
-```sh
-apk add build-base linux-headers libffi-dev openssl-dev bzip2-dev zlib-dev readline-dev sqlite-dev
-apk add sway swaybg foot wmenu seatd udev mesa-dri-gallium font-dejavu wl-clipboard zsh
-```
-
-Enable hardware seat management and add your user to device groups:
-
-```sh
-setup-devd udev
-rc-update add seatd
-rc-service seatd start
-adduser "$USER" seat
-adduser "$USER" video
-adduser "$USER" input
-```
-
-#### Void Linux
-
-Install build dependencies and desktop packages:
-
-```sh
-xbps-install -S base-devel linux-headers libffi-devel openssl-devel bzip2-devel zlib-devel readline-devel sqlite-devel
-xbps-install -S sway swaybg foot wmenu seatd mesa-dri font-dejavu wl-clipboard zsh
-```
-
-Enable the seat daemon and add your user to groups:
-
-```sh
-ln -s /etc/sv/seatd /var/service/
-usermod -aG _seatd,video,input "$USER"
-```
-
-#### Arch Linux
-
-Install build dependencies and desktop packages:
-
-```sh
-pacman -S base-devel linux-headers
-pacman -S sway swaybg foot wmenu wl-clipboard ttf-dejavu zsh
-```
-
-Seat management is handled automatically by `systemd-logind`.
-
-#### Debian and Ubuntu
-
-Install build dependencies and desktop packages:
-
-```sh
-apt update
-apt install build-essential linux-headers-generic libssl-dev libffi-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev
-apt install sway swaybg foot wmenu wl-clipboard fonts-dejavu zsh
-```
-
-Seat management is handled automatically by `systemd-logind`.
-
-The commands above install the sway stack (and the Hyprland alternative). The session starts Sway by default; if you would rather use Hyprland, both configs are complete — change the `exec` line in `~/.profile`, `~/.zprofile` and `~/.bash_profile` to `exec Hyprland`.
+The Linux desktop packages (`sway`, `hypr`, `foot`, `mako`, `niri`, `waybar`,
+`widgets`) have no macOS equivalent and are left unused; `kitty` is the terminal.
+Fonts are linked into `~/Library/Fonts` because macOS does not read
+`~/.local/share/fonts`, and `setwallpaper` uses `osascript` instead of the
+Wayland/X11 tools. The Linux-only session setup in the shell profiles (Sway on
+tty1, XDG runtime directories, wlroots variables) is skipped automatically.
 
 ### Environment and edge cases
 
-- Seat management: start Sway directly with `exec sway` from your login shell on tty1 (the shell profiles do this for you). Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`.
+- Seat management: start Sway directly with `exec sway` from your login shell on tty1 (the shell profiles do this for you). Do not wrap it in `seatd-launch` or `dbus-run-session`; wrapping drops terminal session leadership and breaks DRM master acquisition in `libseat`. To use Hyprland instead, change the `exec` line in `~/.profile`, `~/.zprofile` and `~/.bash_profile` to `exec Hyprland`.
 - Virtual machines: virtual DRM drivers (such as UTM or QEMU using `virtio-gpu`, VirtualBox, or VMware) lack hardware cursor planes and often fail to provide 3D hardware contexts. Shell profiles auto-detect virtual GPU devices and set `WLR_RENDERER=pixman` (switching the compositor to fast 2D CPU rendering to eliminate lag and buffer flickers), `WLR_NO_HARDWARE_CURSORS=1`, `WLR_SCENE_DISABLE_DIRECT_SCANOUT=1`, and `WLR_DRM_NO_MODIFIERS=1`. The sway output settings disable adaptive sync and set `max_render_time off`.
 - Runtime directory: on distributions without systemd (Alpine with OpenRC, Void with runit), shell profiles fall back to creating `/tmp/user-$(id -u)` with mode `0700` if `XDG_RUNTIME_DIR` is not set.
-- Clipboard: `tmux-yank` requires a Wayland clipboard helper (`wl-clipboard`), included in the desktop package lists above.
+- Clipboard: `tmux-yank` needs a clipboard helper — `wl-clipboard` on Wayland, or `xclip`/`xsel` on X11. `pbcopy` is used on macOS.
 
 The installer also sets up [mise](https://mise.jdx.dev): it installs the mise
 binary into `~/.local/bin`, then runs `mise install` to fetch every tool declared
@@ -95,6 +43,36 @@ Tool installation is the slowest part of the install and needs network access.
 Re-run `mise install` later to pick up any tools that failed or were added to the
 config since.
 
+## Environment Variables
+
+The aliases, functions and a few scripts are driven by environment variables.
+The recommended place to set them is the tiroir store: `~/.variables` runs
+`tiroir export`, so every interactive shell gets them without putting machine
+paths in the repository. Set only the ones your workflow uses; an alias built
+from an unset variable degrades to `cd` with no argument.
+
+| Variable        | Used by | Purpose |
+| --------------- | ------- | ------- |
+| `DOTFILES`      | `install.sh`, `tido`, `palette-vis`, `god` | Path to this checkout. Tiroir exports it; the installer and `tido` fall back to `~/.dotfiles`. |
+| `WORKSPACE`     | `goc` | Main workspace directory. |
+| `WORKSPACE_PRO` | `gow` | Work/professional workspace directory. |
+| `SCHOOL`        | `gos` | School directory. |
+| `BRAIN`         | `gob`, `brain`, `b`, `bnn`, `j` | Notes vault. `j` writes to `$BRAIN/Journal` and reads `$BRAIN/Templates/daily_template.md`. |
+| `NUAGE`         | `gon` | Local Nuage files directory. |
+| `PORTALS`       | `cportal` | Directory holding portal YAML files. |
+| `HARNESS`       | `a` (when `bulle` is installed) | Command the `a` alias runs. |
+| `NTFY_SH`       | `tellme` | ntfy.sh topic URL used for notifications. |
+| `EDITOR`        | `e` and the `c*`/`brain` aliases, `j` | Editor command. Defaults to `vis`; override it in tiroir or the environment. |
+| `MYBINS`        | `~/.bash_settings`, `~/.zsh_settings` | Local binary directory added to `PATH`; defaults to `~/mybins`. |
+| `XDG_CONFIG_HOME` | `setwallpaper` | Config root; defaults to `~/.config`. |
+| `WLR_RENDERER`  | sway on Linux | Optional renderer override (`pixman` on VMs); detected automatically when a virtual GPU is present. |
+
+`ANDROID_HOME` is discovered from the usual SDK locations. `DISPLAY`,
+`WAYLAND_DISPLAY`, `SWAYSOCK`, `NIRI_SOCKET`, `HYPRLAND_INSTANCE_SIGNATURE`,
+`XDG_CURRENT_DESKTOP`, `TMUX` and `TMUX_PANE` come from the running session:
+`setwallpaper` and the shell helpers use them to pick a backend, and none of
+them need to be set by hand. `XDG_RUNTIME_DIR` is created on Linux when missing.
+
 ## Install
 
 ```sh
@@ -104,9 +82,10 @@ curl -fsSL https://raw.githubusercontent.com/saravenpi/dotfiles/main/install.sh 
 Run from a checkout (`./install.sh`) and that checkout is used as-is; the
 installer never clones over a local checkout.
 
-The repository lives at `~/.dotfiles` as a **real clone**. It is cloned when
-missing and fast-forwarded with `git pull` when present. It is never replaced by
-a symlink.
+The checkout is taken from `$DOTFILES` when that variable is set (tiroir exports
+it), otherwise from `~/.dotfiles`. The repository lives there as a **real
+clone**: it is cloned when missing and fast-forwarded with `git pull` when
+present. It is never replaced by a symlink.
 
 ### Manual install
 
@@ -119,17 +98,18 @@ git submodule update --init --recursive
 
 ## What The Installer Does
 
-1. Picks a source: a real clone at `~/.dotfiles` if there is one, otherwise the
-   checkout it was run from
+1. Picks a source: `$DOTFILES` when it is set, then a real clone at
+   `~/.dotfiles`, then the checkout it was run from
 2. Initializes git submodules (the zsh-autosuggestions plugin lives in one)
 3. Backs up conflicting files to `~/.config/config.old.<timestamp>/`
 4. Links every package into `$HOME` with `tido` (conflicts are moved aside,
    never deleted)
-5. Installs [mise](https://mise.jdx.dev) into `~/.local/bin` when missing
-6. Installs every tool declared in `~/.config/mise/config.toml` (bun,
+5. On macOS, links the fonts into `~/Library/Fonts`
+6. Installs [mise](https://mise.jdx.dev) into `~/.local/bin` when missing
+7. Installs every tool declared in `~/.config/mise/config.toml` (bun,
    go, python, ...) with `mise install`. This is the slow
    step: mise downloads runtimes and CLIs, so a partial failure only warns
-7. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
+8. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
    for you)
 
 ## Packages
@@ -143,7 +123,7 @@ git submodule update --init --recursive
 | `vis`     | `~/.config/vis` (default editor)              |
 | `mise`    | `~/.config/mise`                              |
 | `tmux`    | `~/.config/tmux/tmux.conf`, `~/.config/tmux/plugins` |
-| `fonts`   | `~/.local/share/fonts` (Helvetica, undefined Nerd Font) |
+| `fonts`   | `~/.local/share/fonts` (Helvetica, undefined Nerd Font), linked into `~/Library/Fonts` on macOS |
 | `scripts` | `~/scripts` (includes `tido` and `setwallpaper`, added to `PATH`) |
 | `facile`  | `~/.facile.yml`                               |
 | `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
@@ -152,6 +132,11 @@ git submodule update --init --recursive
 | `foot`    | `~/.config/foot`                              |
 | `kitty`   | `~/.config/kitty` (kitty.conf + palette colors) |
 | `mako`    | `~/.config/mako` (config + palette colors)    |
+
+On macOS the Linux-only desktop packages (`foot`, `hypr`, `mako`, `niri`,
+`sway`, `waybar`, `widgets`) are skipped when linking every package. Name one
+explicitly (`tido link sway`) to link it anyway; `tido unlink` still visits
+them so links left by an older install can be removed.
 
 The `fonts` package also ships a **Helvetica** family
 (`texgyreheros-{regular,bold,italic,bolditalic}.otf`, next to
@@ -231,7 +216,6 @@ tido link                  # link every package into $HOME
 tido link nvim tmux        # link only these packages
 tido list                  # dry run: show what would change
 tido clean-backups         # remove backup directories
-tido update                # pull the repo and re-run install.sh (from anywhere)
 tido unlink nvim           # remove the links created for a package
 tido link --target DIR     # link into DIR instead of $HOME
 tido link -b DIR           # keep conflicting files here
@@ -240,13 +224,15 @@ tido link -b DIR           # keep conflicting files here
 Before `~/scripts` is on `PATH`, run it in place:
 `./scripts/scripts/tido ...`.
 
-`tido` folds a package directory into a single symlink when the target path does
-not exist yet, descends into directories that already exist, and moves any real
-file in the way into a backup instead of overwriting it. A directory that
-several packages contribute to (such as `~/.config`, shared by `nvim`
-and `mise`) is always kept as a real directory, with one symlink per
-package inside it. Links are always written as absolute paths, and a relative
-link left behind by GNU stow is rewritten the next time `tido` runs. It is safe
+`tido` reads `$DOTFILES` when it is set and otherwise finds the checkout from
+its own resolved path. It folds a package directory into a single symlink when
+the target path does not exist yet, descends into directories that already
+exist, and moves any real file in the way into a backup instead of overwriting
+it. A directory that several packages contribute to (such as `~/.config`,
+shared by `nvim` and `mise`) is always kept as a real directory, with one
+symlink per package inside it. Links are always written as absolute paths, and
+a relative link left behind by GNU stow is rewritten the next time `tido` runs.
+It is safe
 to run repeatedly.
 
 ## Submodules
