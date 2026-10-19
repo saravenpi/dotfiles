@@ -51,6 +51,14 @@ The recommended place to set them is the tiroir store: `~/.variables` runs
 paths in the repository. Set only the ones your workflow uses; an alias built
 from an unset variable degrades to `cd` with no argument.
 
+The installer seeds the missing keys through `tiroir` with the defaults this
+configuration expects: `DOTFILES` (the checkout it links), `WORKSPACE=~/Code`,
+`WORKSPACE_PRO=~/Code/Facile`, `BRAIN=~/Documents/NuagePersonal/Wiki`,
+`NUAGE=~/Documents/NuagePersonal`, `PORTALS=~/Portals`, `HARNESS=bulle`,
+`EDITOR=vis`, `MYBINS=~/mybins` and `XDG_CONFIG_HOME=~/.config`. Existing
+values are never overwritten. `SCHOOL` and `NTFY_SH` have no default because
+only you can choose a school directory or an ntfy topic.
+
 | Variable        | Used by | Purpose |
 | --------------- | ------- | ------- |
 | `DOTFILES`      | `install.sh`, `tido`, `palette-vis`, `god` | Path to this checkout. Tiroir exports it; the installer and `tido` fall back to `~/.dotfiles`. |
@@ -109,7 +117,9 @@ git submodule update --init --recursive
 7. Installs every tool declared in `~/.config/mise/config.toml` (bun,
    go, python, ...) with `mise install`. This is the slow
    step: mise downloads runtimes and CLIs, so a partial failure only warns
-8. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
+8. Seeds the missing environment defaults in `tiroir` (see above), leaving
+   every value already in the store untouched
+9. Warns if the `tmux-yank` clipboard helper is missing (it is not installed
    for you)
 
 ## Packages
@@ -132,11 +142,18 @@ git submodule update --init --recursive
 | `foot`    | `~/.config/foot`                              |
 | `kitty`   | `~/.config/kitty` (kitty.conf + palette colors) |
 | `mako`    | `~/.config/mako` (config + palette colors)    |
+| `yazi`    | `~/.config/yazi` (palette-generated theme)    |
 
 On macOS the Linux-only desktop packages (`foot`, `hypr`, `mako`, `niri`,
 `sway`, `waybar`, `widgets`) are skipped when linking every package. Name one
 explicitly (`tido link sway`) to link it anyway; `tido unlink` still visits
 them so links left by an older install can be removed.
+
+`palette sync` writes Yazi's theme to `~/.config/yazi/theme.toml`, which the
+`yazi` package versions. Yazi merges it over its built-in dark/light preset,
+so only the colors are managed here; layout, icons and keymaps stay in
+`yazi.toml` and `keymap.toml`. Yazi reads the theme at startup, so restart it
+after a palette change (requires `palette` 0.12.0 or newer).
 
 The `fonts` package also ships a **Helvetica** family
 (`texgyreheros-{regular,bold,italic,bolditalic}.otf`, next to
@@ -225,21 +242,38 @@ Before `~/scripts` is on `PATH`, run it in place:
 `./scripts/scripts/tido ...`.
 
 `tido` reads `$DOTFILES` when it is set and otherwise finds the checkout from
-its own resolved path. It folds a package directory into a single symlink when
-the target path does not exist yet, descends into directories that already
-exist, and moves any real file in the way into a backup instead of overwriting
-it. A directory that several packages contribute to (such as `~/.config`,
-shared by `nvim` and `mise`) is always kept as a real directory, with one
-symlink per package inside it. Links are always written as absolute paths, and
-a relative link left behind by GNU stow is rewritten the next time `tido` runs.
-It is safe
-to run repeatedly.
+its own resolved path. It does not depend on GNU `readlink -f`: it follows the
+link chain one hop at a time and resolves the parent with `pwd -P`, which works
+on older macOS and BusyBox too. It folds a package directory into a single
+symlink when the target path does not exist yet, descends into directories that
+already exist, and moves any real file in the way into a backup instead of
+overwriting it. A directory that several packages contribute to (such as
+`~/.config`, shared by `nvim` and `mise`) is always kept as a real directory,
+with one symlink per package inside it. Links are always written as absolute
+paths, and a relative link left behind by GNU stow is rewritten the next time
+`tido` runs. It is safe to run repeatedly.
 
 ## Submodules
 
 `zsh/.zsh/zsh-autosuggestions` is a git submodule pinned to a specific commit.
 The installer initializes it; after a manual clone run
 `git submodule update --init --recursive` before `tido`.
+
+## Continuous Integration
+
+The macOS job (`.github/workflows/macos.yml`) runs `tido` under the system
+bash 3.2, the oldest shell it has to support. `readlink -f` only exists on
+macOS 12.3 and newer, so the job installs a `readlink` shim that rejects `-f`:
+`tido` must keep working through its portable fallback. A second run without
+the shim covers the native resolver on current macOS. The same job then runs
+`install.sh` in a scratch `HOME` and asserts the backup, the links and the
+fonts in `~/Library/Fonts`.
+
+The Linux job (`.github/workflows/linux.yml`) runs `install.sh` in a scratch
+`HOME` under the runner's `/bin/sh` (dash), with mise and facile stubbed out,
+and asserts the backup and the desktop-package links. Both jobs stub the
+network installers, so they exercise the scripts instead of downloading
+toolchains.
 
 ## Backups And Recovery
 

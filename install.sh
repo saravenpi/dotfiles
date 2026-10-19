@@ -207,7 +207,7 @@ create_backup() {
         .zsh_settings .aliases .functions .variables
     "
     dirs_to_backup=".vim .fonts scripts .local/share/fonts"
-    config_dirs_to_backup="nvim mise kitty sway hypr foot mako facile palette widgets vis"
+    config_dirs_to_backup="nvim mise kitty sway hypr foot mako facile palette widgets vis yazi"
 
     backup_count=0
 
@@ -413,6 +413,57 @@ install_facile() {
     fi
 }
 
+# Store one documented environment default in tiroir when the key is missing.
+# An existing value is never replaced: the store belongs to the user, and the
+# installer only fills the gaps a fresh machine starts with.
+seed_tiroir_default() {
+    tiroir_bin="$1"
+    key="$2"
+    value="$3"
+
+    if "$tiroir_bin" get "$key" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    if "$tiroir_bin" set "$key" "$value" >/dev/null 2>&1; then
+        info "Set tiroir default: $key"
+        tiroir_seeded=$((tiroir_seeded + 1))
+    else
+        warn "Could not set tiroir default: $key"
+    fi
+}
+
+# Seed the paths and editor the aliases read with the same defaults the shell
+# settings fall back to, so a fresh install has working aliases without
+# hand-editing the store. SCHOOL and NTFY_SH have no default: only the user can
+# choose a school directory or an ntfy topic.
+seed_tiroir_defaults() {
+    tiroir_bin="$(tool_bin tiroir)"
+    if [ -z "$tiroir_bin" ]; then
+        warn "tiroir not available, skipping environment defaults"
+        return 0
+    fi
+
+    info "Seeding tiroir environment defaults..."
+    tiroir_seeded=0
+    seed_tiroir_default "$tiroir_bin" DOTFILES "$SOURCE_DIR"
+    seed_tiroir_default "$tiroir_bin" WORKSPACE "$HOME/Code"
+    seed_tiroir_default "$tiroir_bin" WORKSPACE_PRO "$HOME/Code/Facile"
+    seed_tiroir_default "$tiroir_bin" BRAIN "$HOME/Documents/NuagePersonal/Wiki"
+    seed_tiroir_default "$tiroir_bin" NUAGE "$HOME/Documents/NuagePersonal"
+    seed_tiroir_default "$tiroir_bin" PORTALS "$HOME/Portals"
+    seed_tiroir_default "$tiroir_bin" HARNESS "bulle"
+    seed_tiroir_default "$tiroir_bin" EDITOR "vis"
+    seed_tiroir_default "$tiroir_bin" MYBINS "$HOME/mybins"
+    seed_tiroir_default "$tiroir_bin" XDG_CONFIG_HOME "${XDG_CONFIG_HOME:-$HOME/.config}"
+
+    if [ "$tiroir_seeded" -gt 0 ]; then
+        success "Seeded $tiroir_seeded tiroir default(s)"
+    else
+        info "tiroir already holds every default"
+    fi
+}
+
 # The installer links the zsh configuration but never changes the login shell:
 # chsh authenticates over PAM, so it either blocks on a password or fails with
 # stdin closed, and BusyBox ships no chsh at all. Setting the shell stays a
@@ -506,6 +557,7 @@ main() {
     install_mise
     install_mise_tools
     install_facile
+    seed_tiroir_defaults
 
     show_summary
 
