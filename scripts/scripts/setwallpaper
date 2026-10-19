@@ -16,6 +16,11 @@
 # falls back to a `swaybg` daemon, X11 to the usual tools, and macOS to
 # `osascript`.
 #
+# Once the wallpaper is set, `palette generate -s` regenerates the shared
+# colorscheme from the same image and syncs every configured application, so
+# the terminal, editors, bar, notifications and Yazi follow the new wallpaper.
+# A missing or failing palette never undoes the wallpaper change.
+#
 # Usage:
 #   setwallpaper <image>       set the wallpaper for the current session
 #   setwallpaper -a <image>    macOS: apply to every Space, not just the first
@@ -38,6 +43,7 @@ set -eu
 # Ubuntu's dash treats `set` as a special builtin: an unsupported `-o
 # pipefail` aborts the shell even behind `|| true`. Probe it in a subshell so
 # the failure is contained, then enable it only where it exists.
+# shellcheck disable=SC3040
 if (set -o pipefail) 2>/dev/null; then
     set -o pipefail
 fi
@@ -181,6 +187,22 @@ apply_macos() {
         die "could not set the wallpaper"
 }
 
+# Regenerate the palette from the image that was just applied and sync every
+# target with it. The wallpaper is already set at this point, so a missing
+# palette or a failed extraction only warns: it must not report the wallpaper
+# change as failed.
+sync_palette() {
+    if ! have palette; then
+        printf 'setwallpaper: palette not found; colorscheme not synced\n' >&2
+        return 0
+    fi
+
+    if ! palette generate "$IMAGE" -s; then
+        printf 'setwallpaper: could not sync the colorscheme from %s\n' "$IMAGE" >&2
+    fi
+    return 0
+}
+
 apply_linux() {
     desktop="${XDG_CURRENT_DESKTOP:-}"
 
@@ -314,3 +336,5 @@ case "$(uname -s)" in
     Darwin) apply_macos ;;
     *) apply_linux ;;
 esac
+
+sync_palette
