@@ -426,3 +426,12 @@ bnn() {
     touch "Inbox/${filename}.md"
     nvim "Inbox/${filename}.md"
 }
+
+vis() {
+    if [ "$#" -eq 1 ] && [ -d "$1" ]; then
+        yazi "$1"
+    else
+        command vis "$@"
+    fi
+}
+
