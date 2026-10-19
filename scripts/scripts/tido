@@ -23,7 +23,7 @@
 #   tido link          [options] [package...]   create/refresh symlinks
 #   tido unlink        [options] [package...]   remove links made by this repo
 #   tido list          [options] [package...]   dry run, change nothing
-#   tido clean-backups [options]                remove backup directories
+#   tido clean         [options]                remove backup directories
 #
 # Options:
 #   -t, --target DIR   directory to link into (default: $HOME)
@@ -39,7 +39,7 @@
 #   tido link nvim tmux             # link only these packages
 #   tido list                       # show what would happen
 #   tido unlink nvim                # remove the nvim symlinks
-#   tido clean-backups              # remove all backup directories
+#   tido clean                      # remove all backup directories
 #
 
 set -eu
@@ -161,7 +161,23 @@ err()  { printf '%b  x%b %s\n' "$C_RED" "$C_NC" "$*" >&2; }
 die()  { err "$*"; exit 1; }
 
 usage() {
-    awk 'NR > 1 && /^#/ { sub(/^# ?/, ""); print; next } NR > 1 { exit }' "$0"
+    cat <<'EOF'
+tido - link dotfiles into $HOME
+
+Usage:
+  tido link   [options] [package...]   create/refresh symlinks
+  tido unlink [options] [package...]   remove links made by this repo
+  tido list   [options] [package...]   dry run, change nothing
+  tido clean  [options]                remove backup directories
+
+Options:
+  -t, --target DIR   link into DIR (default: $HOME)
+  -b, --backup DIR   move conflicts into DIR
+      --no-backup    refuse to touch conflicts
+  -n, --dry-run      preview only
+  -v, --verbose      print each link source
+  -h, --help         show this help
+EOF
 }
 
 resolve() {
@@ -494,7 +510,7 @@ while [ $# -gt 0 ]; do
         link|stow)       ACTION="link" ;;
         unlink|remove|unstow|destow) ACTION="unlink" ;;
         list|check)      ACTION="link"; DRY_RUN=1 ;;
-        clean|clean-backups|prune) ACTION="clean" ;;
+        clean|prune)     ACTION="clean" ;;
         -t|--target)     shift; [ $# -gt 0 ] || die "--target needs a directory"; TARGET="$1" ;;
         -b|--backup)     shift; [ $# -gt 0 ] || die "--backup needs a directory"; BACKUP_DIR="$1" ;;
         --no-backup)     DO_BACKUP=0 ;;

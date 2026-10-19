@@ -509,7 +509,7 @@ show_summary() {
     printf '  %b-%b Re-link everything:  %btido link%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Preview changes:     %btido list%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
     printf '  %b-%b Remove a package:    %btido unlink nvim%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
-    printf '  %b-%b Clean backup files:  %btido clean-backups%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
+    printf '  %b-%b Clean backup files:  %btido clean%b\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
 
     printf '\n%bNext Steps:%b\n' "${WHITE}" "${NC}"
     printf '  %b1.%b Restart your terminal or run: %bsource ~/.bashrc%b (or ~/.zshrc)\n' "${CYAN}" "${NC}" "${YELLOW}" "${NC}"
