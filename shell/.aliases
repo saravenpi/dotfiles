@@ -134,7 +134,6 @@ command -v bulle >/dev/null 2>&1 && alias a="$HARNESS"
 # filet
 command -v filet >/dev/null 2>&1 && alias fc="filet check ."
 command -v filet >/dev/null 2>&1 && alias fr="filet roast ."
-command -v facile >/dev/null 2>&1 && alias f="facile"
 
 command -v hunk >/dev/null 2>&1 && alias hd="hunk diff"
 command -v boite >/dev/null 2>&1 && alias bp="boite run pingu"
@@ -144,3 +143,8 @@ command -v apk >/dev/null 2>&1 && command -v fzf >/dev/null 2>&1 && alias apk-se
 command -v fastfetch >/dev/null 2>&1 && alias neofetch="fastfetch"
 command -v kicad >/dev/null 2>&1 && alias kicad="GDK_BACKEND=x11 kicad"
 
+# Extra Package Manager
+command -v facile >/dev/null 2>&1 && alias p="facile"
+
+# TUI File explorer
+command -v facile >/dev/null 2>&1 && alias f="yazi"
