@@ -1,0 +1,10 @@
+[opener]
+edit = [
+    { run = 'vis "$@"', block = true, desc = "vis" }
+]
+
+[open]
+rule = [
+    { mime = "text/*", use = "edit" },
+    { name = "*", mime = "!inode/directory", use = "edit" }
+]
