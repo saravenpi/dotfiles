@@ -9,8 +9,12 @@
 
 
 set -eu
-# shellcheck disable=SC3040
-set -o pipefail 2>/dev/null || true
+# Ubuntu's dash treats `set` as a special builtin: an unsupported `-o
+# pipefail` aborts the shell even behind `|| true`. Probe it in a subshell so
+# the failure is contained, then enable it only where it exists.
+if (set -o pipefail) 2>/dev/null; then
+    set -o pipefail
+fi
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
