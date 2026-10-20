@@ -33,6 +33,7 @@ yazi = "latest"
 "github:typst/typst" = "latest"
 "github:charmbracelet/vhs" = "latest"
 "cargo:pokeget" = "latest"
+tokei = "latest"
 
 
 [settings]
