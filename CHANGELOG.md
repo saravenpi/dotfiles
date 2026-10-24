@@ -6,10 +6,21 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-10-24
+
+### Added
+
+- `poke`: terminal Pokemon encounter and capture CLI installed by default via `facile` in `install.sh` and registered in catalog extensions.
+- `zsh`: automatically roll and display a wild Pokemon encounter on shell startup with `poke spawn`.
+
 ### Changed
 
 - `tido`: remove backup directories with `tido clean`. The `clean-backups`
   spelling was dropped.
+
+### Removed
+
+- `mise`: drop `cargo:pokeget` from default tool installations.
 
 ## [0.15.0] - 2026-10-19
 
