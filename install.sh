@@ -397,8 +397,9 @@ install_facile() {
         missing_tools=""
         [ -n "$(tool_bin tiroir)" ] || missing_tools="$missing_tools tiroir"
         [ -n "$(tool_bin palette)" ] || missing_tools="$missing_tools palette"
+        [ -n "$(tool_bin poke)" ] || missing_tools="$missing_tools poke"
         if [ -z "$missing_tools" ]; then
-            info "facile tools already installed (tiroir, palette)"
+            info "facile tools already installed (tiroir, palette, poke)"
         else
             info "Installing facile tools:$missing_tools"
             # shellcheck disable=SC2086
