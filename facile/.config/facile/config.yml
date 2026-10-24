@@ -3,3 +3,4 @@ palette: saravenpi/palette
 pres: saravenpi/pres
 widgets: saravenpi/widgets
 fusible: KonoLabs/Fusible
+poke: saravenpi/poke

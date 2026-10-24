@@ -13,4 +13,4 @@ do
     [ -s "$file" ] && . "$file"
 done
 
-command -v pokeget >/dev/null 2>&1 && pokeget random --hide-name
+command -v poke >/dev/null 2>&1 && poke spawn
