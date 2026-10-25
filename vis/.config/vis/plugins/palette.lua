@@ -106,19 +106,18 @@ function M.apply()
 
 	lexers.colors = c
 
-	-- Core UI Elements
-	lexers.STYLE_DEFAULT = "fore:" .. c.fg .. ",back:" .. c.bg
-	lexers.STYLE_NOTHING = "back:" .. c.bg
-	lexers.STYLE_LINENUMBER = "fore:" .. c.bright_black .. ",back:" .. c.bg
-	lexers.STYLE_LINENUMBER_CURSOR = "fore:" .. c.cursor .. ",back:" .. c.bg .. ",bold"
+	lexers.STYLE_DEFAULT = "fore:" .. c.fg .. ",back:default"
+	lexers.STYLE_NOTHING = "back:default"
+	lexers.STYLE_LINENUMBER = "fore:" .. c.bright_black .. ",back:default"
+	lexers.STYLE_LINENUMBER_CURSOR = "fore:" .. c.cursor .. ",back:default,bold"
 	lexers.STYLE_CURSOR = "fore:" .. c.bg .. ",back:" .. c.cursor
 	lexers.STYLE_CURSOR_PRIMARY = "fore:" .. c.bg .. ",back:" .. c.cursor .. ",bold"
-	lexers.STYLE_CURSOR_LINE = "back:" .. c.black
+	lexers.STYLE_CURSOR_LINE = "back:default"
 	lexers.STYLE_COLOR_COLUMN = "back:" .. c.black
 	lexers.STYLE_SELECTION = "back:" .. c.bright_black
-	lexers.STYLE_STATUS = "fore:" .. c.fg .. ",back:" .. c.black
-	lexers.STYLE_STATUS_FOCUSED = "fore:" .. c.fg .. ",back:" .. c.black .. ",bold"
-	lexers.STYLE_SEPARATOR = "fore:" .. c.black .. ",back:" .. c.bg
+	lexers.STYLE_STATUS = "fore:" .. c.fg .. ",back:default"
+	lexers.STYLE_STATUS_FOCUSED = "fore:" .. c.fg .. ",back:default,bold"
+	lexers.STYLE_SEPARATOR = "fore:" .. c.black .. ",back:default"
 	lexers.STYLE_INFO = "fore:" .. c.blue .. ",bold"
 	lexers.STYLE_EOF = "fore:" .. c.bright_black
 	lexers.STYLE_WHITESPACE = "fore:" .. c.black
@@ -157,7 +156,7 @@ function M.apply()
 	lexers.STYLE_BOLD = "bold"
 	lexers.STYLE_ITALIC = "italics"
 	lexers.STYLE_LINK = "fore:" .. c.cyan .. ",underlined"
-	lexers.STYLE_CODE_BLOCK = "fore:" .. c.green .. ",back:" .. c.black
+	lexers.STYLE_CODE_BLOCK = "fore:" .. c.green .. ",back:default"
 	lexers.STYLE_LIST = "fore:" .. c.magenta
 
 	-- Refresh syntax in all open windows
