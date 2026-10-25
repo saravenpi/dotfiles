@@ -2,7 +2,7 @@
 # Yazi merges this over its built-in theme at startup.
 
 [app]
-overall = { bg = "#13140b" }
+overall = {}
 
 [mgr]
 cwd = { fg = "#c3d486", bold = true }
@@ -37,7 +37,7 @@ current = { fg = "#c3d486", bold = true }
 preview = { fg = "#79b7a8", underline = true }
 
 [status]
-overall = { fg = "#e5e2dd", bg = "#13140b" }
+overall = { fg = "#e5e2dd" }
 perm_sep = { fg = "#6c6e5f" }
 perm_type = { fg = "#a4b26f" }
 perm_read = { fg = "#baab67" }
