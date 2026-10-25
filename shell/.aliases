@@ -88,7 +88,6 @@ if command -v git >/dev/null 2>&1; then
     alias gba="git branch -a"
     alias gco="git checkout"
     alias gr="git rm"
-    alias gitu="git add . && git commit"
     alias gitup="git add . && git commit && git push"
     alias gituf='git add . && git commit -m "$(date +"%Y-%m-%d %T")" && git push'
 fi

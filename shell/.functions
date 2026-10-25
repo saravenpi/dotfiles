@@ -428,10 +428,6 @@ bnn() {
 }
 
 vis() {
-    if [ "$#" -eq 1 ] && [ -d "$1" ]; then
-        yazi "$1"
-    else
-        command vis "$@"
-    fi
+    [ -d "${1:-}" ] && (cd "$1" && command vis) || command vis "$@"
 }
 
