@@ -152,7 +152,11 @@ end
 
 local function open_explorer()
 	if os.getenv("TMUX") then
-		os.execute("tmux split-window -h -b -l 30 'yazi'")
+		local path = "."
+		if vis.win and vis.win.file and vis.win.file.name and vis.win.file.name ~= "" and not vis.win.file.internal then
+			path = vis.win.file.name
+		end
+		os.execute(string.format("~/.config/tmux/scripts/toggle-yazi.sh %q", path))
 	else
 		open_yazi()
 	end
