@@ -6,6 +6,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-10-27
+
+### Added
+
+- `vis`: suckless text editor configuration with palette theme support, LSP client integration via `vis-lspc`, and plugins (commentary, surround, autopairs, cursors, inotify, editorconfig, goto-file).
+- `mise`: install `gitu`, `fusible`, and `csvlens` via Cargo by default.
+- `tmux`: toggle 45-column Yazi file manager sidebar on prefix `e`.
+
+### Changed
+
+- `shell`: streamline vis wrapper function and clean aliases.
+- `yazi`: enable transparent background in theme.
+
+### Fixed
+
+- `vis`: support `vis.ui:style_define` on modern vis releases while retaining backwards compatibility with `win:style_define`.
+
 ## [0.16.0] - 2026-10-24
 
 ### Added
