@@ -57,7 +57,11 @@ vis.events.subscribe(vis.events.WIN_STATUS, function(win)
 		local left = mode .. " " .. name .. mod
 		win:status(left, right)
 		local st = mode_colors[vis.mode] or ("fore:" .. c.bg .. ",back:" .. c.blue .. ",bold")
-		win:style_define(MODE_STYLE, st)
+		if (vis.API and vis.API > 3215) or (vis.ui and vis.ui.style_define) then
+			vis.ui:style_define(MODE_STYLE, st)
+		elseif win.style_define then
+			win:style_define(MODE_STYLE, st)
+		end
 		for x = 0, #mode - 1 do
 			win:style_pos(MODE_STYLE, x, win.height - 1)
 		end
