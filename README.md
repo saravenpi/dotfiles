@@ -136,7 +136,7 @@ git submodule update --init --recursive
 | `fonts`   | `~/.local/share/fonts` (Helvetica, undefined Nerd Font), linked into `~/Library/Fonts` on macOS |
 | `scripts` | `~/scripts` (includes `tido` and `setwallpaper`, added to `PATH`) |
 | `facile`  | `~/.facile.yml`                               |
-| `bulle`   | `~/.bulle.yml`, `~/.bulle/profiles`, `~/.bulle/jobs` |
+| `bulle`   | `~/.config/bulle/config.yml`, `~/.config/bulle/profiles`, `~/.config/bulle/jobs` (Matrix identity and personal prompt are not tracked: set `chat.matrix.user_id`, `allow` and `rooms` locally) |
 | `sway`    | `~/.config/sway` (the alternative session)    |
 | `hypr`    | `~/.config/hypr` (Hyprland, the default session) |
 | `foot`    | `~/.config/foot`                              |

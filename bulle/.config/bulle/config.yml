@@ -59,13 +59,11 @@ gates:
     format: true
 
 chat:
+  profile: free
   matrix:
-    enabled: true
+    enabled: false
     homeserver: https://matrix.org
-    user_id: "@bot:example.org"
     password_command: tiroir get BULLE_MATRIX_PASSWORD
-    allow: ["@user:example.org"]
-    # rooms: ["!room:example.org"]
     self_sign: true
     max_age: 2h
     workdir: ~/tmp/bulle-chat

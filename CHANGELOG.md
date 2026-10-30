@@ -6,6 +6,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-10-30
+
+### Changed
+
+- `bulle`: follow bulle 0.87 and the XDG base directories. The package now links `~/.config/bulle/config.yml`, `profiles/` and `jobs/` instead of `~/.bulle.yml` and `~/.bulle/`. Run `tido link bulle` after upgrading bulle; bulle itself migrates the old paths on first run.
+- `bulle`: the tracked config no longer carries the Matrix identity, allow list, room id or the personal assistant prompt; Matrix is disabled by default and configured per machine.
+
 ## [0.17.0] - 2026-10-27
 
 ### Added
