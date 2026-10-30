@@ -1,8 +1,8 @@
 name: lyon-deals
 when: "0 9 * * *"
-workdir: /home/user/Documents/News
+workdir: ~/Documents/News
 enabled: true
-delivery: "file:/home/user/Documents/News"
+delivery: "file:~/Documents/News"
 timeout: 30m
 
 provider:

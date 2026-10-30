@@ -1,8 +1,8 @@
 name: moulaga-report
 when: "0 * * * *"
-workdir: /home/user/Documents/MoulagaReports
+workdir: ~/Documents/MoulagaReports
 enabled: true
-delivery: "file:/home/user/Documents/MoulagaReports"
+delivery: "file:~/Documents/MoulagaReports"
 timeout: 15m
 
 provider:

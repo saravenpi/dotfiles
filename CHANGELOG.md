@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.18.1] - 2026-10-30
+
+### Fixed
+
+- `bulle`: cron jobs use `~` instead of an absolute home path in `workdir` and `delivery`, so the tracked files carry no username.
+
 ## [0.18.0] - 2026-10-30
 
 ### Changed

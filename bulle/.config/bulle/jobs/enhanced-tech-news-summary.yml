@@ -1,8 +1,8 @@
 name: enhanced-tech-news-summary
 when: "0 9 * * *"
-workdir: /home/user/Documents/News
+workdir: ~/Documents/News
 enabled: true
-delivery: "file:/home/user/Documents/News"
+delivery: "file:~/Documents/News"
 timeout: 45m
 
 provider:
