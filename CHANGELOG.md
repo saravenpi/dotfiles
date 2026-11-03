@@ -6,6 +6,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-11-03
+
+### Changed
+
+- `bulle`: follow bulle 3.0. The config only holds what is local to a terminal: the server URL, trust, UI, editor, MCP servers and gates. The Bulle server owns the provider, models, persona, Matrix bot and scheduled jobs.
+- `bulle`: the personal prompt is read from `BULLE_ADDITIONAL_PROMPT`, exported by tiroir, so the repo never carries it.
+
+### Removed
+
+- `bulle`: the `profiles/` and `jobs/` folders; models are picked from the server's list and jobs run on the server.
+
 ## [0.18.1] - 2026-10-30
 
 ### Fixed
